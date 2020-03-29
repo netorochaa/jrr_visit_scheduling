@@ -11,8 +11,8 @@
             <h3>Sistema gerenciador de colestas domiciliares</h3>
 
             {!! Form::open(['route' => 'auth.login', 'method' => 'post']) !!}
-            <p>Acesse o sistema<br>
-                <small>Caso você não possua credênciais entre em contato com seu superior para solicitar.</small>
+            <p>Acesse o sistema
+                <!--<br><small>Caso você não possua credênciais entre em contato com seu superior para solicitar.</small>-->
             </p>
             <label>
                 {!! Form::text('user', null, ['placeholder' => 'Login']) !!}
