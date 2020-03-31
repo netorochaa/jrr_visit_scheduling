@@ -7,47 +7,80 @@ use Illuminate\Http\Request;
 use App\Http\Requests;
 use Prettus\Validator\Contracts\ValidatorInterface;
 use Prettus\Validator\Exceptions\ValidatorException;
-use App\Http\Requests\UserCreateRequest;
-use App\Http\Requests\UserUpdateRequest;
-use App\Repositories\UserRepository;
-use App\Validators\UserValidator;
+use App\Http\Requests\NeighborhoodCreateRequest;
+use App\Http\Requests\NeighborhoodUpdateRequest;
+use App\Repositories\NeighborhoodRepository;
+use App\Validators\NeighborhoodValidator;
 
-class UsersController extends Controller
-{    
+/**
+ * Class NeighborhoodsController.
+ *
+ * @package namespace App\Http\Controllers;
+ */
+class NeighborhoodsController extends Controller
+{
+    /**
+     * @var NeighborhoodRepository
+     */
     protected $repository;
+
+    /**
+     * @var NeighborhoodValidator
+     */
     protected $validator;
-    public function __construct(UserRepository $repository, UserValidator $validator)
+
+    /**
+     * NeighborhoodsController constructor.
+     *
+     * @param NeighborhoodRepository $repository
+     * @param NeighborhoodValidator $validator
+     */
+    public function __construct(NeighborhoodRepository $repository, NeighborhoodValidator $validator)
     {
         $this->repository = $repository;
         $this->validator  = $validator;
     }
 
+    /**
+     * Display a listing of the resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
     public function index()
     {
         $this->repository->pushCriteria(app('Prettus\Repository\Criteria\RequestCriteria'));
-        $users = $this->repository->all();
+        $neighborhoods = $this->repository->all();
 
         if (request()->wantsJson()) {
 
             return response()->json([
-                'data' => $users,
+                'data' => $neighborhoods,
             ]);
         }
 
-        return view('users.index', compact('users'));
+        return view('neighborhoods.index', compact('neighborhoods'));
     }
 
-    public function store(UserCreateRequest $request)
+    /**
+     * Store a newly created resource in storage.
+     *
+     * @param  NeighborhoodCreateRequest $request
+     *
+     * @return \Illuminate\Http\Response
+     *
+     * @throws \Prettus\Validator\Exceptions\ValidatorException
+     */
+    public function store(NeighborhoodCreateRequest $request)
     {
         try {
 
             $this->validator->with($request->all())->passesOrFail(ValidatorInterface::RULE_CREATE);
 
-            $user = $this->repository->create($request->all());
+            $neighborhood = $this->repository->create($request->all());
 
             $response = [
-                'message' => 'User created.',
-                'data'    => $user->toArray(),
+                'message' => 'Neighborhood created.',
+                'data'    => $neighborhood->toArray(),
             ];
 
             if ($request->wantsJson()) {
@@ -77,16 +110,16 @@ class UsersController extends Controller
      */
     public function show($id)
     {
-        $user = $this->repository->find($id);
+        $neighborhood = $this->repository->find($id);
 
         if (request()->wantsJson()) {
 
             return response()->json([
-                'data' => $user,
+                'data' => $neighborhood,
             ]);
         }
 
-        return view('users.show', compact('user'));
+        return view('neighborhoods.show', compact('neighborhood'));
     }
 
     /**
@@ -98,32 +131,32 @@ class UsersController extends Controller
      */
     public function edit($id)
     {
-        $user = $this->repository->find($id);
+        $neighborhood = $this->repository->find($id);
 
-        return view('users.edit', compact('user'));
+        return view('neighborhoods.edit', compact('neighborhood'));
     }
 
     /**
      * Update the specified resource in storage.
      *
-     * @param  UserUpdateRequest $request
+     * @param  NeighborhoodUpdateRequest $request
      * @param  string            $id
      *
      * @return Response
      *
      * @throws \Prettus\Validator\Exceptions\ValidatorException
      */
-    public function update(UserUpdateRequest $request, $id)
+    public function update(NeighborhoodUpdateRequest $request, $id)
     {
         try {
 
             $this->validator->with($request->all())->passesOrFail(ValidatorInterface::RULE_UPDATE);
 
-            $user = $this->repository->update($request->all(), $id);
+            $neighborhood = $this->repository->update($request->all(), $id);
 
             $response = [
-                'message' => 'User updated.',
-                'data'    => $user->toArray(),
+                'message' => 'Neighborhood updated.',
+                'data'    => $neighborhood->toArray(),
             ];
 
             if ($request->wantsJson()) {
@@ -161,11 +194,11 @@ class UsersController extends Controller
         if (request()->wantsJson()) {
 
             return response()->json([
-                'message' => 'User deleted.',
+                'message' => 'Neighborhood deleted.',
                 'deleted' => $deleted,
             ]);
         }
 
-        return redirect()->back()->with('message', 'User deleted.');
+        return redirect()->back()->with('message', 'Neighborhood deleted.');
     }
 }

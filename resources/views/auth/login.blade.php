@@ -5,7 +5,10 @@
     <link href="https://fonts.googleapis.com/css?family=Fredoka+One&display=swap" rel="stylesheet">
     </head>
     <body>
-        <section id='conteudo-view'>
+        <div class="conteudo-info">
+            <img src="{{ asset('img/1.png') }}" alt="">
+        </div>
+        <section id="conteudo-view">
             <img src="http://roseannedore.com.br/img/logo_roseanelab.png" alt="" width="100%">
             <h1>RDomiciliar</h1>
             <h3>Sistema gerenciador de colestas domiciliares</h3>
@@ -15,7 +18,7 @@
                 <!--<br><small>Caso você não possua credênciais entre em contato com seu superior para solicitar.</small>-->
             </p>
             <label>
-                {!! Form::text('user', null, ['placeholder' => 'Login']) !!}
+                {!! Form::text('email', null, ['placeholder' => 'E-mail da empresa']) !!}
             </label>  
             <label>
                 {!! Form::password('password', ['placeholder' => 'Senha']) !!}

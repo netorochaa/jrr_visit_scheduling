@@ -7,47 +7,80 @@ use Illuminate\Http\Request;
 use App\Http\Requests;
 use Prettus\Validator\Contracts\ValidatorInterface;
 use Prettus\Validator\Exceptions\ValidatorException;
-use App\Http\Requests\UserCreateRequest;
-use App\Http\Requests\UserUpdateRequest;
-use App\Repositories\UserRepository;
-use App\Validators\UserValidator;
+use App\Http\Requests\CancellationTypeCreateRequest;
+use App\Http\Requests\CancellationTypeUpdateRequest;
+use App\Repositories\CancellationTypeRepository;
+use App\Validators\CancellationTypeValidator;
 
-class UsersController extends Controller
-{    
+/**
+ * Class CancellationTypesController.
+ *
+ * @package namespace App\Http\Controllers;
+ */
+class CancellationTypesController extends Controller
+{
+    /**
+     * @var CancellationTypeRepository
+     */
     protected $repository;
+
+    /**
+     * @var CancellationTypeValidator
+     */
     protected $validator;
-    public function __construct(UserRepository $repository, UserValidator $validator)
+
+    /**
+     * CancellationTypesController constructor.
+     *
+     * @param CancellationTypeRepository $repository
+     * @param CancellationTypeValidator $validator
+     */
+    public function __construct(CancellationTypeRepository $repository, CancellationTypeValidator $validator)
     {
         $this->repository = $repository;
         $this->validator  = $validator;
     }
 
+    /**
+     * Display a listing of the resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
     public function index()
     {
         $this->repository->pushCriteria(app('Prettus\Repository\Criteria\RequestCriteria'));
-        $users = $this->repository->all();
+        $cancellationTypes = $this->repository->all();
 
         if (request()->wantsJson()) {
 
             return response()->json([
-                'data' => $users,
+                'data' => $cancellationTypes,
             ]);
         }
 
-        return view('users.index', compact('users'));
+        return view('cancellationTypes.index', compact('cancellationTypes'));
     }
 
-    public function store(UserCreateRequest $request)
+    /**
+     * Store a newly created resource in storage.
+     *
+     * @param  CancellationTypeCreateRequest $request
+     *
+     * @return \Illuminate\Http\Response
+     *
+     * @throws \Prettus\Validator\Exceptions\ValidatorException
+     */
+    public function store(CancellationTypeCreateRequest $request)
     {
         try {
 
             $this->validator->with($request->all())->passesOrFail(ValidatorInterface::RULE_CREATE);
 
-            $user = $this->repository->create($request->all());
+            $cancellationType = $this->repository->create($request->all());
 
             $response = [
-                'message' => 'User created.',
-                'data'    => $user->toArray(),
+                'message' => 'CancellationType created.',
+                'data'    => $cancellationType->toArray(),
             ];
 
             if ($request->wantsJson()) {
@@ -77,16 +110,16 @@ class UsersController extends Controller
      */
     public function show($id)
     {
-        $user = $this->repository->find($id);
+        $cancellationType = $this->repository->find($id);
 
         if (request()->wantsJson()) {
 
             return response()->json([
-                'data' => $user,
+                'data' => $cancellationType,
             ]);
         }
 
-        return view('users.show', compact('user'));
+        return view('cancellationTypes.show', compact('cancellationType'));
     }
 
     /**
@@ -98,32 +131,32 @@ class UsersController extends Controller
      */
     public function edit($id)
     {
-        $user = $this->repository->find($id);
+        $cancellationType = $this->repository->find($id);
 
-        return view('users.edit', compact('user'));
+        return view('cancellationTypes.edit', compact('cancellationType'));
     }
 
     /**
      * Update the specified resource in storage.
      *
-     * @param  UserUpdateRequest $request
+     * @param  CancellationTypeUpdateRequest $request
      * @param  string            $id
      *
      * @return Response
      *
      * @throws \Prettus\Validator\Exceptions\ValidatorException
      */
-    public function update(UserUpdateRequest $request, $id)
+    public function update(CancellationTypeUpdateRequest $request, $id)
     {
         try {
 
             $this->validator->with($request->all())->passesOrFail(ValidatorInterface::RULE_UPDATE);
 
-            $user = $this->repository->update($request->all(), $id);
+            $cancellationType = $this->repository->update($request->all(), $id);
 
             $response = [
-                'message' => 'User updated.',
-                'data'    => $user->toArray(),
+                'message' => 'CancellationType updated.',
+                'data'    => $cancellationType->toArray(),
             ];
 
             if ($request->wantsJson()) {
@@ -161,11 +194,11 @@ class UsersController extends Controller
         if (request()->wantsJson()) {
 
             return response()->json([
-                'message' => 'User deleted.',
+                'message' => 'CancellationType deleted.',
                 'deleted' => $deleted,
             ]);
         }
 
-        return redirect()->back()->with('message', 'User deleted.');
+        return redirect()->back()->with('message', 'CancellationType deleted.');
     }
 }

@@ -7,47 +7,80 @@ use Illuminate\Http\Request;
 use App\Http\Requests;
 use Prettus\Validator\Contracts\ValidatorInterface;
 use Prettus\Validator\Exceptions\ValidatorException;
-use App\Http\Requests\UserCreateRequest;
-use App\Http\Requests\UserUpdateRequest;
-use App\Repositories\UserRepository;
-use App\Validators\UserValidator;
+use App\Http\Requests\CityCreateRequest;
+use App\Http\Requests\CityUpdateRequest;
+use App\Repositories\CityRepository;
+use App\Validators\CityValidator;
 
-class UsersController extends Controller
-{    
+/**
+ * Class CitiesController.
+ *
+ * @package namespace App\Http\Controllers;
+ */
+class CitiesController extends Controller
+{
+    /**
+     * @var CityRepository
+     */
     protected $repository;
+
+    /**
+     * @var CityValidator
+     */
     protected $validator;
-    public function __construct(UserRepository $repository, UserValidator $validator)
+
+    /**
+     * CitiesController constructor.
+     *
+     * @param CityRepository $repository
+     * @param CityValidator $validator
+     */
+    public function __construct(CityRepository $repository, CityValidator $validator)
     {
         $this->repository = $repository;
         $this->validator  = $validator;
     }
 
+    /**
+     * Display a listing of the resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
     public function index()
     {
         $this->repository->pushCriteria(app('Prettus\Repository\Criteria\RequestCriteria'));
-        $users = $this->repository->all();
+        $cities = $this->repository->all();
 
         if (request()->wantsJson()) {
 
             return response()->json([
-                'data' => $users,
+                'data' => $cities,
             ]);
         }
 
-        return view('users.index', compact('users'));
+        return view('cities.index', compact('cities'));
     }
 
-    public function store(UserCreateRequest $request)
+    /**
+     * Store a newly created resource in storage.
+     *
+     * @param  CityCreateRequest $request
+     *
+     * @return \Illuminate\Http\Response
+     *
+     * @throws \Prettus\Validator\Exceptions\ValidatorException
+     */
+    public function store(CityCreateRequest $request)
     {
         try {
 
             $this->validator->with($request->all())->passesOrFail(ValidatorInterface::RULE_CREATE);
 
-            $user = $this->repository->create($request->all());
+            $city = $this->repository->create($request->all());
 
             $response = [
-                'message' => 'User created.',
-                'data'    => $user->toArray(),
+                'message' => 'City created.',
+                'data'    => $city->toArray(),
             ];
 
             if ($request->wantsJson()) {
@@ -77,16 +110,16 @@ class UsersController extends Controller
      */
     public function show($id)
     {
-        $user = $this->repository->find($id);
+        $city = $this->repository->find($id);
 
         if (request()->wantsJson()) {
 
             return response()->json([
-                'data' => $user,
+                'data' => $city,
             ]);
         }
 
-        return view('users.show', compact('user'));
+        return view('cities.show', compact('city'));
     }
 
     /**
@@ -98,32 +131,32 @@ class UsersController extends Controller
      */
     public function edit($id)
     {
-        $user = $this->repository->find($id);
+        $city = $this->repository->find($id);
 
-        return view('users.edit', compact('user'));
+        return view('cities.edit', compact('city'));
     }
 
     /**
      * Update the specified resource in storage.
      *
-     * @param  UserUpdateRequest $request
+     * @param  CityUpdateRequest $request
      * @param  string            $id
      *
      * @return Response
      *
      * @throws \Prettus\Validator\Exceptions\ValidatorException
      */
-    public function update(UserUpdateRequest $request, $id)
+    public function update(CityUpdateRequest $request, $id)
     {
         try {
 
             $this->validator->with($request->all())->passesOrFail(ValidatorInterface::RULE_UPDATE);
 
-            $user = $this->repository->update($request->all(), $id);
+            $city = $this->repository->update($request->all(), $id);
 
             $response = [
-                'message' => 'User updated.',
-                'data'    => $user->toArray(),
+                'message' => 'City updated.',
+                'data'    => $city->toArray(),
             ];
 
             if ($request->wantsJson()) {
@@ -161,11 +194,11 @@ class UsersController extends Controller
         if (request()->wantsJson()) {
 
             return response()->json([
-                'message' => 'User deleted.',
+                'message' => 'City deleted.',
                 'deleted' => $deleted,
             ]);
         }
 
-        return redirect()->back()->with('message', 'User deleted.');
+        return redirect()->back()->with('message', 'City deleted.');
     }
 }

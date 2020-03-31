@@ -10,6 +10,19 @@
            -box-sizing: border-box;
 }
 
+div.conteudo-info{
+    position: absolute;
+    width: calc(100% - 400px);
+    height: 100%;
+    text-align: center;
+}
+
+div.conteudo-info img{
+    width: auto;
+    height: 100%;
+    padding: 200px;
+}
+
 section#conteudo-view{
     position: absolute;
     right: 0;

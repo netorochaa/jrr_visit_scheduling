@@ -7,47 +7,80 @@ use Illuminate\Http\Request;
 use App\Http\Requests;
 use Prettus\Validator\Contracts\ValidatorInterface;
 use Prettus\Validator\Exceptions\ValidatorException;
-use App\Http\Requests\UserCreateRequest;
-use App\Http\Requests\UserUpdateRequest;
-use App\Repositories\UserRepository;
-use App\Validators\UserValidator;
+use App\Http\Requests\FreeDayCreateRequest;
+use App\Http\Requests\FreeDayUpdateRequest;
+use App\Repositories\FreeDayRepository;
+use App\Validators\FreeDayValidator;
 
-class UsersController extends Controller
-{    
+/**
+ * Class FreeDaysController.
+ *
+ * @package namespace App\Http\Controllers;
+ */
+class FreeDaysController extends Controller
+{
+    /**
+     * @var FreeDayRepository
+     */
     protected $repository;
+
+    /**
+     * @var FreeDayValidator
+     */
     protected $validator;
-    public function __construct(UserRepository $repository, UserValidator $validator)
+
+    /**
+     * FreeDaysController constructor.
+     *
+     * @param FreeDayRepository $repository
+     * @param FreeDayValidator $validator
+     */
+    public function __construct(FreeDayRepository $repository, FreeDayValidator $validator)
     {
         $this->repository = $repository;
         $this->validator  = $validator;
     }
 
+    /**
+     * Display a listing of the resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
     public function index()
     {
         $this->repository->pushCriteria(app('Prettus\Repository\Criteria\RequestCriteria'));
-        $users = $this->repository->all();
+        $freeDays = $this->repository->all();
 
         if (request()->wantsJson()) {
 
             return response()->json([
-                'data' => $users,
+                'data' => $freeDays,
             ]);
         }
 
-        return view('users.index', compact('users'));
+        return view('freeDays.index', compact('freeDays'));
     }
 
-    public function store(UserCreateRequest $request)
+    /**
+     * Store a newly created resource in storage.
+     *
+     * @param  FreeDayCreateRequest $request
+     *
+     * @return \Illuminate\Http\Response
+     *
+     * @throws \Prettus\Validator\Exceptions\ValidatorException
+     */
+    public function store(FreeDayCreateRequest $request)
     {
         try {
 
             $this->validator->with($request->all())->passesOrFail(ValidatorInterface::RULE_CREATE);
 
-            $user = $this->repository->create($request->all());
+            $freeDay = $this->repository->create($request->all());
 
             $response = [
-                'message' => 'User created.',
-                'data'    => $user->toArray(),
+                'message' => 'FreeDay created.',
+                'data'    => $freeDay->toArray(),
             ];
 
             if ($request->wantsJson()) {
@@ -77,16 +110,16 @@ class UsersController extends Controller
      */
     public function show($id)
     {
-        $user = $this->repository->find($id);
+        $freeDay = $this->repository->find($id);
 
         if (request()->wantsJson()) {
 
             return response()->json([
-                'data' => $user,
+                'data' => $freeDay,
             ]);
         }
 
-        return view('users.show', compact('user'));
+        return view('freeDays.show', compact('freeDay'));
     }
 
     /**
@@ -98,32 +131,32 @@ class UsersController extends Controller
      */
     public function edit($id)
     {
-        $user = $this->repository->find($id);
+        $freeDay = $this->repository->find($id);
 
-        return view('users.edit', compact('user'));
+        return view('freeDays.edit', compact('freeDay'));
     }
 
     /**
      * Update the specified resource in storage.
      *
-     * @param  UserUpdateRequest $request
+     * @param  FreeDayUpdateRequest $request
      * @param  string            $id
      *
      * @return Response
      *
      * @throws \Prettus\Validator\Exceptions\ValidatorException
      */
-    public function update(UserUpdateRequest $request, $id)
+    public function update(FreeDayUpdateRequest $request, $id)
     {
         try {
 
             $this->validator->with($request->all())->passesOrFail(ValidatorInterface::RULE_UPDATE);
 
-            $user = $this->repository->update($request->all(), $id);
+            $freeDay = $this->repository->update($request->all(), $id);
 
             $response = [
-                'message' => 'User updated.',
-                'data'    => $user->toArray(),
+                'message' => 'FreeDay updated.',
+                'data'    => $freeDay->toArray(),
             ];
 
             if ($request->wantsJson()) {
@@ -161,11 +194,11 @@ class UsersController extends Controller
         if (request()->wantsJson()) {
 
             return response()->json([
-                'message' => 'User deleted.',
+                'message' => 'FreeDay deleted.',
                 'deleted' => $deleted,
             ]);
         }
 
-        return redirect()->back()->with('message', 'User deleted.');
+        return redirect()->back()->with('message', 'FreeDay deleted.');
     }
 }

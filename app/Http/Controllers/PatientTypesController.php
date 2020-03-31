@@ -7,47 +7,80 @@ use Illuminate\Http\Request;
 use App\Http\Requests;
 use Prettus\Validator\Contracts\ValidatorInterface;
 use Prettus\Validator\Exceptions\ValidatorException;
-use App\Http\Requests\UserCreateRequest;
-use App\Http\Requests\UserUpdateRequest;
-use App\Repositories\UserRepository;
-use App\Validators\UserValidator;
+use App\Http\Requests\PatientTypeCreateRequest;
+use App\Http\Requests\PatientTypeUpdateRequest;
+use App\Repositories\PatientTypeRepository;
+use App\Validators\PatientTypeValidator;
 
-class UsersController extends Controller
-{    
+/**
+ * Class PatientTypesController.
+ *
+ * @package namespace App\Http\Controllers;
+ */
+class PatientTypesController extends Controller
+{
+    /**
+     * @var PatientTypeRepository
+     */
     protected $repository;
+
+    /**
+     * @var PatientTypeValidator
+     */
     protected $validator;
-    public function __construct(UserRepository $repository, UserValidator $validator)
+
+    /**
+     * PatientTypesController constructor.
+     *
+     * @param PatientTypeRepository $repository
+     * @param PatientTypeValidator $validator
+     */
+    public function __construct(PatientTypeRepository $repository, PatientTypeValidator $validator)
     {
         $this->repository = $repository;
         $this->validator  = $validator;
     }
 
+    /**
+     * Display a listing of the resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
     public function index()
     {
         $this->repository->pushCriteria(app('Prettus\Repository\Criteria\RequestCriteria'));
-        $users = $this->repository->all();
+        $patientTypes = $this->repository->all();
 
         if (request()->wantsJson()) {
 
             return response()->json([
-                'data' => $users,
+                'data' => $patientTypes,
             ]);
         }
 
-        return view('users.index', compact('users'));
+        return view('patientTypes.index', compact('patientTypes'));
     }
 
-    public function store(UserCreateRequest $request)
+    /**
+     * Store a newly created resource in storage.
+     *
+     * @param  PatientTypeCreateRequest $request
+     *
+     * @return \Illuminate\Http\Response
+     *
+     * @throws \Prettus\Validator\Exceptions\ValidatorException
+     */
+    public function store(PatientTypeCreateRequest $request)
     {
         try {
 
             $this->validator->with($request->all())->passesOrFail(ValidatorInterface::RULE_CREATE);
 
-            $user = $this->repository->create($request->all());
+            $patientType = $this->repository->create($request->all());
 
             $response = [
-                'message' => 'User created.',
-                'data'    => $user->toArray(),
+                'message' => 'PatientType created.',
+                'data'    => $patientType->toArray(),
             ];
 
             if ($request->wantsJson()) {
@@ -77,16 +110,16 @@ class UsersController extends Controller
      */
     public function show($id)
     {
-        $user = $this->repository->find($id);
+        $patientType = $this->repository->find($id);
 
         if (request()->wantsJson()) {
 
             return response()->json([
-                'data' => $user,
+                'data' => $patientType,
             ]);
         }
 
-        return view('users.show', compact('user'));
+        return view('patientTypes.show', compact('patientType'));
     }
 
     /**
@@ -98,32 +131,32 @@ class UsersController extends Controller
      */
     public function edit($id)
     {
-        $user = $this->repository->find($id);
+        $patientType = $this->repository->find($id);
 
-        return view('users.edit', compact('user'));
+        return view('patientTypes.edit', compact('patientType'));
     }
 
     /**
      * Update the specified resource in storage.
      *
-     * @param  UserUpdateRequest $request
+     * @param  PatientTypeUpdateRequest $request
      * @param  string            $id
      *
      * @return Response
      *
      * @throws \Prettus\Validator\Exceptions\ValidatorException
      */
-    public function update(UserUpdateRequest $request, $id)
+    public function update(PatientTypeUpdateRequest $request, $id)
     {
         try {
 
             $this->validator->with($request->all())->passesOrFail(ValidatorInterface::RULE_UPDATE);
 
-            $user = $this->repository->update($request->all(), $id);
+            $patientType = $this->repository->update($request->all(), $id);
 
             $response = [
-                'message' => 'User updated.',
-                'data'    => $user->toArray(),
+                'message' => 'PatientType updated.',
+                'data'    => $patientType->toArray(),
             ];
 
             if ($request->wantsJson()) {
@@ -161,11 +194,11 @@ class UsersController extends Controller
         if (request()->wantsJson()) {
 
             return response()->json([
-                'message' => 'User deleted.',
+                'message' => 'PatientType deleted.',
                 'deleted' => $deleted,
             ]);
         }
 
-        return redirect()->back()->with('message', 'User deleted.');
+        return redirect()->back()->with('message', 'PatientType deleted.');
     }
 }

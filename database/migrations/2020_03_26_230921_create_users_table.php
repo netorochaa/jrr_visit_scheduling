@@ -19,17 +19,16 @@ class CreateUsersTable extends Migration
 			$table->increments('id');
 			
 			//Auth
-			$table->string('login', 50)->unique();
+			$table->string('email', 50)->unique();
 			$table->string('password', 16);
 
 			//Information
 			$table->string('name', 50);
-			$table->string('email', 50)->nullable();
 			$table->int('type', 1)->default('1');
 			$table->int('active', 1)->default('1');
-			$table->unsignedInteger('collectors_id')->nullable();
 
 			//FK
+			$table->unsignedInteger('collectors_id')->nullable();
 			$table->foreign('collectors_id')->references('id')->on('collectors');
 
 			$table->timestamps();
