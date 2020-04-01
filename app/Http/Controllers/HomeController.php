@@ -20,7 +20,7 @@ class HomeController extends Controller
 
     public function index()
     {
-        return "ok";
+        return view('home');
     }
 
     public function doinglogin(Request $request)

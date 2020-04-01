@@ -4,7 +4,7 @@ namespace App\Repositories;
 
 use Prettus\Repository\Eloquent\BaseRepository;
 use Prettus\Repository\Criteria\RequestCriteria;
-use App\Repositories\Cancellation-typeRepository;
+use App\Repositories\CancellationTypeRepository;
 use App\Entities\CancellationType;
 use App\Validators\CancellationTypeValidator;
 

@@ -4,7 +4,7 @@ namespace App\Repositories;
 
 use Prettus\Repository\Eloquent\BaseRepository;
 use Prettus\Repository\Criteria\RequestCriteria;
-use App\Repositories\Free-dayRepository;
+use App\Repositories\FreeDayRepository;
 use App\Entities\FreeDay;
 use App\Validators\FreeDayValidator;
 
