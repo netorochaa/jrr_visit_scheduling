@@ -7,4 +7,5 @@
     <script src="{{ asset('js/dist/adminlte.min.js') }}"></script>
     <!-- AdminLTE for demo purposes -->
     <script src="{{ asset('js/dist/demo.js') }}"></script>
+    @yield('footer-distinct')
 </html>

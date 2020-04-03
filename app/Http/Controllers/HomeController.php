@@ -20,7 +20,10 @@ class HomeController extends Controller
 
     public function index()
     {
-        return view('home');
+        return view('home', [
+            'namepage' => 'Home',
+            'threeview' => null
+        ]);
     }
 
     public function doinglogin(Request $request)
