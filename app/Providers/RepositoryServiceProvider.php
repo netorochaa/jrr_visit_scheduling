@@ -30,6 +30,8 @@ class RepositoryServiceProvider extends ServiceProvider
         $this->app->bind(\App\Repositories\CancellationTypeRepository::class, \App\Repositories\CancellationTypeRepositoryEloquent::class);
         $this->app->bind(\App\Repositories\FreeDayRepository::class, \App\Repositories\FreeDayRepositoryEloquent::class);
         $this->app->bind(\App\Repositories\NeighborhoodRepository::class, \App\Repositories\NeighborhoodRepositoryEloquent::class);
+        $this->app->bind(\App\Repositories\CollectRepository::class, \App\Repositories\CollectRepositoryEloquent::class);
+        $this->app->bind(\App\Repositories\PersonRepository::class, \App\Repositories\PersonRepositoryEloquent::class);
         //:end-bindings:
     }
 }

@@ -18,4 +18,10 @@ class Collector extends Model implements Transformable
     protected $table = 'collectors';
     protected $fillable = ['name', 'initial-time-collect', 'final-time-collect', 'collection-interval', 'starting-address', 'active'];
 
+    public function neighborhoods()
+    {
+        return $this->belongsToMany(Neighborhood::class);
+    }
+
+
 }

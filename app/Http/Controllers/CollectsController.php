@@ -7,55 +7,80 @@ use Illuminate\Http\Request;
 use App\Http\Requests;
 use Prettus\Validator\Contracts\ValidatorInterface;
 use Prettus\Validator\Exceptions\ValidatorException;
-use App\Http\Requests\UserCreateRequest;
-use App\Http\Requests\UserUpdateRequest;
-use App\Repositories\UserRepository;
-use App\Repositories\CollectorRepository;
-use App\Validators\UserValidator;
+use App\Http\Requests\CollectCreateRequest;
+use App\Http\Requests\CollectUpdateRequest;
+use App\Repositories\CollectRepository;
+use App\Validators\CollectValidator;
 
+/**
+ * Class CollectsController.
+ *
+ * @package namespace App\Http\Controllers;
+ */
+class CollectsController extends Controller
+{
+    /**
+     * @var CollectRepository
+     */
+    protected $repository;
 
-class UsersController extends Controller
-{    
-    protected $repository, $collectorRepository;
+    /**
+     * @var CollectValidator
+     */
     protected $validator;
-    public function __construct(UserRepository $repository, UserValidator $validator, CollectorRepository $collectorRepository)
+
+    /**
+     * CollectsController constructor.
+     *
+     * @param CollectRepository $repository
+     * @param CollectValidator $validator
+     */
+    public function __construct(CollectRepository $repository, CollectValidator $validator)
     {
         $this->repository = $repository;
         $this->validator  = $validator;
-        $this->collectorRepository = $collectorRepository;
     }
 
+    /**
+     * Display a listing of the resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
     public function index()
     {
-        $typeUsers_list = $this->repository->typeUser_list();
-        $collector_list = $this->collectorRepository->pluck('name', 'id');
+        $this->repository->pushCriteria(app('Prettus\Repository\Criteria\RequestCriteria'));
+        $collects = $this->repository->all();
 
-        // dd($collector_list);
+        if (request()->wantsJson()) {
 
-        return view('user.index', [
-            'namepage'      => 'Usuários',
-            'threeview'     => 'Cadastros',
-            'titlespage'    => ['Cadastro de usuários'],
-            'titlecard'     => 'Lista de usuários cadastrados',
-            'titlemodal'    => 'Cadastrar usuário',
-            
-            //Lists for select
-            'typeUsers_list' => $typeUsers_list,
-            'collector_list' => $collector_list
-        ]);
+            return response()->json([
+                'data' => $collects,
+            ]);
+        }
+
+        return view('collects.index', compact('collects'));
     }
 
-    public function store(UserCreateRequest $request)
+    /**
+     * Store a newly created resource in storage.
+     *
+     * @param  CollectCreateRequest $request
+     *
+     * @return \Illuminate\Http\Response
+     *
+     * @throws \Prettus\Validator\Exceptions\ValidatorException
+     */
+    public function store(CollectCreateRequest $request)
     {
         try {
 
             $this->validator->with($request->all())->passesOrFail(ValidatorInterface::RULE_CREATE);
 
-            $user = $this->repository->create($request->all());
+            $collect = $this->repository->create($request->all());
 
             $response = [
-                'message' => 'Usuário criado.',
-                'data'    => $user->toArray(),
+                'message' => 'Collect created.',
+                'data'    => $collect->toArray(),
             ];
 
             if ($request->wantsJson()) {
@@ -85,16 +110,16 @@ class UsersController extends Controller
      */
     public function show($id)
     {
-        $user = $this->repository->find($id);
+        $collect = $this->repository->find($id);
 
         if (request()->wantsJson()) {
 
             return response()->json([
-                'data' => $user,
+                'data' => $collect,
             ]);
         }
 
-        return view('users.show', compact('user'));
+        return view('collects.show', compact('collect'));
     }
 
     /**
@@ -106,32 +131,32 @@ class UsersController extends Controller
      */
     public function edit($id)
     {
-        $user = $this->repository->find($id);
+        $collect = $this->repository->find($id);
 
-        return view('users.edit', compact('user'));
+        return view('collects.edit', compact('collect'));
     }
 
     /**
      * Update the specified resource in storage.
      *
-     * @param  UserUpdateRequest $request
+     * @param  CollectUpdateRequest $request
      * @param  string            $id
      *
      * @return Response
      *
      * @throws \Prettus\Validator\Exceptions\ValidatorException
      */
-    public function update(UserUpdateRequest $request, $id)
+    public function update(CollectUpdateRequest $request, $id)
     {
         try {
 
             $this->validator->with($request->all())->passesOrFail(ValidatorInterface::RULE_UPDATE);
 
-            $user = $this->repository->update($request->all(), $id);
+            $collect = $this->repository->update($request->all(), $id);
 
             $response = [
-                'message' => 'User updated.',
-                'data'    => $user->toArray(),
+                'message' => 'Collect updated.',
+                'data'    => $collect->toArray(),
             ];
 
             if ($request->wantsJson()) {
@@ -169,11 +194,11 @@ class UsersController extends Controller
         if (request()->wantsJson()) {
 
             return response()->json([
-                'message' => 'User deleted.',
+                'message' => 'Collect deleted.',
                 'deleted' => $deleted,
             ]);
         }
 
-        return redirect()->back()->with('message', 'User deleted.');
+        return redirect()->back()->with('message', 'Collect deleted.');
     }
 }

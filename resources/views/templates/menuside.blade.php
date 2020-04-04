@@ -25,8 +25,14 @@
         <nav class="mt-2">
             <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
                 <li class="nav-item">
-                    <a href="#" class="nav-link @if($namepage == 'Atividade do dia') active @endif">
+                    <a href="#" class="nav-link @if($namepage == 'Home') active @endif">
                         <i class="nav-icon fas fa-th"></i>
+                        <p>Home</p>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="#" class="nav-link @if($namepage == 'Atividade do dia') active @endif">
+                        <i class="nav-icon fas fa-tasks"></i>
                         <p>Iniciar atividade</p>
                     </a>
                 </li>

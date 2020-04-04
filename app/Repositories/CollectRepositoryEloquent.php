@@ -4,16 +4,16 @@ namespace App\Repositories;
 
 use Prettus\Repository\Eloquent\BaseRepository;
 use Prettus\Repository\Criteria\RequestCriteria;
-use App\Repositories\UserRepository;
-use App\Entities\User;
-use App\Validators\UserValidator;
+use App\Repositories\CollectRepository;
+use App\Entities\Collect;
+use App\Validators\CollectValidator;
 
 /**
- * Class UserRepositoryEloquent.
+ * Class CollectRepositoryEloquent.
  *
  * @package namespace App\Repositories;
  */
-class UserRepositoryEloquent extends BaseRepository implements UserRepository
+class CollectRepositoryEloquent extends BaseRepository implements CollectRepository
 {
     /**
      * Specify Model class name
@@ -22,7 +22,7 @@ class UserRepositoryEloquent extends BaseRepository implements UserRepository
      */
     public function model()
     {
-        return User::class;
+        return Collect::class;
     }
 
     /**
@@ -33,8 +33,9 @@ class UserRepositoryEloquent extends BaseRepository implements UserRepository
     public function validator()
     {
 
-        return UserValidator::class;
+        return CollectValidator::class;
     }
+
 
     /**
      * Boot up the repository, pushing criteria
@@ -42,19 +43,6 @@ class UserRepositoryEloquent extends BaseRepository implements UserRepository
     public function boot()
     {
         $this->pushCriteria(app(RequestCriteria::class));
-    }
-
-    public function typeUser_list()
-    {
-      $list = [
-        '1' => 'RECEPÇÃO',
-        '2' => 'COLETADOR',
-        '3' => 'GERÊNCIA',
-        '4' => 'DIRETORIA',
-        '99' => 'ADMIN',
-      ];
-
-      return $list;
     }
     
 }

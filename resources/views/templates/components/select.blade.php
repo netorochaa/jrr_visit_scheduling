@@ -1,5 +1,5 @@
 @if(!empty($col))
-	<div class="col-xs-{{ $col }} form-group">
+	<div class="col-{{ $col }} form-group">
 @else
 	<div class="form-group">
 @endif

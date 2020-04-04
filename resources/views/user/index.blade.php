@@ -8,7 +8,12 @@
 @endsection
 
 @section('content')
-    
+  {{-- @if (\Session::has('message'))
+      <h1>deu certo!</h1>
+  @endif --}}
+  @include('templates.content.header')
+  @include('templates.content.content1col', ['contentbody' => 'user.list'])
+  @include('templates.content.modallarge', ['titlemodal' => $titlemodal , 'contentmodal' => 'user.register'])
 @endsection
 
 @section('footer-distinct')

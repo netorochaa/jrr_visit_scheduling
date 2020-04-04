@@ -7,11 +7,11 @@ use Prettus\Repository\Contracts\Transformable;
 use Prettus\Repository\Traits\TransformableTrait;
 
 /**
- * Class Neighborhood.
+ * Class Person.
  *
  * @package namespace App\Entities;
  */
-class Neighborhood extends Model implements Transformable
+class Person extends Model implements Transformable
 {
     use TransformableTrait;
 
@@ -20,10 +20,6 @@ class Neighborhood extends Model implements Transformable
      *
      * @var array
      */
-    protected $fillable = ['name', 'displacement-rate', 'region', 'active'];
+    protected $fillable = [];
 
-    public function collectors()
-    {
-        return $this->belongsToMany(Collector::class);
-    }
 }

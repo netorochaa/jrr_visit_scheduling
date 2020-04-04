@@ -1,4 +1,4 @@
-<div class="col-xs-{{ $col ?? null }} form-group {{ $bootstrapTimepicker ?? null}}">
+<div class="col-{{ $col ?? null }} {{ $bootstrapTimepicker ?? null}}">
 	<label>{{ $label ?? $input ?? "ERRO" }}</label>
 	@if(!empty($icon))
 		<div class="input-group">

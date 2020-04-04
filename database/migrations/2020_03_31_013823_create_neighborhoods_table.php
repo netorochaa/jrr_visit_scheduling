@@ -19,8 +19,8 @@ class CreateNeighborhoodsTable extends Migration
             $table->increments('id');
 			$table->string('name', 45);
 			$table->string('displacement-rate', 5)->default('0,00');
-			$table->integer('region', 1);
-			$table->integer('active', 1)->default('1');
+			$table->char('region', 1);
+			$table->char('active', 1)->default('1');
 
 			//FK
 			$table->unsignedInteger('city_id');
@@ -38,6 +38,7 @@ class CreateNeighborhoodsTable extends Migration
 	 */
 	public function down()
 	{
+		Schema::disableForeignKeyConstraints();
 		Schema::drop('neighborhoods');
 	}
 }
