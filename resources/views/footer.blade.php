@@ -1,6 +1,6 @@
     </body>
     <!-- jQuery -->
-    <script src="{{ asset('js/jquery.min.js') }}"></script>
+    <script src="{{ asset('js/jquery/jquery.min.js') }}"></script>
     <!-- Bootstrap 4 -->
     <script src="{{ asset('js/bootstrap/bootstrap.bundle.min.js') }}"></script>
     <!-- AdminLTE App -->

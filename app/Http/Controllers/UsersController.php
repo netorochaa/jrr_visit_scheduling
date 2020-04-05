@@ -27,13 +27,12 @@ class UsersController extends Controller
 
     public function index()
     {
+        $users_list  = $this->repository->all();
         $typeUsers_list = $this->repository->typeUser_list();
         $collector_list = $this->collectorRepository->pluck('name', 'id');
 
-        // dd($collector_list);
-
         return view('user.index', [
-            'namepage'      => 'Usuários',
+            'namepage'      => 'Usuário',
             'threeview'     => 'Cadastros',
             'titlespage'    => ['Cadastro de usuários'],
             'titlecard'     => 'Lista de usuários cadastrados',
@@ -41,7 +40,12 @@ class UsersController extends Controller
             
             //Lists for select
             'typeUsers_list' => $typeUsers_list,
-            'collector_list' => $collector_list
+            'collector_list' => $collector_list,
+            
+            //List of entitie
+            'table' => $this->repository->getTable(),
+            'thead_for_datatable' => ['E-mail', 'Nome', 'Tipo', 'Ativo', 'Criado', 'Última atualização'],
+            'users_list' => $users_list
         ]);
     }
 

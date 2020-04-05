@@ -21,7 +21,7 @@ class CreateCollectorsTable extends Migration
 
 			$table->char('initial-time-collect', 5);
 			$table->char('final-time-collect', 5);
-			$table->char('collection-interval', 3);
+			$table->string('collection-interval', 5);
 			$table->string('starting-address', 140)->nullable();
 			$table->char('active', 1)->default('1');
 			

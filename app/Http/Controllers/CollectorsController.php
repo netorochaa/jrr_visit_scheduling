@@ -19,46 +19,32 @@ use App\Validators\CollectorValidator;
  */
 class CollectorsController extends Controller
 {
-    /**
-     * @var CollectorRepository
-     */
-    protected $repository;
 
-    /**
-     * @var CollectorValidator
-     */
+    protected $repository;
     protected $validator;
 
-    /**
-     * CollectorsController constructor.
-     *
-     * @param CollectorRepository $repository
-     * @param CollectorValidator $validator
-     */
     public function __construct(CollectorRepository $repository, CollectorValidator $validator)
     {
         $this->repository = $repository;
         $this->validator  = $validator;
     }
 
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
     public function index()
     {
-        $this->repository->pushCriteria(app('Prettus\Repository\Criteria\RequestCriteria'));
-        $collectors = $this->repository->all();
+        $collectors_list  = $this->repository->all();
 
-        if (request()->wantsJson()) {
-
-            return response()->json([
-                'data' => $collectors,
-            ]);
-        }
-
-        return view('collectors.index', compact('collectors'));
+        return view('collector.index', [
+            'namepage'      => 'Coletador',
+            'threeview'     => 'Cadastros',
+            'titlespage'    => ['Cadastro de coletadores'],
+            'titlecard'     => 'Lista de coletadores cadastrados',
+            'titlemodal'    => 'Cadastrar coletador',
+            
+            //List of entitie
+            'table' => $this->repository->getTable(),
+            'thead_for_datatable' => ['Nome', 'Hora inicial', 'Hora final', 'Intervalo entre coletas', 'Endereço inicial', 'Criado', 'Última atualização'],
+            'collectors_list' => $collectors_list
+        ]);
     }
 
     /**
@@ -79,7 +65,7 @@ class CollectorsController extends Controller
             $collector = $this->repository->create($request->all());
 
             $response = [
-                'message' => 'Collector created.',
+                'message' => 'Coletador Criado.',
                 'data'    => $collector->toArray(),
             ];
 

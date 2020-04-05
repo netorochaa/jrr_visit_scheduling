@@ -9,10 +9,10 @@
             </div>
             <div class="row">
                 <div class="col-sm-6">
-                    @include('templates.components.select', ['label' => 'Tipo',    'col' => '12', 'select' => 'type',           'data' => $typeUsers_list, 'attributes' => ['require' => 'true', 'class' => 'form-control']])
+                    @include('templates.components.select', ['label' => 'Tipo', 'col' => '12', 'select' => 'type', 'data' => $typeUsers_list, 'attributes' => ['require' => 'true', 'class' => 'form-control']])
                 </div>    
                 <div class="col-sm-6">
-                    @include('templates.components.select', ['label' => 'Coletor', 'col' => '12', 'select' => 'collector_id',   'data' => $collector_list, 'attributes' => ['class' => 'form-control select2', 'style' => 'width: 100%']])
+                    @include('templates.components.select', ['label' => 'Coletor', 'col' => '12', 'select' => 'collector_id', 'data' => $collector_list, 'attributes' => ['class' => 'form-control select2', 'style' => 'width: 100%']])
                 </div>
             </div>
             <div class="row">

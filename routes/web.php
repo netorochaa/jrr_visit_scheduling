@@ -12,3 +12,7 @@ Route::get('/home', ['as' => 'home', 'uses' => 'HomeController@index']);
 // Users routes
 Route::get('/user', ['as' => 'user.index', 'uses' => 'UsersController@index']);
 Route::post('/user', ['as' => 'user.store', 'uses' => 'UsersController@store']);
+
+// Collector routes
+Route::get('/collector', ['as' => 'collector.index', 'uses' => 'CollectorsController@index']);
+Route::post('/collector', ['as' => 'collector.store', 'uses' => 'CollectorsController@store']);
