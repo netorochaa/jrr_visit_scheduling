@@ -14,6 +14,7 @@
             <td>{{ $user->name }}</td>
             <td>{{ $user->type }}</td>
             <td>{{ $user->active }}</td>
+            {{-- <td>{{ $user->Collector->name }}</td> --}}
             <td>{{ $user->created_at }}</td>
             <td>{{ $user->updated_at }}</td>
             <td>
@@ -22,7 +23,7 @@
                   <button type="button" onclick="#" class="btn btn-danger"><i class='fas fa-trash'></i></button>
                 </div>
               </td>
-        </tr>    
+        </tr>
         @endforeach
     </tbody>
 </table>

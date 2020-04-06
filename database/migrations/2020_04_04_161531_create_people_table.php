@@ -21,7 +21,7 @@ class CreatePeopleTable extends Migration
 			$table->string('fone', 45);
 			$table->string('email', 45)->nullable();
 			$table->string('other-fone', 45)->nullable();
-			$table->char('type-responsible', 1)->nullable();
+			$table->char('type-responsible', 3)->nullable();
 			$table->string('name-responsible', 45)->nullable();
 			$table->string('fone-responsible', 45);
 			$table->string('CPF', 45);
@@ -30,7 +30,7 @@ class CreatePeopleTable extends Migration
 			$table->string('covenant', 45);
 			$table->string('exams', 254);
 			$table->string('medication', 254)->nullable();
-			
+
 			//FK
 			$table->unsignedInteger('collect_id');
 			$table->foreign('collect_id')->references('id')->on('collects');

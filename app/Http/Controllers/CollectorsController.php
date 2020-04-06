@@ -10,6 +10,7 @@ use Prettus\Validator\Exceptions\ValidatorException;
 use App\Http\Requests\CollectorCreateRequest;
 use App\Http\Requests\CollectorUpdateRequest;
 use App\Repositories\CollectorRepository;
+use App\Repositories\UserRepository;
 use App\Validators\CollectorValidator;
 
 /**
@@ -20,13 +21,14 @@ use App\Validators\CollectorValidator;
 class CollectorsController extends Controller
 {
 
-    protected $repository;
+    protected $repository, $userRepository;
     protected $validator;
 
-    public function __construct(CollectorRepository $repository, CollectorValidator $validator)
+    public function __construct(CollectorRepository $repository, CollectorValidator $validator, UserRepository $userRepository)
     {
         $this->repository = $repository;
         $this->validator  = $validator;
+        $this->userRepository = $userRepository;
     }
 
     public function index()
@@ -39,10 +41,10 @@ class CollectorsController extends Controller
             'titlespage'    => ['Cadastro de coletadores'],
             'titlecard'     => 'Lista de coletadores cadastrados',
             'titlemodal'    => 'Cadastrar coletador',
-            
+
             //List of entitie
             'table' => $this->repository->getTable(),
-            'thead_for_datatable' => ['Nome', 'Hora inicial', 'Hora final', 'Intervalo entre coletas', 'Endereço inicial', 'Criado', 'Última atualização'],
+            'thead_for_datatable' => ['Nome', 'Usuário', 'Hora inicial', 'Hora final', 'Intervalo entre coletas', 'Endereço inicial', 'Ativo', 'Criado', 'Última atualização'],
             'collectors_list' => $collectors_list
         ]);
     }

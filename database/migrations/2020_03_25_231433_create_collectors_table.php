@@ -19,12 +19,12 @@ class CreateCollectorsTable extends Migration
 			$table->increments('id');
 			$table->string('name', 50);
 
-			$table->char('initial-time-collect', 5);
-			$table->char('final-time-collect', 5);
-			$table->string('collection-interval', 5);
-			$table->string('starting-address', 140)->nullable();
-			$table->char('active', 1)->default('1');
-			
+			$table->char('initialTimeCollect', 5);
+			$table->char('finalTimeCollect', 5);
+			$table->string('collectionInterval', 5);
+			$table->string('startingAddress', 140)->nullable();
+			$table->char('active', 3)->default('on');
+
 			$table->timestamps();
 			$table->softDeletes();
 		});

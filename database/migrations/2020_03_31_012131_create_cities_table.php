@@ -19,7 +19,7 @@ class CreateCitiesTable extends Migration
             $table->increments('id');
 			$table->string('name', 45);
 			$table->string('UF', 2);
-			$table->char('active', 1)->default('1');
+			$table->char('active', 3)->default('on');
 
 			$table->timestamps();
 			$table->softDeletes();

@@ -38,19 +38,19 @@
             "autoWidth": false,
             "responsive": true,
           });
-          
+
           //Timepicker
           $('#startTime').datetimepicker({
             format: 'HH:mm',
             pickDate: false,
             pickSeconds: false,
-            pick12HourFormat: false            
+            pick12HourFormat: false
           });
           $('#endTime').datetimepicker({
             format: 'HH:mm',
             pickDate: false,
             pickSeconds: false,
-            pick12HourFormat: false            
+            pick12HourFormat: false
           });
 
           //Datemask dd/mm/yyyy
@@ -65,34 +65,35 @@
           var description = document.getElementById('descriptionHour');
 
           if(interval.value < 10) interval.value = 10;
+          else if(interval.value > 120) interval.value = 120;
 
-          if(interval.value >= 10)
-          {
-            if(initial.value != "" && end.value != "")
-            {
-              var hourIni = moment(initial.value, 'HH:mm');
-              var hourEnd = moment(end.value, 'HH:mm');
+        //   if(interval.value >= 10)
+        //   {
+        //     if(initial.value != "" && end.value != "")
+        //     {
+        //       var hourIni = moment(initial.value, 'HH:mm');
+        //       var hourEnd = moment(end.value, 'HH:mm');
 
-              console.log(hourIni.hours());
-              console.log(hourEnd.hours());
+        //       console.log(hourIni.hours() + ":" + hourIni.minutes());
+        //       console.log(hourEnd.hours() + ":" + hourEnd.minutes());
 
-              // if(hourIni.isValid() && hourEnd.isValid()){
-                while (hourIni.isBefore(hourEnd)) 
-                {
-                  hourIni.add(interval.value, 'minutes');
-                  console.log(hourIni.inspect() + "\n");
-                }
-              // }else{
-              //   console.log("Campos não válidos");
-              // }
-            }else{
-              console.log("Início e fim ainda em brancos");
-            }
-          }else{
-            console.log("Número não é inteiro ou < 10");
-          }
+        //       // if(hourIni.isValid() && hourEnd.isValid()){
+        //         while (hourIni.isBefore(hourEnd))
+        //         {
+        //           hourIni.add(interval.value, 'minutes');
+        //           console.log(hourIni.inspect() + "\n");
+        //         }
+        //       // }else{
+        //       //   console.log("Campos não válidos");
+        //       // }
+        //     }else{
+        //       console.log("Início e fim ainda em brancos");
+        //     }
+        //   }else{
+        //     console.log("Número não é inteiro ou < 10");
+        //   }
 
         }
-        
+
       </script>
 @endsection
