@@ -54,9 +54,45 @@
           });
 
           //Datemask dd/mm/yyyy
-          $('[data-mask]').inputmask()
+          $('[data-mask]').inputmask('', {'placeholder': ''})
         });
-        
+
+        function montaHorarios()
+        {
+          var interval = document.getElementById('interval');
+          var initial = document.getElementById('inputStartTime');
+          var end = document.getElementById('inputEndTime');
+          var description = document.getElementById('descriptionHour');
+
+          if(interval.value < 10) interval.value = 10;
+
+          if(interval.value >= 10)
+          {
+            if(initial.value != "" && end.value != "")
+            {
+              var hourIni = moment(initial.value, 'HH:mm');
+              var hourEnd = moment(end.value, 'HH:mm');
+
+              console.log(hourIni.hours());
+              console.log(hourEnd.hours());
+
+              // if(hourIni.isValid() && hourEnd.isValid()){
+                while (hourIni.isBefore(hourEnd)) 
+                {
+                  hourIni.add(interval.value, 'minutes');
+                  console.log(hourIni.inspect() + "\n");
+                }
+              // }else{
+              //   console.log("Campos não válidos");
+              // }
+            }else{
+              console.log("Início e fim ainda em brancos");
+            }
+          }else{
+            console.log("Número não é inteiro ou < 10");
+          }
+
+        }
         
       </script>
 @endsection
