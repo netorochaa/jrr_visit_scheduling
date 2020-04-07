@@ -44,20 +44,11 @@ class CollectorsController extends Controller
 
             //List of entitie
             'table' => $this->repository->getTable(),
-            'thead_for_datatable' => ['Nome', 'Usuário', 'Hora inicial', 'Hora final', 'Intervalo entre coletas', 'Endereço inicial', 'Ativo', 'Criado', 'Última atualização'],
+            'thead_for_datatable' => ['Nome', 'Hora inicial', 'Hora final', 'Intervalo entre coletas', 'Endereço inicial', 'Status', 'Criado', 'Última atualização'],
             'collectors_list' => $collectors_list
         ]);
     }
 
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  CollectorCreateRequest $request
-     *
-     * @return \Illuminate\Http\Response
-     *
-     * @throws \Prettus\Validator\Exceptions\ValidatorException
-     */
     public function store(CollectorCreateRequest $request)
     {
         try {
@@ -78,14 +69,17 @@ class CollectorsController extends Controller
 
             return redirect()->back()->with('message', $response['message']);
         } catch (ValidatorException $e) {
-            if ($request->wantsJson()) {
-                return response()->json([
-                    'error'   => true,
-                    'message' => $e->getMessageBag()
-                ]);
+            $response = [
+                'message' =>  $e->getMessageBag(),
+                'error'    => true
+            ];
+
+            if ($request->wantsJson()) 
+            {
+                return response()->json($response);
             }
 
-            return redirect()->back()->withErrors($e->getMessageBag())->withInput();
+            return redirect()->back()->with('message', $response['message']);
         }
     }
 
@@ -179,14 +173,16 @@ class CollectorsController extends Controller
     {
         $deleted = $this->repository->delete($id);
 
+        $response = [
+            'message' => 'Coletador deletado',
+            'deleted' => $deleted,
+        ];
+
         if (request()->wantsJson()) {
 
-            return response()->json([
-                'message' => 'Collector deleted.',
-                'deleted' => $deleted,
-            ]);
+            return response()->json($response);
         }
 
-        return redirect()->back()->with('message', 'Collector deleted.');
+        return redirect()->back()->with('message', $response['message']);
     }
 }

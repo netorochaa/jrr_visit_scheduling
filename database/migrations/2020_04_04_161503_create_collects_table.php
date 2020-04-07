@@ -19,19 +19,19 @@ class CreateCollectsTable extends Migration
 			$table->increments('id');
 			$table->string('date', 10);
 			$table->string('hour', 5);
-			$table->char('collect-type', 1)->default('1');
+			$table->char('collectType', 1)->default('1');
 			$table->char('status', 1)->default('1');
 			$table->char('payment', 1)->default('1');
-			$table->string('change-payment', 6)->default('0,00')->nullable();
+			$table->string('changePayment', 6)->default('0,00')->nullable();
 			$table->string('cep', 9)->nullable();
 			$table->string('address', 140);
-			$table->string('number-address', 14);
-			$table->string('complement-address', 45)->nullable();
-			$table->string('reference-address', 140);
-			$table->string('link-maps', 254)->nullable();
+			$table->string('numberAddress', 14);
+			$table->string('complementAddress', 45)->nullable();
+			$table->string('referenceAddress', 140);
+			$table->string('linkAaps', 254)->nullable();
 			$table->char('urgency', 1)->default('1');
 			$table->string('observation', 350)->nullable();
-			$table->string('unity-created', 45)->nullable();
+			$table->string('unityCreated', 45)->nullable();
 			$table->string('attachment', 45)->nullable();
 			
 			// FK

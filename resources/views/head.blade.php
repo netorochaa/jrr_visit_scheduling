@@ -7,6 +7,8 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <!-- Font Awesome -->
         <link rel="stylesheet" href="{{ asset('css/fontawesome-free/css/all.min.css') }}">
+        <!-- sweetalert2 -->
+        <link rel="stylesheet" href="{{ asset('css/sweetalert2-theme-bootstrap-4/bootstrap-4.min.css') }}">
         <!-- AdminLTE css -->
         <link rel="stylesheet" href="{{ asset('css/dist/adminlte.min.css') }}">
         <!-- Google Font: Source Sans Pro -->

@@ -23,5 +23,19 @@ class Collector extends Model implements Transformable
         return $this->belongsToMany(Neighborhood::class);
     }
 
+    public function getFormattedtActiveAttribute(){
+        switch ($this->attributes['active']) {
+            case "on":
+                return "ATIVO";
+                break;
+            case "off":
+                return "INATIVO";
+                break;
+            default:
+                return $this->attributes['active'];
+                break;
+        }
+    }
+
 
 }

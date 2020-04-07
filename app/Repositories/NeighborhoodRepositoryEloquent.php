@@ -44,5 +44,15 @@ class NeighborhoodRepositoryEloquent extends BaseRepository implements Neighborh
     {
         $this->pushCriteria(app(RequestCriteria::class));
     }
+
+    public function regions_list()
+    {
+      $list = [
+        '1' => 'Zona Norte',
+        '2' => 'Zona Sul'
+      ];
+
+      return $list;
+    }
     
 }

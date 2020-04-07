@@ -10,8 +10,16 @@
 
 @section('content')
   @include('templates.content.header')
-  @include('templates.content.content1col', ['contentbody' => 'user.list'])
-  @include('templates.content.modallarge', ['titlemodal' => $titlemodal , 'contentmodal' => 'user.register'])
+  @include('templates.content.content2col', [
+    'contentbody' => 'neighborhood.list', 
+    'contentbody2' => 'city.list',
+    ])
+  @include('templates.content.modallarge', [
+    'titlemodal'   => $titlemodal , 
+    'contentmodal' => 'neighborhood.register',
+    'titlemodal2' => $titlemodal2, 
+    'contentmodal2' => 'city.register'
+    ])
 @endsection
 
 @section('footer-distinct')
@@ -31,22 +39,17 @@
             "responsive": true,
           });
         });
+        $(function () {
+          $('#table-{{ $table2 }}').DataTable({
+            "paging": true,
+            "lengthChange": false,
+            "searching": false,
+            "ordering": true,
+            "info": true,
+            "autoWidth": false,
+            "responsive": true,
+          });
+        });
 
-        function activeCollector()
-        {
-            var collector = document.getElementById('selectCollector');
-            var type = document.getElementById('typeUser');
-
-            if(type.value == 2)
-            {
-                collector.style.display = 'block';
-                collector.disabled = false;
-            }
-            else
-            {
-                collector.style.display = 'none';
-                collector.disabled = true;
-            }
-        }
     </script>
 @endsection

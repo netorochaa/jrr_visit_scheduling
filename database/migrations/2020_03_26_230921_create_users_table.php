@@ -24,12 +24,12 @@ class CreateUsersTable extends Migration
 
 			//Information
 			$table->string('name', 50);
-			$table->char('type', 1)->default('1');
+			$table->string('type', 2)->default(1);
 			$table->char('active', 3)->default('on');
 
 			//FK
-			$table->unsignedInteger('collectors_id')->nullable();
-			$table->foreign('collectors_id')->references('id')->on('collectors');
+			$table->unsignedInteger('collector_id')->nullable();
+			$table->foreign('collector_id')->references('id')->on('collectors');
 
 			$table->timestamps();
 			$table->softDeletes();

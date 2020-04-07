@@ -12,64 +12,35 @@ use App\Http\Requests\CityUpdateRequest;
 use App\Repositories\CityRepository;
 use App\Validators\CityValidator;
 
-/**
- * Class CitiesController.
- *
- * @package namespace App\Http\Controllers;
- */
 class CitiesController extends Controller
 {
-    /**
-     * @var CityRepository
-     */
     protected $repository;
-
-    /**
-     * @var CityValidator
-     */
     protected $validator;
 
-    /**
-     * CitiesController constructor.
-     *
-     * @param CityRepository $repository
-     * @param CityValidator $validator
-     */
     public function __construct(CityRepository $repository, CityValidator $validator)
     {
         $this->repository = $repository;
         $this->validator  = $validator;
     }
 
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
     public function index()
     {
-        $this->repository->pushCriteria(app('Prettus\Repository\Criteria\RequestCriteria'));
-        $cities = $this->repository->all();
+        // $cities_list  = $this->repository->all();
 
-        if (request()->wantsJson()) {
+        // return view('city.index', [
+        //     'namepage'      => 'Cidade',
+        //     'threeview'     => 'Cadastros',
+        //     'titlespage'    => ['Cadastro de cidades'],
+        //     'titlecard'     => 'Lista de cidades cadastrados',
+        //     'titlemodal'    => 'Cadastrar cidade',
 
-            return response()->json([
-                'data' => $cities,
-            ]);
-        }
-
-        return view('cities.index', compact('cities'));
+        //     //List of entitie
+        //     'table' => $this->repository->getTable(),
+        //     'thead_for_datatable' => ['Nome da cidade', 'UF', 'Status', 'Bairros', 'Criado', 'Última atualização'],
+        //     'cities_list' => $cities_list
+        // ]);
     }
 
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  CityCreateRequest $request
-     *
-     * @return \Illuminate\Http\Response
-     *
-     * @throws \Prettus\Validator\Exceptions\ValidatorException
-     */
     public function store(CityCreateRequest $request)
     {
         try {
@@ -79,7 +50,7 @@ class CitiesController extends Controller
             $city = $this->repository->create($request->all());
 
             $response = [
-                'message' => 'City created.',
+                'message' => 'Cidade criada',
                 'data'    => $city->toArray(),
             ];
 
@@ -90,14 +61,17 @@ class CitiesController extends Controller
 
             return redirect()->back()->with('message', $response['message']);
         } catch (ValidatorException $e) {
-            if ($request->wantsJson()) {
-                return response()->json([
-                    'error'   => true,
-                    'message' => $e->getMessageBag()
-                ]);
+            $response = [
+                'message' =>  $e->getMessageBag(),
+                'error'    => true
+            ];
+
+            if ($request->wantsJson()) 
+            {
+                return response()->json($response);
             }
 
-            return redirect()->back()->withErrors($e->getMessageBag())->withInput();
+            return redirect()->back()->with('message', $response['message']);
         }
     }
 
@@ -191,14 +165,16 @@ class CitiesController extends Controller
     {
         $deleted = $this->repository->delete($id);
 
+        $response = [
+            'message' => 'Cidade deletada',
+            'deleted' => $deleted,
+        ];
+
         if (request()->wantsJson()) {
 
-            return response()->json([
-                'message' => 'City deleted.',
-                'deleted' => $deleted,
-            ]);
+            return response()->json($response);
         }
 
-        return redirect()->back()->with('message', 'City deleted.');
+        return redirect()->back()->with('message', $response['message']);
     }
 }

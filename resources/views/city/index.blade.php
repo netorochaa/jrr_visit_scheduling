@@ -10,8 +10,8 @@
 
 @section('content')
   @include('templates.content.header')
-  @include('templates.content.content1col', ['contentbody' => 'user.list'])
-  @include('templates.content.modallarge', ['titlemodal' => $titlemodal , 'contentmodal' => 'user.register'])
+  @include('templates.content.content1col', ['contentbody' => 'city.list'])
+  @include('templates.content.modallarge', ['titlemodal' => $titlemodal , 'contentmodal' => 'city.register'])
 @endsection
 
 @section('footer-distinct')
@@ -32,21 +32,5 @@
           });
         });
 
-        function activeCollector()
-        {
-            var collector = document.getElementById('selectCollector');
-            var type = document.getElementById('typeUser');
-
-            if(type.value == 2)
-            {
-                collector.style.display = 'block';
-                collector.disabled = false;
-            }
-            else
-            {
-                collector.style.display = 'none';
-                collector.disabled = true;
-            }
-        }
     </script>
 @endsection

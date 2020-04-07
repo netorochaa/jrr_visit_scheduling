@@ -18,6 +18,7 @@ class UsersController extends Controller
 {    
     protected $repository, $collectorRepository;
     protected $validator;
+    
     public function __construct(UserRepository $repository, UserValidator $validator, CollectorRepository $collectorRepository)
     {
         $this->repository = $repository;
@@ -28,8 +29,9 @@ class UsersController extends Controller
     public function index()
     {
         $users_list  = $this->repository->all();
+    
         $typeUsers_list = $this->repository->typeUser_list();
-        $collector_list = $this->collectorRepository->pluck('name', 'id');
+        // $collector_list = $this->collectorRepository->findWhereNotIn('id', $users_list->collectors_id->toArray())->pluck('name', 'id');
 
         return view('user.index', [
             'namepage'      => 'Usuário',
@@ -44,7 +46,7 @@ class UsersController extends Controller
             
             //List of entitie
             'table' => $this->repository->getTable(),
-            'thead_for_datatable' => ['E-mail', 'Nome', 'Tipo', 'Ativo', 'Criado', 'Última atualização'],
+            'thead_for_datatable' => ['E-mail', 'Nome', 'Tipo', 'Status', 'Coletador', 'Criado', 'Última atualização'],
             'users_list' => $users_list
         ]);
     }
@@ -62,21 +64,25 @@ class UsersController extends Controller
                 'data'    => $user->toArray(),
             ];
 
-            if ($request->wantsJson()) {
-
+            if ($request->wantsJson()) 
+            {
                 return response()->json($response);
             }
 
             return redirect()->back()->with('message', $response['message']);
         } catch (ValidatorException $e) {
-            if ($request->wantsJson()) {
-                return response()->json([
-                    'error'   => true,
-                    'message' => $e->getMessageBag()
-                ]);
+
+            $response = [
+                'message' =>  $e->getMessageBag(),
+                'error'    => true
+            ];
+
+            if ($request->wantsJson()) 
+            {
+                return response()->json($response);
             }
 
-            return redirect()->back()->withErrors($e->getMessageBag())->withInput();
+            return redirect()->back()->with('message', $response['message']);
         }
     }
 
@@ -101,13 +107,6 @@ class UsersController extends Controller
         return view('users.show', compact('user'));
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int $id
-     *
-     * @return \Illuminate\Http\Response
-     */
     public function edit($id)
     {
         $user = $this->repository->find($id);
@@ -115,16 +114,6 @@ class UsersController extends Controller
         return view('users.edit', compact('user'));
     }
 
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  UserUpdateRequest $request
-     * @param  string            $id
-     *
-     * @return Response
-     *
-     * @throws \Prettus\Validator\Exceptions\ValidatorException
-     */
     public function update(UserUpdateRequest $request, $id)
     {
         try {
@@ -158,26 +147,20 @@ class UsersController extends Controller
         }
     }
 
-
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int $id
-     *
-     * @return \Illuminate\Http\Response
-     */
     public function destroy($id)
     {
         $deleted = $this->repository->delete($id);
 
+        $response = [
+            'message' => 'Usuário deletado',
+            'deleted' => $deleted,
+        ];
+
         if (request()->wantsJson()) {
 
-            return response()->json([
-                'message' => 'User deleted.',
-                'deleted' => $deleted,
-            ]);
+            return response()->json($response);
         }
 
-        return redirect()->back()->with('message', 'User deleted.');
+        return redirect()->back()->with('message', $response['message']);
     }
 }

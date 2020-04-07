@@ -18,8 +18,8 @@ class CreateFreeDaysTable extends Migration
 		Schema::create('free-days', function(Blueprint $table) {
 			$table->increments('id');
 			$table->string('name', 50);
-			$table->string('initial-date', 50);
-			$table->string('final-date', 50);
+			$table->string('initialDate', 50);
+			$table->string('finalDate', 50);
 			$table->char('active', 3)->default('on');
 
 			$table->timestamps();

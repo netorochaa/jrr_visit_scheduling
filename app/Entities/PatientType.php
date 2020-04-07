@@ -20,6 +20,6 @@ class PatientType extends Model implements Transformable
      *
      * @var array
      */
-    protected $fillable = ['name', 'need-reponsible', 'priority', 'active'];
+    protected $fillable = ['name', 'needReponsible', 'priority', 'active'];
 
 }

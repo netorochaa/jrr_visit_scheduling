@@ -87,9 +87,9 @@
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a href="pages/layout/top-nav-sidebar.html" class="nav-link @if($namepage == 'Cidade') active @endif">
+                            <a href="{{ route('neighborhood.index') }}" class="nav-link @if($namepage == 'Bairro') active @endif">
                                 <i class="far fa-circle nav-icon"></i>
-                                <p>Cidade</p>
+                                <p>Bairro</p>
                             </a>
                         </li>
                         <li class="nav-item">

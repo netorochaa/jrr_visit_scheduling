@@ -20,10 +20,10 @@ class CreatePeopleTable extends Migration
 			$table->string('name', 45);
 			$table->string('fone', 45);
 			$table->string('email', 45)->nullable();
-			$table->string('other-fone', 45)->nullable();
-			$table->char('type-responsible', 3)->nullable();
-			$table->string('name-responsible', 45)->nullable();
-			$table->string('fone-responsible', 45);
+			$table->string('otherFone', 45)->nullable();
+			$table->char('typeResponsible', 3)->nullable();
+			$table->string('nameResponsible', 45)->nullable();
+			$table->string('foneResponsible', 45);
 			$table->string('CPF', 45);
 			$table->string('RG', 45)->nullable();
 			$table->string('birth', 45);

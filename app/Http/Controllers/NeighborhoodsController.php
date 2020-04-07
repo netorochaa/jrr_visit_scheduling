@@ -10,55 +10,47 @@ use Prettus\Validator\Exceptions\ValidatorException;
 use App\Http\Requests\NeighborhoodCreateRequest;
 use App\Http\Requests\NeighborhoodUpdateRequest;
 use App\Repositories\NeighborhoodRepository;
+use App\Repositories\CityRepository;
 use App\Validators\NeighborhoodValidator;
 
-/**
- * Class NeighborhoodsController.
- *
- * @package namespace App\Http\Controllers;
- */
 class NeighborhoodsController extends Controller
 {
-    /**
-     * @var NeighborhoodRepository
-     */
-    protected $repository;
-
-    /**
-     * @var NeighborhoodValidator
-     */
+    protected $repository, $cityRepository;
     protected $validator;
 
-    /**
-     * NeighborhoodsController constructor.
-     *
-     * @param NeighborhoodRepository $repository
-     * @param NeighborhoodValidator $validator
-     */
-    public function __construct(NeighborhoodRepository $repository, NeighborhoodValidator $validator)
+    public function __construct(NeighborhoodRepository $repository, NeighborhoodValidator $validator, CityRepository $cityRepository)
     {
         $this->repository = $repository;
         $this->validator  = $validator;
+        $this->cityRepository  = $cityRepository;
     }
 
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
     public function index()
     {
-        $this->repository->pushCriteria(app('Prettus\Repository\Criteria\RequestCriteria'));
-        $neighborhoods = $this->repository->all();
+        $neighborhoods_list  = $this->repository->all();
+        $cities_list  = $this->cityRepository->all();
+        $regions_list = $this->repository->regions_list();
+        $cities_pluck_list  = $this->cityRepository->pluck('name', 'id');
 
-        if (request()->wantsJson()) {
-
-            return response()->json([
-                'data' => $neighborhoods,
-            ]);
-        }
-
-        return view('neighborhoods.index', compact('neighborhoods'));
+        return view('neighborhood.index', [
+            'namepage'      => 'Bairro',
+            'threeview'     => 'Cadastros',
+            'titlespage'    => ['Cadastro de bairros', 'Cadastro de Cidade'],
+            'titlecard'     => 'Lista de bairros cadastrados',
+            'titlemodal'    => 'Cadastrar bairro',
+            'titlecard2'     => 'Lista de cidades cadastrados',
+            'titlemodal2'    => 'Cadastrar cidade',
+            'number'        => '2',
+            //List of entitie
+            'table' => $this->repository->getTable(),
+            'table2' => $this->cityRepository->getTable(),
+            'thead_for_datatable' => ['Nome', 'Taxa', 'Região', 'Status', 'Cidade', 'Criado', 'Última atualização'],
+            'thead_for_datatable2' => ['Nome', 'UF', 'Status','Criado', 'Última atualização'],
+            'neighborhoods_list' => $neighborhoods_list,
+            'regions_list' => $regions_list,
+            'cities_list' => $cities_list,
+            'cities_pluck_list' => $cities_pluck_list
+        ]);
     }
 
     /**
@@ -90,14 +82,18 @@ class NeighborhoodsController extends Controller
 
             return redirect()->back()->with('message', $response['message']);
         } catch (ValidatorException $e) {
-            if ($request->wantsJson()) {
-                return response()->json([
-                    'error'   => true,
-                    'message' => $e->getMessageBag()
-                ]);
+            
+            $response = [
+                'message' =>  $e->getMessageBag(),
+                'error'    => true
+            ];
+
+            if ($request->wantsJson()) 
+            {
+                return response()->json($response);
             }
 
-            return redirect()->back()->withErrors($e->getMessageBag())->withInput();
+            return redirect()->back()->with('message', $response['message']);
         }
     }
 

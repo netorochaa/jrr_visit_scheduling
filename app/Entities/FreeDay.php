@@ -20,6 +20,6 @@ class FreeDay extends Model implements Transformable
      *
      * @var array
      */
-    protected $fillable = ['name', 'initial-date', 'final-date', 'active'];
+    protected $fillable = ['name', 'initialDate', 'finalDate', 'active'];
 
 }
