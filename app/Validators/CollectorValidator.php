@@ -18,7 +18,13 @@ class CollectorValidator extends LaravelValidator
      * @var array
      */
     protected $rules = [
-        ValidatorInterface::RULE_CREATE => [],
+        ValidatorInterface::RULE_CREATE => [
+            'name' => 'required|unique:collectors,name',
+            'initialTimeCollect' => 'required',
+            'finalTimeCollect' => 'required',
+            'collectionInterval' => 'required',
+            'user_id' => 'required|unique:collectors,user_id'
+        ],
         ValidatorInterface::RULE_UPDATE => [],
     ];
 }

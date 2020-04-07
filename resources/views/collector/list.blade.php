@@ -17,6 +17,7 @@
             <td>{{ $collector->collectionInterval }}</td>
             <td>{{ $collector->startingAddress }}</td>
             <td>{{ $collector->formatted_active }}</td>
+            <td>{{ $collector->user->name }}</td>
             <td>{{ $collector->created_at }}</td>
             <td>{{ $collector->updated_at }}</td>
             <td>

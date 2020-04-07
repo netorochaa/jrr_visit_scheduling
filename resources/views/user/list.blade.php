@@ -14,17 +14,16 @@
             <td>{{ $user->name }}</td>
             <td>{{ $user->formatted_type }}</td>
             <td>{{ $user->formatted_active }}</td>
-            <td>{{ $user->collector->name ?? null }}</td>
             <td>{{ $user->created_at }}</td>
             <td>{{ $user->updated_at }}</td>
             <td>
                 <div class="btn-group">
-                  {!! Form::open(['route' => ['user.destroy', $user->id], 'method' => 'DELETE']) !!}
-                    <div class="btn-group">
+                  {{-- {!! Form::open(['route' => ['user.destroy', $user->id], 'method' => 'DELETE']) !!}
+                    <div class="btn-group"> --}}
                         <button type="button" onclick="location.href='{{ route('user.edit', $user->id) }}'" class="btn btn-info"  ><i class='fas fa-pen'></i></button>
-                        @include('templates.components.submit', ['input' => 'Deletar', 'attributes' => ['class' => 'btn btn-danger']])
+                        {{-- @include('templates.components.submit', ['input' => 'Deletar', 'attributes' => ['class' => 'btn btn-danger']])
                     </div>
-                    {!! Form::close() !!}
+                    {!! Form::close() !!} --}}
                     </td>
                 </div>
               </td>

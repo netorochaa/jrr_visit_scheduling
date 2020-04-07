@@ -13,13 +13,9 @@ class User extends Authenticatable
 
     public $timestamps = true;
     protected $table = 'users';
-    protected $fillable = ['password', 'name', 'email', 'type', 'active', 'collector_id'];
+    protected $fillable = ['password', 'name', 'email', 'type', 'active'];
     protected $hidden = ['password', 'remember_token'];
 
-    public function collector()
-    {
-        return $this->belongsTo(Collector::class, 'collector_id');
-    }
 
     public function getFormattedTypeAttribute(){
         switch ($this->attributes['type']) {

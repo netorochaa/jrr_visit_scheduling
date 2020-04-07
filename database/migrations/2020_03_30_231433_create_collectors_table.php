@@ -23,7 +23,11 @@ class CreateCollectorsTable extends Migration
 			$table->char('finalTimeCollect', 5);
 			$table->string('collectionInterval', 5);
 			$table->string('startingAddress', 140)->nullable();
-			$table->char('active', 3)->default('on');
+            $table->char('active', 3)->default('on');
+
+			//FK
+			$table->unsignedInteger('user_id')->unique();
+			$table->foreign('user_id')->references('id')->on('users');
 
 			$table->timestamps();
 			$table->softDeletes();
@@ -37,6 +41,7 @@ class CreateCollectorsTable extends Migration
 	 */
 	public function down()
 	{
+        Schema::disableForeignKeyConstraints();
 		Schema::drop('collectors');
 	}
 }

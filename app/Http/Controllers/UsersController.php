@@ -15,10 +15,10 @@ use App\Validators\UserValidator;
 
 
 class UsersController extends Controller
-{    
+{
     protected $repository, $collectorRepository;
     protected $validator;
-    
+
     public function __construct(UserRepository $repository, UserValidator $validator, CollectorRepository $collectorRepository)
     {
         $this->repository = $repository;
@@ -29,9 +29,9 @@ class UsersController extends Controller
     public function index()
     {
         $users_list  = $this->repository->all();
-    
+
+        // dd($users_list);
         $typeUsers_list = $this->repository->typeUser_list();
-        // $collector_list = $this->collectorRepository->findWhereNotIn('id', $users_list->collectors_id->toArray())->pluck('name', 'id');
 
         return view('user.index', [
             'namepage'      => 'Usuário',
@@ -39,14 +39,13 @@ class UsersController extends Controller
             'titlespage'    => ['Cadastro de usuários'],
             'titlecard'     => 'Lista de usuários cadastrados',
             'titlemodal'    => 'Cadastrar usuário',
-            
+
             //Lists for select
             'typeUsers_list' => $typeUsers_list,
-            'collector_list' => $collector_list,
-            
+
             //List of entitie
             'table' => $this->repository->getTable(),
-            'thead_for_datatable' => ['E-mail', 'Nome', 'Tipo', 'Status', 'Coletador', 'Criado', 'Última atualização'],
+            'thead_for_datatable' => ['E-mail', 'Nome', 'Tipo', 'Status', 'Criado', 'Última atualização'],
             'users_list' => $users_list
         ]);
     }
@@ -61,28 +60,22 @@ class UsersController extends Controller
 
             $response = [
                 'message' => 'Usuário criado.',
-                'data'    => $user->toArray(),
+                'type'   => 'info',
             ];
 
-            if ($request->wantsJson()) 
-            {
-                return response()->json($response);
-            }
+            session()->flash('return', $response);
 
-            return redirect()->back()->with('message', $response['message']);
+            return redirect()->route('user.index');
         } catch (ValidatorException $e) {
 
             $response = [
                 'message' =>  $e->getMessageBag(),
-                'error'    => true
+                'type'    => 'error'
             ];
 
-            if ($request->wantsJson()) 
-            {
-                return response()->json($response);
-            }
+            session()->flash('return', $response);
 
-            return redirect()->back()->with('message', $response['message']);
+            return redirect()->route('user.index');
         }
     }
 
@@ -109,42 +102,42 @@ class UsersController extends Controller
 
     public function edit($id)
     {
-        $user = $this->repository->find($id);
+        // $user = $this->repository->find($id);
 
-        return view('users.edit', compact('user'));
+        // return view('users.edit', compact('user'));
     }
 
     public function update(UserUpdateRequest $request, $id)
     {
-        try {
+        // try {
 
-            $this->validator->with($request->all())->passesOrFail(ValidatorInterface::RULE_UPDATE);
+        //     $this->validator->with($request->all())->passesOrFail(ValidatorInterface::RULE_UPDATE);
 
-            $user = $this->repository->update($request->all(), $id);
+        //     $user = $this->repository->update($request->all(), $id);
 
-            $response = [
-                'message' => 'User updated.',
-                'data'    => $user->toArray(),
-            ];
+        //     $response = [
+        //         'message' => 'User updated.',
+        //         'data'    => $user->toArray(),
+        //     ];
 
-            if ($request->wantsJson()) {
+        //     if ($request->wantsJson()) {
 
-                return response()->json($response);
-            }
+        //         return response()->json($response);
+        //     }
 
-            return redirect()->back()->with('message', $response['message']);
-        } catch (ValidatorException $e) {
+        //     return redirect()->back()->with('message', $response['message']);
+        // } catch (ValidatorException $e) {
 
-            if ($request->wantsJson()) {
+        //     if ($request->wantsJson()) {
 
-                return response()->json([
-                    'error'   => true,
-                    'message' => $e->getMessageBag()
-                ]);
-            }
+        //         return response()->json([
+        //             'error'   => true,
+        //             'message' => $e->getMessageBag()
+        //         ]);
+        //     }
 
-            return redirect()->back()->withErrors($e->getMessageBag())->withInput();
-        }
+        //     return redirect()->back()->withErrors($e->getMessageBag())->withInput();
+        // }
     }
 
     public function destroy($id)

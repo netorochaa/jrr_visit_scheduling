@@ -27,10 +27,6 @@ class CreateUsersTable extends Migration
 			$table->string('type', 2)->default(1);
 			$table->char('active', 3)->default('on');
 
-			//FK
-			$table->unsignedInteger('collector_id')->nullable();
-			$table->foreign('collector_id')->references('id')->on('collectors');
-
 			$table->timestamps();
 			$table->softDeletes();
 		});
@@ -43,7 +39,6 @@ class CreateUsersTable extends Migration
 	 */
 	public function down()
 	{
-		Schema::disableForeignKeyConstraints();
 		Schema::drop('users');
 	}
 }

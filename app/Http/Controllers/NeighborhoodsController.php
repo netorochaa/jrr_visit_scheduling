@@ -71,29 +71,23 @@ class NeighborhoodsController extends Controller
             $neighborhood = $this->repository->create($request->all());
 
             $response = [
-                'message' => 'Neighborhood created.',
-                'data'    => $neighborhood->toArray(),
+                'message' => 'Bairro criado',
+                'type'   => 'info',
             ];
 
-            if ($request->wantsJson()) {
+            session()->flash('return', $response);
 
-                return response()->json($response);
-            }
-
-            return redirect()->back()->with('message', $response['message']);
+            return redirect()->route('neighborhood.index');
         } catch (ValidatorException $e) {
-            
+
             $response = [
                 'message' =>  $e->getMessageBag(),
-                'error'    => true
+                'type'    => 'error'
             ];
 
-            if ($request->wantsJson()) 
-            {
-                return response()->json($response);
-            }
+            session()->flash('return', $response);
 
-            return redirect()->back()->with('message', $response['message']);
+            return redirect()->route('neighborhood.index');
         }
     }
 

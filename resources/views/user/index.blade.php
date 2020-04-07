@@ -32,21 +32,5 @@
           });
         });
 
-        function activeCollector()
-        {
-            var collector = document.getElementById('selectCollector');
-            var type = document.getElementById('typeUser');
-
-            if(type.value == 2)
-            {
-                collector.style.display = 'block';
-                collector.disabled = false;
-            }
-            else
-            {
-                collector.style.display = 'none';
-                collector.disabled = true;
-            }
-        }
     </script>
 @endsection

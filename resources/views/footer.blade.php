@@ -15,7 +15,7 @@
             toast: true,
             position: 'top-end',
             showConfirmButton: false,
-            timer: 3000
+            timer: 7000
         });
 
         if(document.getElementById('info')){
@@ -23,6 +23,16 @@
             $(document).ready(function(){
                 Toast.fire({
                 type: 'info',
+                title: hiddenInput.value
+                })
+            });
+        }
+
+        if(document.getElementById('error')){
+            var hiddenInput = document.getElementById('error');
+            $(document).ready(function(){
+                Toast.fire({
+                type: 'error',
                 title: hiddenInput.value
                 })
             });

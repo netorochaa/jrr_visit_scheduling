@@ -34,6 +34,7 @@ class CollectorsController extends Controller
     public function index()
     {
         $collectors_list  = $this->repository->all();
+        $user_list        = $this->userRepository->where('type', 2)->pluck('name', 'id');
 
         return view('collector.index', [
             'namepage'      => 'Coletador',
@@ -42,9 +43,12 @@ class CollectorsController extends Controller
             'titlecard'     => 'Lista de coletadores cadastrados',
             'titlemodal'    => 'Cadastrar coletador',
 
+            //Lists for select
+            'user_list' => $user_list,
+
             //List of entitie
             'table' => $this->repository->getTable(),
-            'thead_for_datatable' => ['Nome', 'Hora inicial', 'Hora final', 'Intervalo entre coletas', 'Endereço inicial', 'Status', 'Criado', 'Última atualização'],
+            'thead_for_datatable' => ['Nome', 'Hora inicial', 'Hora final', 'Intervalo entre coletas', 'Endereço inicial', 'Status', 'Colaborador', 'Criado', 'Última atualização'],
             'collectors_list' => $collectors_list
         ]);
     }
@@ -58,28 +62,23 @@ class CollectorsController extends Controller
             $collector = $this->repository->create($request->all());
 
             $response = [
-                'message' => 'Coletador Criado.',
-                'data'    => $collector->toArray(),
+                'message' => 'Coletador criado',
+                'type'   => 'info',
             ];
 
-            if ($request->wantsJson()) {
+            session()->flash('return', $response);
 
-                return response()->json($response);
-            }
-
-            return redirect()->back()->with('message', $response['message']);
+            return redirect()->route('collector.index');
         } catch (ValidatorException $e) {
+
             $response = [
                 'message' =>  $e->getMessageBag(),
-                'error'    => true
+                'type'    => 'error'
             ];
 
-            if ($request->wantsJson()) 
-            {
-                return response()->json($response);
-            }
+            session()->flash('return', $response);
 
-            return redirect()->back()->with('message', $response['message']);
+            return redirect()->route('collector.index');
         }
     }
 

@@ -16,11 +16,16 @@ class Collector extends Model implements Transformable
 
     public $timestamps = true;
     protected $table = 'collectors';
-    protected $fillable = ['name', 'initialTimeCollect', 'finalTimeCollect', 'collectionInterval', 'startingAddress', 'active'];
+    protected $fillable = ['name', 'initialTimeCollect', 'finalTimeCollect', 'collectionInterval', 'startingAddress', 'active', 'user_id'];
 
     public function neighborhoods()
     {
         return $this->belongsToMany(Neighborhood::class);
+    }
+
+    public function user()
+    {
+        return $this->belongsTo(User::class, 'user_id');
     }
 
     public function getFormattedtActiveAttribute(){

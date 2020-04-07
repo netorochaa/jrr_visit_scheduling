@@ -1,7 +1,7 @@
 @include('head')
     <div class="wrapper">
-        @if (\Session::has('message'))
-            <input type="hidden" id="info" value="{{ \Session::get('message') }}" class="btn btn-info swalDefaultInfo"/>
+        @if (session('return'))
+            <input type="hidden" id="{{ session('return')['type'] }}" value="{{ session('return')['message'] }}" class="btn btn-info swalDefaultInfo"/>
         @endif
         @include('templates.navbar')
         @include('templates.menuside')
