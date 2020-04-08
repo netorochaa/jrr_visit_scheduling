@@ -31,10 +31,6 @@ class CreatePeopleTable extends Migration
 			$table->string('exams', 254);
 			$table->string('medication', 254)->nullable();
 
-			//FK
-			$table->unsignedInteger('collect_id');
-			$table->foreign('collect_id')->references('id')->on('collects');
-
 			$table->timestamps();
 			$table->softDeletes();
 		});

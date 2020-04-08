@@ -18,7 +18,10 @@ class CityValidator extends LaravelValidator
      * @var array
      */
     protected $rules = [
-        ValidatorInterface::RULE_CREATE => [],
+        ValidatorInterface::RULE_CREATE => [
+            'name' => 'required|unique:city,name',
+            'UF' => 'required',
+        ],
         ValidatorInterface::RULE_UPDATE => [],
     ];
 }

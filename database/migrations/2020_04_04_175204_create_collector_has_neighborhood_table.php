@@ -14,10 +14,13 @@ class CreateCollectorHasNeighborhoodTable extends Migration
     public function up()
     {
         Schema::create('collector_has_neighborhood', function (Blueprint $table) {
-            $table->increments('id');
-
 			$table->unsignedInteger('neighborhood_id');
 			$table->unsignedInteger('collector_id');
+
+            //FK
+            $table->foreign('neighborhood_id')->references('id')->on('neighborhoods');
+            //FK
+			$table->foreign('collector_id')->references('id')->on('collectors');
 
             $table->timestamps();
         });
