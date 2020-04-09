@@ -16,7 +16,7 @@ class City extends Model implements Transformable
     protected $table = 'cities';
     protected $fillable = ['name', 'UF', 'active'];
 
-    public function getFormattedtActiveAttribute()
+    public function getFormattedActiveAttribute()
     {
         switch ($this->attributes['active']) {
             case "on":
@@ -30,4 +30,10 @@ class City extends Model implements Transformable
                 break;
         }
     }
+
+    public function neighborhoods()
+    {
+        return $this->hasMany(Neighborhood::class);
+    }
+    
 }

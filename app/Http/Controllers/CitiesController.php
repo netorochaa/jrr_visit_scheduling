@@ -56,7 +56,7 @@ class CitiesController extends Controller
 
             session()->flash('return', $response);
 
-            return redirect()->route('city.index');
+            return redirect()->route('neighborhood.index');
         } catch (ValidatorException $e) {
 
             $response = [
@@ -66,7 +66,7 @@ class CitiesController extends Controller
 
             session()->flash('return', $response);
 
-            return redirect()->route('city.index');
+            return redirect()->route('neighborhood.index');
         }
     }
 

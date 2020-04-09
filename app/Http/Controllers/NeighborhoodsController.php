@@ -34,18 +34,19 @@ class NeighborhoodsController extends Controller
 
         return view('neighborhood.index', [
             'namepage'      => 'Bairro',
+            'numberModal'   => '2',
             'threeview'     => 'Cadastros',
-            'titlespage'    => ['Cadastro de bairros', 'Cadastro de Cidade'],
-            'titlecard'     => 'Lista de bairros cadastrados',
+            'titlespage'    => ['Cadastro de bairros'],
+            'titlecard'     => 'Bairros cadastrados',
             'titlemodal'    => 'Cadastrar bairro',
-            'titlecard2'     => 'Lista de cidades cadastrados',
-            'titlemodal2'    => 'Cadastrar cidade',
-            'number'        => '2',
+            'titlecard2'    => 'Cidades cadastradas',
+            'titlemodal2'   => 'Cadastrar cidade',
+
             //List of entitie
             'table' => $this->repository->getTable(),
             'table2' => $this->cityRepository->getTable(),
             'thead_for_datatable' => ['Nome', 'Taxa', 'Região', 'Status', 'Cidade', 'Criado', 'Última atualização'],
-            'thead_for_datatable2' => ['Nome', 'UF', 'Status','Criado', 'Última atualização'],
+            'thead_for_datatable2' => ['Nome', 'UF', 'Status'],
             'neighborhoods_list' => $neighborhoods_list,
             'regions_list' => $regions_list,
             'cities_list' => $cities_list,

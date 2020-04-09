@@ -10,10 +10,7 @@
 @endsection
 
 @section('content')
-  {{-- @if (\Session::has('message'))
-      <h1>deu certo!</h1>
-  @endif --}}
-  @include('templates.content.header')
+  @include('templates.content.header')  
   @include('templates.content.content1col', ['contentbody' => 'collector.list'])
   @include('templates.content.modallarge', ['titlemodal' => $titlemodal , 'contentmodal' => 'collector.register'])
 @endsection

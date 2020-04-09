@@ -16,7 +16,8 @@ class CreatePeopleTable extends Migration
 	public function up()
 	{
 		Schema::create('people', function(Blueprint $table) {
-            $table->increments('id');
+			$table->increments('id');
+			$table->char('ra', 10)->nullable();
 			$table->string('name', 45);
 			$table->string('fone', 45);
 			$table->string('email', 45)->nullable();
@@ -36,11 +37,6 @@ class CreatePeopleTable extends Migration
 		});
 	}
 
-	/**
-	 * Reverse the migrations.
-	 *
-	 * @return void
-	 */
 	public function down()
 	{
 		Schema::disableForeignKeyConstraints();

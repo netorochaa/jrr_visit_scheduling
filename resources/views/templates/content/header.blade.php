@@ -4,7 +4,12 @@
         <div class="row mb-2">
         @foreach ($titlespage as $titles)
             <div class="col-sm-6">
-                <h1>{{ $titles }}</h1>
+              <h1>
+                @if ($goback ?? null)
+                  <a href={{ url()->previous() }}><i class="fas fa-arrow-left"></i></a>
+                @endif  
+                {{ $titles }}
+              </h1>
             </div>
         @endforeach
         </div>

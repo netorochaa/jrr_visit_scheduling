@@ -9,6 +9,11 @@
     <script src="{{ asset('js/dist/adminlte.min.js') }}"></script>
     <!-- AdminLTE for demo purposes -->
     <script src="{{ asset('js/dist/demo.js') }}"></script>
+    {{-- DataTables --}}
+    <script src=" {{ asset('js/datatables/jquery.dataTables.min.js') }} "></script>
+    <script src=" {{ asset('datatables-bs4/js/dataTables.bootstrap4.min.js') }} "></script>
+    <script src=" {{ asset('datatables-responsive/js/dataTables.responsive.min.js') }} "></script>
+    <script src=" {{ asset('datatables-responsive/js/responsive.bootstrap4.min.js') }} "></script>
 
     <script>
         const Toast = Swal.mixin({

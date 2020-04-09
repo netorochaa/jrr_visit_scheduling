@@ -12,7 +12,7 @@
         <tr>
             <td>{{ $neighborhood->name }}</td>
             <td>{{ $neighborhood->displacementRate }}</td>
-            <td>{{ $neighborhood->region }}</td>
+            <td>{{ $neighborhood->formatted_region }}</td>
             <td>{{ $neighborhood->formatted_active }}</td>
             <td>{{ $neighborhood->city->name }}</td>
             <td>{{ $neighborhood->created_at }}</td>

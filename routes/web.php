@@ -18,6 +18,7 @@ Route::resource('user', 'UsersController');
 // Route::get('/collector', ['as' => 'collector.index', 'uses' => 'CollectorsController@index']);
 // Route::post('/collector', ['as' => 'collector.store', 'uses' => 'CollectorsController@store']);
 Route::resource('collector', 'CollectorsController');
+Route::post('collecotor/{collector_id}/neighborhoods', ['as' => 'collector.neighborhoods.store', 'uses' => 'CollectorsController@storeCollectorNeighborhoods']);
 
 // City routes
 Route::resource('city', 'CitiesController');

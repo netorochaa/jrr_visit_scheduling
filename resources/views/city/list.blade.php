@@ -13,8 +13,6 @@
             <td>{{ $city->name }}</td>
             <td>{{ $city->UF }}</td>
             <td>{{ $city->formatted_active }}</td>
-            <td>{{ $city->created_at }}</td>
-            <td>{{ $city->updated_at }}</td>
             <td>
                 <div class="btn-group">
                   {{-- {!! Form::open(['route' => ['city.destroy', $city->id], 'method' => 'DELETE']) !!}

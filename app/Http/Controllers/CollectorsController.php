@@ -11,24 +11,21 @@ use App\Http\Requests\CollectorCreateRequest;
 use App\Http\Requests\CollectorUpdateRequest;
 use App\Repositories\CollectorRepository;
 use App\Repositories\UserRepository;
+use App\Repositories\NeighborhoodRepository;
 use App\Validators\CollectorValidator;
 
-/**
- * Class CollectorsController.
- *
- * @package namespace App\Http\Controllers;
- */
 class CollectorsController extends Controller
 {
 
-    protected $repository, $userRepository;
+    protected $repository, $userRepository, $neighborhoodRepository;
     protected $validator;
 
-    public function __construct(CollectorRepository $repository, CollectorValidator $validator, UserRepository $userRepository)
+    public function __construct(CollectorRepository $repository, CollectorValidator $validator, UserRepository $userRepository, NeighborhoodRepository $neighborhoodRepository)
     {
         $this->repository = $repository;
         $this->validator  = $validator;
         $this->userRepository = $userRepository;
+        $this->neighborhoodRepository = $neighborhoodRepository;
     }
 
     public function index()
@@ -48,7 +45,7 @@ class CollectorsController extends Controller
 
             //List of entitie
             'table' => $this->repository->getTable(),
-            'thead_for_datatable' => ['Nome', 'Hora inicial', 'Hora final', 'Intervalo entre coletas', 'Endereço inicial', 'Status', 'Colaborador', 'Criado', 'Última atualização'],
+            'thead_for_datatable' => ['Nome', 'Hora inicial', 'Hora final', 'Intervalo entre coletas', 'Endereço inicial', 'Status', 'Colaborador', 'Bairros', 'Criado', 'Última atualização'],
             'collectors_list' => $collectors_list
         ]);
     }
@@ -82,16 +79,10 @@ class CollectorsController extends Controller
         }
     }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  int $id
-     *
-     * @return \Illuminate\Http\Response
-     */
     public function show($id)
     {
         $collector = $this->repository->find($id);
+        $neighborhoods = $this->neighborhoodRepository->pluck('name', 'id');
 
         if (request()->wantsJson()) {
 
@@ -100,16 +91,54 @@ class CollectorsController extends Controller
             ]);
         }
 
-        return view('collectors.show', compact('collector'));
+        return view('collector.collector_neighborhood.index', [
+            'namepage'      => 'Coletador',
+            'threeview'     => 'Cadastros',
+            'titlespage'    => ['Vincular bairro'],
+            'titlecard'     => 'Bairros vinculados ao ' . $collector->getAttribute('name'),
+            'titlemodal'    => 'Relacionar bairros ao coletador ' . $collector->getAttribute('name'),
+            'goback'        => true,
+            'collector'     => $collector,
+            'neighborhoods' => $neighborhoods
+            ]);
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int $id
-     *
-     * @return \Illuminate\Http\Response
-     */
+    public function storeCollectorNeighborhoods(Request $request, $collect_id)
+    {
+        try {
+
+            // dd($collect_id);
+
+            $collector = $this->repository->find($collect_id);
+            $neighborhoods = $request->all()['neighborhood_id'];
+
+            for ($i=0; $i < count($neighborhoods); $i++) { 
+                $collector->neighborhoods()->attach($neighborhoods[$i]);
+            }
+
+            dd($collector->neighborhoods);
+
+            $response = [
+                'message' => 'Coletador criado',
+                'type'   => 'info',
+            ];
+
+            session()->flash('return', $response);
+
+            return redirect()->route('collector.index');
+        } catch (ValidatorException $e) {
+
+            $response = [
+                'message' =>  $e->getMessageBag(),
+                'type'    => 'error'
+            ];
+
+            session()->flash('return', $response);
+
+            return redirect()->route('collector.index');
+        }
+    }
+    
     public function edit($id)
     {
         $collector = $this->repository->find($id);

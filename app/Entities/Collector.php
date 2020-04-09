@@ -20,7 +20,7 @@ class Collector extends Model implements Transformable
 
     public function neighborhoods()
     {
-        return $this->belongsToMany(Neighborhood::class);
+        return $this->belongsToMany(Neighborhood::class, 'collector_has_neighborhood', 'neighborhood_id', 'collector_id');
     }
 
     public function user()
@@ -28,7 +28,7 @@ class Collector extends Model implements Transformable
         return $this->belongsTo(User::class, 'user_id');
     }
 
-    public function getFormattedtActiveAttribute(){
+    public function getFormattedActiveAttribute(){
         switch ($this->attributes['active']) {
             case "on":
                 return "ATIVO";
@@ -40,6 +40,12 @@ class Collector extends Model implements Transformable
                 return $this->attributes['active'];
                 break;
         }
+    }
+
+    public function getFormattedCollectionIntervalAttribute(){
+       
+        return $this->attributes['collectionInterval'] . " min.";
+       
     }
 
 

@@ -16,7 +16,7 @@
     <!-- /.modal-dialog -->
 </div>
 <!-- /.modal -->
-@if ($number ?? null)
+@if ($numberModal ?? null)
 <div class="modal fade" id="modal-lg">
     <div class="modal-dialog modal-lg">
         <div class="modal-content">

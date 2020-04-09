@@ -16,7 +16,6 @@ class User extends Authenticatable
     protected $fillable = ['password', 'name', 'email', 'type', 'active'];
     protected $hidden = ['password', 'remember_token'];
 
-
     public function getFormattedTypeAttribute(){
         switch ($this->attributes['type']) {
             case 1:

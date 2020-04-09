@@ -21,7 +21,7 @@ class Neighborhood extends Model implements Transformable
 
     public function collectors()
     {
-        return $this->belongsToMany(Collector::class);
+        return $this->belongsToMany(Collector::class, 'collector_has_neighborhood', 'neighborhood_id', 'collector_id');
     }
 
     public function city()
@@ -29,7 +29,7 @@ class Neighborhood extends Model implements Transformable
         return $this->belongsTo(City::class, 'city_id');
     }
 
-    public function getFormattedtActiveAttribute(){
+    public function getFormattedActiveAttribute(){
         switch ($this->attributes['active']) {
             case "on":
                 return "ATIVO";
@@ -39,6 +39,20 @@ class Neighborhood extends Model implements Transformable
                 break;
             default:
                 return $this->attributes['active'];
+                break;
+        }
+    }
+
+    public function getFormattedRegionAttribute(){
+        switch ($this->attributes['region']) {
+            case 1:
+                return "ZONA NORTE";
+                break;
+            case 2:
+                return "ZONA SUL";
+                break;
+            default:
+                return $this->attributes['region'];
                 break;
         }
     }

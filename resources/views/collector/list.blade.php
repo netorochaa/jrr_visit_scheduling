@@ -14,10 +14,11 @@
             <td>{{ $collector->name }}</td>
             <td>{{ $collector->initialTimeCollect }}</td>
             <td>{{ $collector->finalTimeCollect }}</td>
-            <td>{{ $collector->collectionInterval }}</td>
+            <td>{{ $collector->formatted_collectionInterval }}</td>
             <td>{{ $collector->startingAddress }}</td>
             <td>{{ $collector->formatted_active }}</td>
             <td>{{ $collector->user->name }}</td>
+            <td><a href="{{ route('collector.show', $collector->id) }}"> Editar </a> </td>
             <td>{{ $collector->created_at }}</td>
             <td>{{ $collector->updated_at }}</td>
             <td>
