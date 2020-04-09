@@ -24,10 +24,10 @@ class CreateUsersTable extends Migration
 
 			//Information
 			$table->string('name', 50);
-			$table->string('type', 2)->default(1);
+            $table->char('type', 2)->default(1);
 			$table->char('active', 3)->default('on');
 
-			$table->timestamps();
+			$table->timestampsTz();
 			$table->softDeletes();
 		});
 	}

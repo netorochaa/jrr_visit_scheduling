@@ -15,7 +15,9 @@ class CreateCollectorHasNeighborhoodTable extends Migration
     {
         Schema::create('collector_has_neighborhood', function (Blueprint $table) {
 			$table->unsignedInteger('neighborhood_id');
-			$table->unsignedInteger('collector_id');
+            $table->unsignedInteger('collector_id');
+
+            $table->primary(['neighborhood_id', 'collector_id']);
 
             //FK
             $table->foreign('neighborhood_id')->references('id')->on('neighborhoods');

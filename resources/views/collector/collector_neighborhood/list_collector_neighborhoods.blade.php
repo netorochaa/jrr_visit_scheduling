@@ -10,6 +10,7 @@
         @foreach ($collector->neighborhoods as $neighborhoods)
         <tr>
             <td>{{ $neighborhoods->name }}</td>
+            <td>{{ $neighborhoods->city->name }} - {{ $neighborhoods->city->UF }}</td>
             <td>
                 <div class="btn-group">
                     {!! Form::open(['route' => ['collector.destroy', $collector->id], 'method' => 'DELETE']) !!}

@@ -112,20 +112,20 @@ class CollectorsController extends Controller
             $collector = $this->repository->find($collect_id);
             $neighborhoods = $request->all()['neighborhood_id'];
 
-            for ($i=0; $i < count($neighborhoods); $i++) { 
+            for ($i=0; $i < count($neighborhoods); $i++) {
                 $collector->neighborhoods()->attach($neighborhoods[$i]);
             }
 
-            dd($collector->neighborhoods);
+            // dd($collector->neighborhoods);
 
             $response = [
-                'message' => 'Coletador criado',
+                'message' => 'Bairros relacionados',
                 'type'   => 'info',
             ];
 
             session()->flash('return', $response);
 
-            return redirect()->route('collector.index');
+            return redirect()->route('collector.show', $collector->id);
         } catch (ValidatorException $e) {
 
             $response = [
@@ -135,10 +135,10 @@ class CollectorsController extends Controller
 
             session()->flash('return', $response);
 
-            return redirect()->route('collector.index');
+            return redirect()->route('collector.show', $collector->id);
         }
     }
-    
+
     public function edit($id)
     {
         $collector = $this->repository->find($id);

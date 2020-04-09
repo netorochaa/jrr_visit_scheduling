@@ -20,7 +20,7 @@ class Collector extends Model implements Transformable
 
     public function neighborhoods()
     {
-        return $this->belongsToMany(Neighborhood::class, 'collector_has_neighborhood', 'neighborhood_id', 'collector_id');
+        return $this->belongsToMany(Neighborhood::class, 'collector_has_neighborhood', 'collector_id', 'neighborhood_id');
     }
 
     public function user()
@@ -43,9 +43,9 @@ class Collector extends Model implements Transformable
     }
 
     public function getFormattedCollectionIntervalAttribute(){
-       
+
         return $this->attributes['collectionInterval'] . " min.";
-       
+
     }
 
 
