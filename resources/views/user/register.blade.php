@@ -8,7 +8,7 @@
                 @include('templates.components.email',    ['label' => 'E-mail', 'col' => '8', 'input' => 'email', 'attributes' => ['require' => 'true', 'class' => 'form-control']])
             </div>
             <div class="row">
-                @include('templates.components.select', ['label' => 'Tipo', 'col' => '8', 'select' => 'type', 'data' => $typeUsers_list, 'attributes' => ['onchange' => 'activeCollector()', 'id' => 'typeUser','require' => 'true', 'class' => 'form-control']])
+                @include('templates.components.select', ['label' => 'Tipo', 'col' => '8', 'select' => 'type', 'data' => $typeUsers_list, 'attributes' => ['onchange' => 'activeCollector()', 'id' => 'typeUsers', 'require' => 'true', 'class' => 'form-control']])
             </div>
             <div class="row">
                 <div class="col-sm-6">

@@ -3,6 +3,7 @@
 namespace App\Entities;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Prettus\Repository\Contracts\Transformable;
 use Prettus\Repository\Traits\TransformableTrait;
 
@@ -14,12 +15,10 @@ use Prettus\Repository\Traits\TransformableTrait;
 class PatientType extends Model implements Transformable
 {
     use TransformableTrait;
+    use SoftDeletes;
 
-    /**
-     * The attributes that are mass assignable.
-     *
-     * @var array
-     */
+    public $timestamps = true;
+    protected $table = 'patientType';
     protected $fillable = ['name', 'needReponsible', 'priority', 'active'];
 
 }

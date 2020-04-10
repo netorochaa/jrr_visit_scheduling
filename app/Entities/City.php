@@ -35,5 +35,10 @@ class City extends Model implements Transformable
     {
         return $this->hasMany(Neighborhood::class);
     }
+
+    public function freedays()
+    {
+        return $this->belongsToMany(FreeDay::class, 'city_has_freedays', 'city_id', 'freedays_id');
+    }
     
 }

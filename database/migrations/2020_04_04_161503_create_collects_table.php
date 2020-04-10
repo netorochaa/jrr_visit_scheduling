@@ -35,14 +35,18 @@ class CreateCollectsTable extends Migration
 			$table->string('attachment', 45)->nullable();
 			
 			// FK
-			$table->unsignedInteger('cancelation-type_id')->nullable();
-			$table->foreign('cancelation-type_id')->references('id')->on('cancellation-types');
-			$table->unsignedInteger('patient-type_id');
-			$table->foreign('patient-type_id')->references('id')->on('patient-types');
+			$table->unsignedInteger('cancelationType_id')->nullable();
+			$table->foreign('cancelationType_id')->references('id')->on('cancellationTypes');
+
+			$table->unsignedInteger('patientTypes_id');
+			$table->foreign('patientTypes_id')->references('id')->on('patientTypes');
+
 			$table->unsignedInteger('collector_id');
 			$table->foreign('collector_id')->references('id')->on('collectors');
+
 			$table->unsignedInteger('neighborhood_id');
 			$table->foreign('neighborhood_id')->references('id')->on('neighborhoods');
+			
 			$table->unsignedInteger('user_id');
 			$table->foreign('user_id')->references('id')->on('users');
 
@@ -59,6 +63,6 @@ class CreateCollectsTable extends Migration
 	public function down()
 	{
 		Schema::disableForeignKeyConstraints();
-		Schema::drop('collects');
+		Schema::dropIfExists('collects');
 	}
 }

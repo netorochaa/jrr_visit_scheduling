@@ -35,6 +35,7 @@ class CreatePeopleHasCollectTable extends Migration
      */
     public function down()
     {
+        Schema::disableForeignKeyConstraints();
         Schema::dropIfExists('people_has_collect');
     }
 }

@@ -42,6 +42,6 @@ class CreateCollectorsTable extends Migration
 	public function down()
 	{
         Schema::disableForeignKeyConstraints();
-		Schema::drop('collectors');
+		Schema::dropIfExists('collectors');
 	}
 }

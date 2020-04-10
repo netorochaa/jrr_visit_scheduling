@@ -28,6 +28,11 @@ class Collector extends Model implements Transformable
         return $this->belongsTo(User::class, 'user_id');
     }
 
+    public function freedays()
+    {
+        return $this->belongsToMany(Freeday::class, 'collector_has_freedays', 'collector_id', 'freedays_id');
+    }
+
     public function getFormattedActiveAttribute(){
         switch ($this->attributes['active']) {
             case "on":

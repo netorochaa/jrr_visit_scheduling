@@ -25,3 +25,6 @@ Route::resource('city', 'CitiesController');
 
 // Neighborhood routes
 Route::resource('neighborhood', 'NeighborhoodsController');
+
+// Freedays routes
+Route::resource('freedays', 'FreedaysController');

@@ -75,7 +75,7 @@
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a href="pages/layout/top-nav.html" class="nav-link @if($namepage == 'Dias sem coletas') active @endif">
+                            <a href="{{ route('freedays.index') }}" class="nav-link @if($namepage == 'Dias sem coletas') active @endif">
                                 <i class="far fa-circle nav-icon"></i>
                                 <p>Dias sem coletas</p>
                             </a>

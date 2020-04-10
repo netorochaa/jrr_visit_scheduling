@@ -27,7 +27,7 @@ class CreateUsersTable extends Migration
             $table->char('type', 2)->default(1);
 			$table->char('active', 3)->default('on');
 
-			$table->timestampsTz();
+			$table->timestamps();
 			$table->softDeletes();
 		});
 	}
@@ -39,6 +39,6 @@ class CreateUsersTable extends Migration
 	 */
 	public function down()
 	{
-		Schema::drop('users');
+		Schema::dropIfExists('users');
 	}
 }

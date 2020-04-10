@@ -40,6 +40,6 @@ class CreatePeopleTable extends Migration
 	public function down()
 	{
 		Schema::disableForeignKeyConstraints();
-		Schema::drop('people');
+		Schema::dropIfExists('people');
 	}
 }

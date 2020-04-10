@@ -15,11 +15,11 @@ class CreateFreeDaysTable extends Migration
 	 */
 	public function up()
 	{
-		Schema::create('free-days', function(Blueprint $table) {
+		Schema::create('freeDays', function(Blueprint $table) {
 			$table->increments('id');
+			$table->char('type', 1);
 			$table->string('name', 50);
-			$table->string('initialDate', 50);
-			$table->string('finalDate', 50);
+			$table->string('dateRange', 23);
 			$table->char('active', 3)->default('on');
 
 			$table->timestamps();
@@ -34,6 +34,6 @@ class CreateFreeDaysTable extends Migration
 	 */
 	public function down()
 	{
-		Schema::drop('free-days');
+		Schema::dropIfExists('freeDays');
 	}
 }

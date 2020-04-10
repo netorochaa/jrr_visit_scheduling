@@ -10,85 +10,79 @@ use Prettus\Validator\Exceptions\ValidatorException;
 use App\Http\Requests\FreeDayCreateRequest;
 use App\Http\Requests\FreeDayUpdateRequest;
 use App\Repositories\FreeDayRepository;
+use App\Repositories\CollectorRepository;
+use App\Repositories\CityRepository;
 use App\Validators\FreeDayValidator;
 
-/**
- * Class FreeDaysController.
- *
- * @package namespace App\Http\Controllers;
- */
 class FreeDaysController extends Controller
 {
-    /**
-     * @var FreeDayRepository
-     */
-    protected $repository;
-
-    /**
-     * @var FreeDayValidator
-     */
+  
+    protected $repository, $collectorRepository, $cityRepository;
     protected $validator;
 
-    /**
-     * FreeDaysController constructor.
-     *
-     * @param FreeDayRepository $repository
-     * @param FreeDayValidator $validator
-     */
-    public function __construct(FreeDayRepository $repository, FreeDayValidator $validator)
+    public function __construct(FreeDayRepository $repository, FreeDayValidator $validator, CollectorRepository $collectorRepository, CityRepository $cityRepository)
     {
         $this->repository = $repository;
         $this->validator  = $validator;
+        $this->collectorRepository = $collectorRepository;
+        $this->cityRepository = $cityRepository;
     }
 
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
     public function index()
     {
-        $this->repository->pushCriteria(app('Prettus\Repository\Criteria\RequestCriteria'));
-        $freeDays = $this->repository->all();
+        $freedays       = $this->repository->all();
+        $collectors     = $this->collectorRepository->all();
+        $collectors_list    = $this->collectorRepository->pluck('name', 'id');
+        $cities_list        = $this->cityRepository->pluck('name', 'id');
+        $type_list          = $this->repository->type_list();
 
-        if (request()->wantsJson()) {
+        return view('freedays.index', [
+            'namepage'      => 'Dias sem coletas',
+            'threeview'     => 'Cadastros',
+            'titlespage'    => ['Cadastro de dias sem coletas'],
+            'titlecard'     => 'Dias sem coletas cadastrados',
+            'titlemodal'    => 'Cadastrar dia',
 
-            return response()->json([
-                'data' => $freeDays,
-            ]);
-        }
+            //Lists for select
+            'collectors_list' => $collectors_list,
+            'cities_list' => $cities_list,
+            'type_list' => $type_list,
 
-        return view('freeDays.index', compact('freeDays'));
+            //List of entitie
+            'table' => $this->repository->getTable(),
+            'thead_for_datatable' => ['Nome', 'Tipo', 'Período', 'Ativo'],
+            'freedays_list' => $freedays,
+        ]);
     }
 
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  FreeDayCreateRequest $request
-     *
-     * @return \Illuminate\Http\Response
-     *
-     * @throws \Prettus\Validator\Exceptions\ValidatorException
-     */
     public function store(FreeDayCreateRequest $request)
     {
         try {
 
             $this->validator->with($request->all())->passesOrFail(ValidatorInterface::RULE_CREATE);
+            $freeDay = $this->repository->create($request->except(['city_id', 'collector_id']));
 
-            $freeDay = $this->repository->create($request->all());
-
-            $response = [
-                'message' => 'FreeDay created.',
-                'data'    => $freeDay->toArray(),
-            ];
-
-            if ($request->wantsJson()) {
-
-                return response()->json($response);
+            $collectors = $request->has('collector_id') ? $request->all()['collector_id'] : null;
+            $cities = $request->has('city_id') ? $request->all()['city_id'] : null;
+            
+            if($collectors != null){
+                for ($i=0; $i < count($collectors); $i++) {
+                    $freeDay->collectors()->attach($collectors[$i]);
+                }
+            }else if($cities != null){
+                for ($i=0; $i < count($cities); $i++) {
+                    $freeDay->cities()->attach($cities[$i]);
+                }
             }
 
-            return redirect()->back()->with('message', $response['message']);
+            $response = [
+                'message' => 'Dias sem coletas cadastrados',
+                'type'   => 'info',
+            ];
+
+            session()->flash('return', $response);
+
+            return redirect()->route('freedays.index');
         } catch (ValidatorException $e) {
             if ($request->wantsJson()) {
                 return response()->json([

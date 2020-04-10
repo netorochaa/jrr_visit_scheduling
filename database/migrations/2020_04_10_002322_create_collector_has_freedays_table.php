@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateCollectorHasNeighborhoodTable extends Migration
+class CreateCollectorHasFreedaysTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,16 +13,16 @@ class CreateCollectorHasNeighborhoodTable extends Migration
      */
     public function up()
     {
-        Schema::create('collector_has_neighborhood', function (Blueprint $table) {
-			$table->unsignedInteger('neighborhood_id');
+        Schema::create('collector_has_freedays', function (Blueprint $table) {
             $table->unsignedInteger('collector_id');
+            $table->unsignedInteger('freedays_id');
 
-            $table->primary(['neighborhood_id', 'collector_id']);
+            $table->primary(['collector_id', 'freedays_id']);
 
             //FK
-            $table->foreign('neighborhood_id')->references('id')->on('neighborhoods');
+            $table->foreign('collector_id')->references('id')->on('collectors');
             //FK
-			$table->foreign('collector_id')->references('id')->on('collectors');
+			$table->foreign('freedays_id')->references('id')->on('freedays');
 
             $table->timestampsTz();
         });
@@ -36,6 +36,6 @@ class CreateCollectorHasNeighborhoodTable extends Migration
     public function down()
     {
         Schema::disableForeignKeyConstraints();
-        Schema::dropIfExists('collector_has_neighborhood');
+        Schema::dropIfExists('collector_has_freedays');
     }
 }

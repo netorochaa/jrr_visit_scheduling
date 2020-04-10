@@ -15,7 +15,7 @@ class CreatePatientTypesTable extends Migration
 	 */
 	public function up()
 	{
-		Schema::create('patient-types', function(Blueprint $table) {
+		Schema::create('patientTypes', function(Blueprint $table) {
             $table->increments('id');
 			$table->string('name', 45);
 			$table->char('needReponsible', 1)->default('1');
@@ -34,6 +34,6 @@ class CreatePatientTypesTable extends Migration
 	 */
 	public function down()
 	{
-		Schema::drop('patient-types');
+		Schema::dropIfExists('patientTypes');
 	}
 }

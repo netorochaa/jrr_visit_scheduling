@@ -39,6 +39,6 @@ class CreateNeighborhoodsTable extends Migration
 	public function down()
 	{
 		Schema::disableForeignKeyConstraints();
-		Schema::drop('neighborhoods');
+		Schema::dropIfExists('neighborhoods');
 	}
 }

@@ -44,5 +44,15 @@ class FreeDayRepositoryEloquent extends BaseRepository implements FreeDayReposit
     {
         $this->pushCriteria(app(RequestCriteria::class));
     }
+
+    public function type_list()
+    {
+      $list = [
+        '1' => 'POR COLETADOR',
+        '2' => 'POR CIDADE',
+      ];
+
+      return $list;
+    }
     
 }

@@ -107,16 +107,12 @@ class CollectorsController extends Controller
     {
         try {
 
-            // dd($collect_id);
-
             $collector = $this->repository->find($collect_id);
             $neighborhoods = $request->all()['neighborhood_id'];
 
             for ($i=0; $i < count($neighborhoods); $i++) {
                 $collector->neighborhoods()->attach($neighborhoods[$i]);
             }
-
-            // dd($collector->neighborhoods);
 
             $response = [
                 'message' => 'Bairros relacionados',

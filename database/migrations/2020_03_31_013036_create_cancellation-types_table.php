@@ -15,7 +15,7 @@ class CreateCancellationTypesTable extends Migration
 	 */
 	public function up()
 	{
-		Schema::create('cancellation-types', function(Blueprint $table) {
+		Schema::create('cancellationTypes', function(Blueprint $table) {
             $table->increments('id');
 			$table->string('name', 140);
 			$table->char('active', 3)->default('on');
@@ -32,6 +32,6 @@ class CreateCancellationTypesTable extends Migration
 	 */
 	public function down()
 	{
-		Schema::drop('cancellation-types');
+		Schema::dropIfExists('cancellationTypes');
 	}
 }
