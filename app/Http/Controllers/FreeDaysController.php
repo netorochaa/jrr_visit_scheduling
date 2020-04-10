@@ -42,6 +42,7 @@ class FreeDaysController extends Controller
             'titlespage'    => ['Cadastro de dias sem coletas'],
             'titlecard'     => 'Dias sem coletas cadastrados',
             'titlemodal'    => 'Cadastrar dia',
+            'add'           => true,
 
             //Lists for select
             'collectors_list' => $collectors_list,

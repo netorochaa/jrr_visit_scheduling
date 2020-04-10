@@ -1,6 +1,10 @@
 
 <div class="card">
+    @if ($collector ?? null)
+        {!! Form::model($collector, ['route' => ['collector.update', $collector->id], 'method' => 'put', 'role' => 'form', 'class' => 'form-horizontal']) !!}
+    @else
     {!! Form::open(['route' => 'collector.store', 'method' => 'post', 'role' => 'form', 'class' => 'form-horizontal']) !!}
+    @endif
     <div class="card-body">
         <div class="row">
             @include('templates.components.input', ['label' => 'Nome do coletador',                                'col' => '8', 'input' => 'name',             'attributes' => ['require' => 'true', 'class' => 'form-control']])

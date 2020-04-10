@@ -18,7 +18,37 @@ class PatientType extends Model implements Transformable
     use SoftDeletes;
 
     public $timestamps = true;
-    protected $table = 'patientType';
-    protected $fillable = ['name', 'needReponsible', 'priority', 'active'];
+    protected $table = 'patientTypes';
+    protected $fillable = ['name', 'needReponsible', 'active'];
+
+    public function getFormattedActiveAttribute()
+    {
+        switch ($this->attributes['active']) {
+            case "on":
+                return "ATIVO";
+                break;
+            case "off":
+                return "INATIVO";
+                break;
+            default:
+                return $this->attributes['active'];
+                break;
+        }
+    }
+
+    public function getFormattedNeedReponsibleAttribute()
+    {
+        switch ($this->attributes['needReponsible']) {
+            case "on":
+                return "SIM";
+                break;
+            case "off":
+                return "NÃO";
+                break;
+            default:
+                return $this->attributes['needReponsible'];
+                break;
+        }
+    }
 
 }

@@ -12,64 +12,37 @@ use App\Http\Requests\PatientTypeUpdateRequest;
 use App\Repositories\PatientTypeRepository;
 use App\Validators\PatientTypeValidator;
 
-/**
- * Class PatientTypesController.
- *
- * @package namespace App\Http\Controllers;
- */
 class PatientTypesController extends Controller
 {
-    /**
-     * @var PatientTypeRepository
-     */
+   
     protected $repository;
-
-    /**
-     * @var PatientTypeValidator
-     */
     protected $validator;
 
-    /**
-     * PatientTypesController constructor.
-     *
-     * @param PatientTypeRepository $repository
-     * @param PatientTypeValidator $validator
-     */
     public function __construct(PatientTypeRepository $repository, PatientTypeValidator $validator)
     {
         $this->repository = $repository;
         $this->validator  = $validator;
     }
 
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
     public function index()
     {
-        $this->repository->pushCriteria(app('Prettus\Repository\Criteria\RequestCriteria'));
-        $patientTypes = $this->repository->all();
+        $patientTypes  = $this->repository->all();
 
-        if (request()->wantsJson()) {
+        return view('patientType.index', [
+            'namepage'      => 'Tipo de paciente',
+            'threeview'     => 'Cadastros',
+            'titlespage'    => ['Cadastro de tipo de paciente'],
+            'titlecard'     => 'Lista dos tipos cadastrados',
+            'titlemodal'    => 'Cadastrar tipo de paciente',
+            'add'           => true,
 
-            return response()->json([
-                'data' => $patientTypes,
-            ]);
-        }
-
-        return view('patientTypes.index', compact('patientTypes'));
+            //List of entitie
+            'table' => $this->repository->getTable(),
+            'thead_for_datatable' => ['Nome', 'Responsável', 'Status', 'Criado', 'Última atualização'],
+            'patientTypes' => $patientTypes
+        ]);
     }
 
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  PatientTypeCreateRequest $request
-     *
-     * @return \Illuminate\Http\Response
-     *
-     * @throws \Prettus\Validator\Exceptions\ValidatorException
-     */
     public function store(PatientTypeCreateRequest $request)
     {
         try {
@@ -79,35 +52,25 @@ class PatientTypesController extends Controller
             $patientType = $this->repository->create($request->all());
 
             $response = [
-                'message' => 'PatientType created.',
-                'data'    => $patientType->toArray(),
+                'message' => 'Tipo de paciente cadastrado',
+                'type'   => 'info',
             ];
 
-            if ($request->wantsJson()) {
+            session()->flash('return', $response);
 
-                return response()->json($response);
-            }
-
-            return redirect()->back()->with('message', $response['message']);
+            return redirect()->route('patientType.index');
         } catch (ValidatorException $e) {
-            if ($request->wantsJson()) {
-                return response()->json([
-                    'error'   => true,
-                    'message' => $e->getMessageBag()
-                ]);
-            }
+            $response = [
+                'message' =>  $e->getMessageBag(),
+                'type'    => 'error'
+            ];
 
-            return redirect()->back()->withErrors($e->getMessageBag())->withInput();
+            session()->flash('return', $response);
+
+            return redirect()->route('patientType.index');
         }
     }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  int $id
-     *
-     * @return \Illuminate\Http\Response
-     */
     public function show($id)
     {
         $patientType = $this->repository->find($id);

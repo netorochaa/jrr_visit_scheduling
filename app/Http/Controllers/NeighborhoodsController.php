@@ -41,6 +41,7 @@ class NeighborhoodsController extends Controller
             'titlemodal'    => 'Cadastrar bairro',
             'titlecard2'    => 'Cidades cadastradas',
             'titlemodal2'   => 'Cadastrar cidade',
+            'add'           => true,
 
             //List of entitie
             'table' => $this->repository->getTable(),

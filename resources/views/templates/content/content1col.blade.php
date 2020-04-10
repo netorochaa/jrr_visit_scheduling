@@ -4,7 +4,7 @@
         <div class="card">
           <div class="card-header">
             <h3 class="card-title left">{{ $titlecard }}</h3>
-            <button type="button" data-toggle="modal" data-target="#modal-xl" style="float: right!important" class="btn btn-outline-primary"><i class="fas fa-plus"></i></button>
+            @if ($add ?? null) <button type="button" data-toggle="modal" data-target="#modal-xl" style="float: right!important" class="btn btn-outline-primary"><i class="fas fa-plus"></i></button>@endif
           </div>
           <div class="card-body">
             @include( $contentbody )

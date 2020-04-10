@@ -39,6 +39,7 @@ class UsersController extends Controller
             'titlespage'    => ['Cadastro de usuários'],
             'titlecard'     => 'Lista de usuários cadastrados',
             'titlemodal'    => 'Cadastrar usuário',
+            'add'           => true,
 
             //Lists for select
             'typeUsers_list' => $typeUsers_list,
@@ -102,42 +103,51 @@ class UsersController extends Controller
 
     public function edit($id)
     {
-        // $user = $this->repository->find($id);
+        $user = $this->repository->find($id);
+        $typeUsers_list = $this->repository->typeUser_list();
 
-        // return view('users.edit', compact('user'));
+        return view('user.edit', [
+            'namepage'       => 'Usuário',
+            'threeview'      => 'Cadastros',
+            'titlespage'     => ['Cadastro de usuários'],
+            'titlecard'      => 'Editar usuário',
+            'typeUsers_list' => $typeUsers_list,
+            'table'          => $this->repository->getTable(),
+            'goback'         => true,
+            'add'            => false,
+            'user'           => $user
+        ]);
     }
 
     public function update(UserUpdateRequest $request, $id)
     {
-        // try {
+        try {
 
-        //     $this->validator->with($request->all())->passesOrFail(ValidatorInterface::RULE_UPDATE);
+            $request->all()['password'] != null ? $userRequest = $request->all() : $userRequest = $request->except('password');
 
-        //     $user = $this->repository->update($request->all(), $id);
+            $this->validator->with($userRequest)->passesOrFail(ValidatorInterface::RULE_UPDATE);
 
-        //     $response = [
-        //         'message' => 'User updated.',
-        //         'data'    => $user->toArray(),
-        //     ];
+            $user = $this->repository->update($userRequest, $id);
 
-        //     if ($request->wantsJson()) {
+            $response = [
+                'message' => 'Usuário atualizado',
+                'type'   => 'info',
+            ];
 
-        //         return response()->json($response);
-        //     }
+            session()->flash('return', $response);
 
-        //     return redirect()->back()->with('message', $response['message']);
-        // } catch (ValidatorException $e) {
+            return redirect()->route('user.index');
+        } catch (ValidatorException $e) {
+            
+            $response = [
+                'message' =>  $e->getMessageBag(),
+                'type'    => 'error'
+            ];
 
-        //     if ($request->wantsJson()) {
+            session()->flash('return', $response);
 
-        //         return response()->json([
-        //             'error'   => true,
-        //             'message' => $e->getMessageBag()
-        //         ]);
-        //     }
-
-        //     return redirect()->back()->withErrors($e->getMessageBag())->withInput();
-        // }
+            return redirect()->route('user.index');
+        }
     }
 
     public function destroy($id)

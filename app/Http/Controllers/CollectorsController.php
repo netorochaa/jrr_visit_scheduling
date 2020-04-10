@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use DB;
 
 use App\Http\Requests;
 use Prettus\Validator\Contracts\ValidatorInterface;
@@ -39,6 +40,7 @@ class CollectorsController extends Controller
             'titlespage'    => ['Cadastro de coletadores'],
             'titlecard'     => 'Lista de coletadores cadastrados',
             'titlemodal'    => 'Cadastrar coletador',
+            'add'           => true,
 
             //Lists for select
             'user_list' => $user_list,
@@ -82,7 +84,8 @@ class CollectorsController extends Controller
     public function show($id)
     {
         $collector = $this->repository->find($id);
-        $neighborhoods = $this->neighborhoodRepository->pluck('name', 'id');
+        // $neighborhoods = $this->neighborhoodRepository->pluck('name', 'id');
+        $neighborhoods = DB::table('neighborhoods')->join('cities', 'neighborhoods.city_id', '=', 'cities.id')->select(DB::raw('concat(neighborhoods.name , " - ", cities.name ,"-", cities.UF) as nameWithCity'), 'neighborhoods.id')->pluck('nameWithCity', 'neighborhoods.id');
 
         if (request()->wantsJson()) {
 
@@ -98,6 +101,7 @@ class CollectorsController extends Controller
             'titlecard'     => 'Bairros vinculados ao ' . $collector->getAttribute('name'),
             'titlemodal'    => 'Relacionar bairros ao coletador ' . $collector->getAttribute('name'),
             'goback'        => true,
+            'add'           => true,
             'collector'     => $collector,
             'neighborhoods' => $neighborhoods
             ]);
@@ -121,7 +125,7 @@ class CollectorsController extends Controller
 
             session()->flash('return', $response);
 
-            return redirect()->route('collector.show', $collector->id);
+            return redirect()->route('collector.index', $collector->id);
         } catch (ValidatorException $e) {
 
             $response = [
@@ -131,68 +135,82 @@ class CollectorsController extends Controller
 
             session()->flash('return', $response);
 
-            return redirect()->route('collector.show', $collector->id);
+            return redirect()->route('collector.index', $collector->id);
         }
+    }
+
+    public function detachCollectorNeighborhoods($collector_id, $neighborhood_id)
+    {   
+        
+        $collector = $this->repository->find($collector_id);
+        $neighborhood = $collector->neighborhoods()->where('neighborhood_id', $neighborhood_id)->get();
+
+        $detach = $collector->neighborhoods()->detach($neighborhood);
+
+        $response = [
+            'message' => 'Coletador deletado',
+            'deleted' => $detach,
+        ];
+
+        if (request()->wantsJson()) {
+
+            return response()->json($response);
+        }
+
+        return redirect()->back()->with('message', $response['message']);
     }
 
     public function edit($id)
     {
         $collector = $this->repository->find($id);
+        $user_list = $this->userRepository->where('type', 2)->pluck('name', 'id');
 
-        return view('collectors.edit', compact('collector'));
+        return view('collector.edit', [
+            'namepage'      => 'Coletador',
+            'threeview'     => 'Cadastros',
+            'titlespage'    => ['Cadastro de coletadores'],
+            'titlecard'     => 'Lista de coletadores cadastrados',
+            'goback'        => true,
+            'add'           => false,
+
+            //Lists for select
+            'user_list' => $user_list,
+
+            //List of entitie
+            'table' => $this->repository->getTable(),
+            'collector' => $collector
+        ]);
     }
 
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  CollectorUpdateRequest $request
-     * @param  string            $id
-     *
-     * @return Response
-     *
-     * @throws \Prettus\Validator\Exceptions\ValidatorException
-     */
     public function update(CollectorUpdateRequest $request, $id)
     {
         try {
-
             $this->validator->with($request->all())->passesOrFail(ValidatorInterface::RULE_UPDATE);
-
             $collector = $this->repository->update($request->all(), $id);
 
             $response = [
-                'message' => 'Collector updated.',
-                'data'    => $collector->toArray(),
+                'message' => 'Coletador atualizado',
+                'type'   => 'info',
             ];
 
-            if ($request->wantsJson()) {
+            session()->flash('return', $response);
 
-                return response()->json($response);
-            }
-
-            return redirect()->back()->with('message', $response['message']);
+            return redirect()->route('collector.index');
         } catch (ValidatorException $e) {
 
-            if ($request->wantsJson()) {
+            $response = [
+                'message' =>  $e->getMessageBag(),
+                'type'    => 'error'
+            ];
 
-                return response()->json([
-                    'error'   => true,
-                    'message' => $e->getMessageBag()
-                ]);
-            }
+            session()->flash('return', $response);
 
-            return redirect()->back()->withErrors($e->getMessageBag())->withInput();
+            return redirect()->route('collector.index');
         }
     }
 
 
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int $id
-     *
-     * @return \Illuminate\Http\Response
-     */
+    
     public function destroy($id)
     {
         $deleted = $this->repository->delete($id);

@@ -18,7 +18,8 @@ Route::resource('user', 'UsersController');
 // Route::get('/collector', ['as' => 'collector.index', 'uses' => 'CollectorsController@index']);
 // Route::post('/collector', ['as' => 'collector.store', 'uses' => 'CollectorsController@store']);
 Route::resource('collector', 'CollectorsController');
-Route::post('collecotor/{collector_id}/neighborhoods', ['as' => 'collector.neighborhoods.store', 'uses' => 'CollectorsController@storeCollectorNeighborhoods']);
+Route::post('collecotor/{collector_id}/neighborhoods',                   ['as' => 'collector.neighborhoods.store', 'uses' => 'CollectorsController@storeCollectorNeighborhoods']);
+Route::post('collecotor/{collector_id}/neighborhoods/{neighborhood_id}', ['as' => 'collector.neighborhoods.detach', 'uses' => 'CollectorsController@detachCollectorNeighborhoods']);
 
 // City routes
 Route::resource('city', 'CitiesController');
@@ -28,3 +29,9 @@ Route::resource('neighborhood', 'NeighborhoodsController');
 
 // Freedays routes
 Route::resource('freedays', 'FreedaysController');
+
+// patientType
+Route::resource('patientType', 'PatientTypesController');
+
+// cancellationType
+Route::resource('cancellationType', 'CancellationTypesController');

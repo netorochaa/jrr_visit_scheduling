@@ -52,6 +52,4 @@ class Collector extends Model implements Transformable
         return $this->attributes['collectionInterval'] . " min.";
 
     }
-
-
 }

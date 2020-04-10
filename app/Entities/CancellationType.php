@@ -13,7 +13,22 @@ class CancellationType extends Model implements Transformable
     use SoftDeletes;
 
     public $timestamps = true;
-    protected $table = 'cancellationType';
+    protected $table = 'cancellationTypes';
     protected $fillable = ['name', 'active'];
+
+    public function getFormattedNeedReponsibleAttribute()
+    {
+        switch ($this->attributes['needReponsible']) {
+            case "on":
+                return "SIM";
+                break;
+            case "off":
+                return "NÃO";
+                break;
+            default:
+                return $this->attributes['needReponsible'];
+                break;
+        }
+    }
 
 }

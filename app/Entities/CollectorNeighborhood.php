@@ -2,12 +2,10 @@
 
 namespace App\Entites;
 
-use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Model;
 
 class CollectorNeighborhood extends Model
 {
-    use SoftDeletes;
     use Notifiable;
     use TransformableTrait;
 

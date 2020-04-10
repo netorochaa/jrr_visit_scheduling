@@ -2,12 +2,10 @@
 
 namespace App\Entities;
 
-use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Model;
 
 class CityFreedays extends Model
 {
-    use SoftDeletes;
     use Notifiable;
     use TransformableTrait;
 
