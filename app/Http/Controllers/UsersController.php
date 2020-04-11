@@ -29,8 +29,6 @@ class UsersController extends Controller
     public function index()
     {
         $users_list  = $this->repository->all();
-
-        // dd($users_list);
         $typeUsers_list = $this->repository->typeUser_list();
 
         return view('user.index', [
@@ -40,11 +38,9 @@ class UsersController extends Controller
             'titlecard'     => 'Lista de usuários cadastrados',
             'titlemodal'    => 'Cadastrar usuário',
             'add'           => true,
-
             //Lists for select
             'typeUsers_list' => $typeUsers_list,
-
-            //List of entitie
+            //Info of entitie
             'table' => $this->repository->getTable(),
             'thead_for_datatable' => ['E-mail', 'Nome', 'Tipo', 'Status', 'Criado', 'Última atualização'],
             'users_list' => $users_list
@@ -53,52 +49,25 @@ class UsersController extends Controller
 
     public function store(UserCreateRequest $request)
     {
-        try {
-
+        try 
+        {
             $this->validator->with($request->all())->passesOrFail(ValidatorInterface::RULE_CREATE);
-
             $user = $this->repository->create($request->all());
 
             $response = [
                 'message' => 'Usuário criado.',
                 'type'   => 'info',
             ];
-
-            session()->flash('return', $response);
-
-            return redirect()->route('user.index');
-        } catch (ValidatorException $e) {
-
+        }
+        catch (ValidatorException $e) 
+        {
             $response = [
                 'message' =>  $e->getMessageBag(),
                 'type'    => 'error'
             ];
-
-            session()->flash('return', $response);
-
-            return redirect()->route('user.index');
         }
-    }
-
-    /**
-     * Display the specified resource.
-     *
-     * @param  int $id
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function show($id)
-    {
-        $user = $this->repository->find($id);
-
-        if (request()->wantsJson()) {
-
-            return response()->json([
-                'data' => $user,
-            ]);
-        }
-
-        return view('users.show', compact('user'));
+        session()->flash('return', $response);
+        return redirect()->route('user.index');
     }
 
     public function edit($id)
@@ -121,49 +90,29 @@ class UsersController extends Controller
 
     public function update(UserUpdateRequest $request, $id)
     {
-        try {
-
+        try 
+        {
             $request->all()['password'] != null ? $userRequest = $request->all() : $userRequest = $request->except('password');
-
             $this->validator->with($userRequest)->passesOrFail(ValidatorInterface::RULE_UPDATE);
-
             $user = $this->repository->update($userRequest, $id);
 
             $response = [
                 'message' => 'Usuário atualizado',
                 'type'   => 'info',
             ];
-
-            session()->flash('return', $response);
-
-            return redirect()->route('user.index');
-        } catch (ValidatorException $e) {
-            
+        } 
+        catch (ValidatorException $e) 
+        { 
             $response = [
                 'message' =>  $e->getMessageBag(),
                 'type'    => 'error'
             ];
-
-            session()->flash('return', $response);
-
-            return redirect()->route('user.index');
         }
+        session()->flash('return', $response);
+        return redirect()->route('user.index');
     }
 
-    public function destroy($id)
-    {
-        $deleted = $this->repository->delete($id);
-
-        $response = [
-            'message' => 'Usuário deletado',
-            'deleted' => $deleted,
-        ];
-
-        if (request()->wantsJson()) {
-
-            return response()->json($response);
-        }
-
-        return redirect()->back()->with('message', $response['message']);
-    }
+    //Methods not used
+    public function show($id){}  
+    public function destroy($id){}
 }

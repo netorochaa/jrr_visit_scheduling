@@ -58,130 +58,50 @@ class FreeDaysController extends Controller
 
     public function store(FreeDayCreateRequest $request)
     {
-        try {
-
+        try 
+        {
             $this->validator->with($request->all())->passesOrFail(ValidatorInterface::RULE_CREATE);
-            $freeDay = $this->repository->create($request->except(['city_id', 'collector_id']));
 
             $collectors = $request->has('collector_id') ? $request->all()['collector_id'] : null;
-            $cities = $request->has('city_id') ? $request->all()['city_id'] : null;
+            $cities     = $request->has('city_id') ? $request->all()['city_id'] : null;
+            $collectors == null && $cities == null ? $freeDay = null : $freeDay = $this->repository->create($request->except(['city_id', 'collector_id']));
             
-            if($collectors != null){
-                for ($i=0; $i < count($collectors); $i++) {
-                    $freeDay->collectors()->attach($collectors[$i]);
+            if($freeDay == null){
+                $response = [
+                    'message' => 'Coletadores/Cidades não iformadas.',
+                    'type'   => 'error',
+                ];
+                session()->flash('return', $response);
+                return redirect()->route('freedays.index');
+            }
+            else{
+                if($collectors != null)
+                {
+                    for ($i=0; $i < count($collectors); $i++) 
+                        $freeDay->collectors()->attach($collectors[$i]);
                 }
-            }else if($cities != null){
-                for ($i=0; $i < count($cities); $i++) {
-                    $freeDay->cities()->attach($cities[$i]);
+                else if($cities != null)
+                {
+                    for ($i=0; $i < count($cities); $i++) 
+                        $freeDay->cities()->attach($cities[$i]);
                 }
+                $response = [
+                    'message' => 'Dias sem coletas cadastrados',
+                    'type'   => 'info',
+                ];
             }
-
+        } 
+        catch (ValidatorException $e) 
+        {
             $response = [
-                'message' => 'Dias sem coletas cadastrados',
-                'type'   => 'info',
+                'message' =>  $e->getMessageBag(),
+                'type'    => 'error'
             ];
-
-            session()->flash('return', $response);
-
-            return redirect()->route('freedays.index');
-        } catch (ValidatorException $e) {
-            if ($request->wantsJson()) {
-                return response()->json([
-                    'error'   => true,
-                    'message' => $e->getMessageBag()
-                ]);
-            }
-
-            return redirect()->back()->withErrors($e->getMessageBag())->withInput();
         }
+        session()->flash('return', $response);
+        return redirect()->route('freedays.index');
     }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  int $id
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function show($id)
-    {
-        $freeDay = $this->repository->find($id);
-
-        if (request()->wantsJson()) {
-
-            return response()->json([
-                'data' => $freeDay,
-            ]);
-        }
-
-        return view('freeDays.show', compact('freeDay'));
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int $id
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function edit($id)
-    {
-        $freeDay = $this->repository->find($id);
-
-        return view('freeDays.edit', compact('freeDay'));
-    }
-
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  FreeDayUpdateRequest $request
-     * @param  string            $id
-     *
-     * @return Response
-     *
-     * @throws \Prettus\Validator\Exceptions\ValidatorException
-     */
-    public function update(FreeDayUpdateRequest $request, $id)
-    {
-        try {
-
-            $this->validator->with($request->all())->passesOrFail(ValidatorInterface::RULE_UPDATE);
-
-            $freeDay = $this->repository->update($request->all(), $id);
-
-            $response = [
-                'message' => 'FreeDay updated.',
-                'data'    => $freeDay->toArray(),
-            ];
-
-            if ($request->wantsJson()) {
-
-                return response()->json($response);
-            }
-
-            return redirect()->back()->with('message', $response['message']);
-        } catch (ValidatorException $e) {
-
-            if ($request->wantsJson()) {
-
-                return response()->json([
-                    'error'   => true,
-                    'message' => $e->getMessageBag()
-                ]);
-            }
-
-            return redirect()->back()->withErrors($e->getMessageBag())->withInput();
-        }
-    }
-
-
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int $id
-     *
-     * @return \Illuminate\Http\Response
-     */
     public function destroy($id)
     {
         $deleted = $this->repository->delete($id);
@@ -196,4 +116,11 @@ class FreeDaysController extends Controller
 
         return redirect()->back()->with('message', 'FreeDay deleted.');
     }
+
+    // METHODS NOT IMPLEMENTED, BECAUSE JUST WILL BE UTILIZED DESTROY
+    public function show($id){}
+
+    public function edit($id){}
+
+    public function update(FreeDayUpdateRequest $request, $id){}
 }

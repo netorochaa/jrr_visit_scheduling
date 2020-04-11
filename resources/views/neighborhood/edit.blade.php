@@ -2,8 +2,7 @@
 
 @section('content')
   @include('templates.content.header')
-  @include('templates.content.content1col', ['contentbody' => 'city.list'])
-  @include('templates.content.modallarge', ['titlemodal' => $titlemodal , 'contentmodal' => 'city.register'])
+  @include('templates.content.content1col', ['contentbody' => 'neighborhood.register'])
 @endsection
 
 @section('footer-distinct')

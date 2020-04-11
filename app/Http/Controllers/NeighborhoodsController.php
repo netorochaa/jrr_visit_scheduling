@@ -27,10 +27,10 @@ class NeighborhoodsController extends Controller
 
     public function index()
     {
-        $neighborhoods_list  = $this->repository->all();
-        $cities_list  = $this->cityRepository->all();
-        $regions_list = $this->repository->regions_list();
-        $cities_pluck_list  = $this->cityRepository->pluck('name', 'id');
+        $neighborhoods  = $this->repository->all();
+        $cities_list  = $this->cityRepository->all(); // for card city
+        $regions_list = $this->repository->regions_list(); 
+        $cities_pluck_list  = $this->cityRepository->pluck('name', 'id'); // for select in neighborhood
 
         return view('neighborhood.index', [
             'namepage'      => 'Bairro',
@@ -42,155 +42,87 @@ class NeighborhoodsController extends Controller
             'titlecard2'    => 'Cidades cadastradas',
             'titlemodal2'   => 'Cadastrar cidade',
             'add'           => true,
-
-            //List of entitie
+            //Lists of selects
+            'regions_list' => $regions_list,
+            'cities_list' => $cities_list,
+            'cities_pluck_list' => $cities_pluck_list,
+            //Info of entitie
             'table' => $this->repository->getTable(),
             'table2' => $this->cityRepository->getTable(),
             'thead_for_datatable' => ['Nome', 'Taxa', 'Região', 'Status', 'Cidade', 'Criado', 'Última atualização'],
             'thead_for_datatable2' => ['Nome', 'UF', 'Status'],
-            'neighborhoods_list' => $neighborhoods_list,
-            'regions_list' => $regions_list,
-            'cities_list' => $cities_list,
-            'cities_pluck_list' => $cities_pluck_list
+            'neighborhoods' => $neighborhoods,
         ]);
     }
 
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  NeighborhoodCreateRequest $request
-     *
-     * @return \Illuminate\Http\Response
-     *
-     * @throws \Prettus\Validator\Exceptions\ValidatorException
-     */
     public function store(NeighborhoodCreateRequest $request)
     {
-        try {
-
+        try 
+        {
             $this->validator->with($request->all())->passesOrFail(ValidatorInterface::RULE_CREATE);
-
             $neighborhood = $this->repository->create($request->all());
 
             $response = [
                 'message' => 'Bairro criado',
                 'type'   => 'info',
             ];
-
-            session()->flash('return', $response);
-
-            return redirect()->route('neighborhood.index');
-        } catch (ValidatorException $e) {
-
+        } 
+        catch (ValidatorException $e) 
+        {
             $response = [
                 'message' =>  $e->getMessageBag(),
                 'type'    => 'error'
             ];
-
-            session()->flash('return', $response);
-
-            return redirect()->route('neighborhood.index');
         }
+        session()->flash('return', $response);
+        return redirect()->route('neighborhood.index');
     }
-
-    /**
-     * Display the specified resource.
-     *
-     * @param  int $id
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function show($id)
-    {
-        $neighborhood = $this->repository->find($id);
-
-        if (request()->wantsJson()) {
-
-            return response()->json([
-                'data' => $neighborhood,
-            ]);
-        }
-
-        return view('neighborhoods.show', compact('neighborhood'));
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int $id
-     *
-     * @return \Illuminate\Http\Response
-     */
+    
     public function edit($id)
     {
         $neighborhood = $this->repository->find($id);
+        $regions_list = $this->repository->regions_list();
+        $cities_pluck_list  = $this->cityRepository->pluck('name', 'id');
 
-        return view('neighborhoods.edit', compact('neighborhood'));
+        return view('neighborhood.edit', [
+            'namepage'      => 'Bairro',
+            'threeview'     => 'Cadastros',
+            'titlespage'    => ['Cadastro de bairros'],
+            'titlecard'     => 'Bairros cadastrados',
+            'titlemodal'    => 'Cadastrar bairro',
+            'add'           => false,
+            'goback'        => true,
+            //Lists of selects
+            'regions_list'      => $regions_list,
+            'cities_pluck_list' => $cities_pluck_list,
+            //Info of entitie
+            'table'        => $this->repository->getTable(),
+            'neighborhood' => $neighborhood
+        ]);
     }
 
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  NeighborhoodUpdateRequest $request
-     * @param  string            $id
-     *
-     * @return Response
-     *
-     * @throws \Prettus\Validator\Exceptions\ValidatorException
-     */
     public function update(NeighborhoodUpdateRequest $request, $id)
     {
         try {
 
             $this->validator->with($request->all())->passesOrFail(ValidatorInterface::RULE_UPDATE);
-
             $neighborhood = $this->repository->update($request->all(), $id);
 
             $response = [
-                'message' => 'Neighborhood updated.',
-                'data'    => $neighborhood->toArray(),
+                'message' => 'Bairro atualizado',
+                'type'   => 'info',
             ];
-
-            if ($request->wantsJson()) {
-
-                return response()->json($response);
-            }
-
-            return redirect()->back()->with('message', $response['message']);
         } catch (ValidatorException $e) {
-
-            if ($request->wantsJson()) {
-
-                return response()->json([
-                    'error'   => true,
-                    'message' => $e->getMessageBag()
-                ]);
-            }
-
-            return redirect()->back()->withErrors($e->getMessageBag())->withInput();
+            $response = [
+                'message' =>  $e->getMessageBag(),
+                'type'    => 'error'
+            ];
         }
+        session()->flash('return', $response);
+        return redirect()->route('neighborhood.index');
     }
 
-
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int $id
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy($id)
-    {
-        $deleted = $this->repository->delete($id);
-
-        if (request()->wantsJson()) {
-
-            return response()->json([
-                'message' => 'Neighborhood deleted.',
-                'deleted' => $deleted,
-            ]);
-        }
-
-        return redirect()->back()->with('message', 'Neighborhood deleted.');
-    }
+    //Method not used
+    public function destroy($id){}
+    public function show($id){}
 }

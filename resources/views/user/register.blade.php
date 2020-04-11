@@ -1,6 +1,5 @@
 
 <div class="card">
-    {{-- {{ dd($user) }}  --}}
     @if ($user ?? null)
         {!! Form::model($user, ['route' => ['user.update', $user->id], 'method' => 'put', 'role' => 'form', 'class' => 'form-horizontal']) !!}
     @else

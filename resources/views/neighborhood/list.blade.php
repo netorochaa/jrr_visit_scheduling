@@ -8,7 +8,7 @@
         </tr>
     </thead>
     <tbody>
-        @foreach ($neighborhoods_list as $neighborhood)
+        @foreach ($neighborhoods as $neighborhood)
         <tr>
             <td>{{ $neighborhood->name }}</td>
             <td>{{ $neighborhood->displacementRate }}</td>

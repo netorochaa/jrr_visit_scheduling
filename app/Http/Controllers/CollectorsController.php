@@ -41,58 +41,82 @@ class CollectorsController extends Controller
             'titlecard'     => 'Lista de coletadores cadastrados',
             'titlemodal'    => 'Cadastrar coletador',
             'add'           => true,
-
-            //Lists for select
-            'user_list' => $user_list,
-
-            //List of entitie
-            'table' => $this->repository->getTable(),
+            //List for select
+            'user_list'     => $user_list,
+            //Info of entitie
+            'table'               => $this->repository->getTable(),
             'thead_for_datatable' => ['Nome', 'Hora inicial', 'Hora final', 'Intervalo entre coletas', 'Endereço inicial', 'Status', 'Colaborador', 'Bairros', 'Criado', 'Última atualização'],
-            'collectors_list' => $collectors_list
+            'collectors_list'     => $collectors_list
         ]);
     }
 
     public function store(CollectorCreateRequest $request)
     {
-        try {
-
+        try 
+        {
             $this->validator->with($request->all())->passesOrFail(ValidatorInterface::RULE_CREATE);
-
             $collector = $this->repository->create($request->all());
 
             $response = [
                 'message' => 'Coletador criado',
                 'type'   => 'info',
             ];
-
-            session()->flash('return', $response);
-
-            return redirect()->route('collector.index');
-        } catch (ValidatorException $e) {
-
+        } 
+        catch (ValidatorException $e) 
+        {
             $response = [
                 'message' =>  $e->getMessageBag(),
                 'type'    => 'error'
             ];
-
-            session()->flash('return', $response);
-
-            return redirect()->route('collector.index');
         }
+        session()->flash('return', $response);
+        return redirect()->route('collector.index');
+    }
+
+    public function storeCollectorNeighborhoods(Request $request, $collect_id)
+    {
+        try 
+        {
+            $collector = $this->repository->find($collect_id);
+            $neighborhoods = $request->has('neighborhood_id') ? $request->all()['neighborhood_id'] : null;
+
+            if($neighborhoods == null){
+                $response = [
+                    'message' =>  'Bairros não informados.',
+                    'type'    => 'error'
+                ];   
+                session()->flash('return', $response);
+                return redirect()->route('collector.index', $collector->id);
+            }
+            else
+            {
+                for ($i=0; $i < count($neighborhoods); $i++) 
+                    $collector->neighborhoods()->attach($neighborhoods[$i]);
+                
+                $response = [
+                    'message' => 'Bairros relacionados',
+                    'type'   => 'info',
+                ];
+            }
+        } 
+        catch (ValidatorException $e) 
+        {
+            $response = [
+                'message' =>  $e->getMessageBag(),
+                'type'    => 'error'
+            ];   
+        }
+        session()->flash('return', $response);
+        return redirect()->route('collector.index', $collector->id);
     }
 
     public function show($id)
     {
         $collector = $this->repository->find($id);
-        // $neighborhoods = $this->neighborhoodRepository->pluck('name', 'id');
-        $neighborhoods = DB::table('neighborhoods')->join('cities', 'neighborhoods.city_id', '=', 'cities.id')->select(DB::raw('concat(neighborhoods.name , " - ", cities.name ,"-", cities.UF) as nameWithCity'), 'neighborhoods.id')->pluck('nameWithCity', 'neighborhoods.id');
-
-        if (request()->wantsJson()) {
-
-            return response()->json([
-                'data' => $collector,
-            ]);
-        }
+        $neighborhoods = DB::table('neighborhoods')
+                                    ->join('cities', 'neighborhoods.city_id', '=', 'cities.id')
+                                    ->select(DB::raw('concat(neighborhoods.name , " - ", cities.name ,"-", cities.UF) as nameWithCity'), 'neighborhoods.id')
+                                    ->pluck('nameWithCity', 'neighborhoods.id');
 
         return view('collector.collector_neighborhood.index', [
             'namepage'      => 'Coletador',
@@ -104,60 +128,7 @@ class CollectorsController extends Controller
             'add'           => true,
             'collector'     => $collector,
             'neighborhoods' => $neighborhoods
-            ]);
-    }
-
-    public function storeCollectorNeighborhoods(Request $request, $collect_id)
-    {
-        try {
-
-            $collector = $this->repository->find($collect_id);
-            $neighborhoods = $request->all()['neighborhood_id'];
-
-            for ($i=0; $i < count($neighborhoods); $i++) {
-                $collector->neighborhoods()->attach($neighborhoods[$i]);
-            }
-
-            $response = [
-                'message' => 'Bairros relacionados',
-                'type'   => 'info',
-            ];
-
-            session()->flash('return', $response);
-
-            return redirect()->route('collector.index', $collector->id);
-        } catch (ValidatorException $e) {
-
-            $response = [
-                'message' =>  $e->getMessageBag(),
-                'type'    => 'error'
-            ];
-
-            session()->flash('return', $response);
-
-            return redirect()->route('collector.index', $collector->id);
-        }
-    }
-
-    public function detachCollectorNeighborhoods($collector_id, $neighborhood_id)
-    {   
-        
-        $collector = $this->repository->find($collector_id);
-        $neighborhood = $collector->neighborhoods()->where('neighborhood_id', $neighborhood_id)->get();
-
-        $detach = $collector->neighborhoods()->detach($neighborhood);
-
-        $response = [
-            'message' => 'Coletador deletado',
-            'deleted' => $detach,
-        ];
-
-        if (request()->wantsJson()) {
-
-            return response()->json($response);
-        }
-
-        return redirect()->back()->with('message', $response['message']);
+        ]);
     }
 
     public function edit($id)
@@ -172,11 +143,9 @@ class CollectorsController extends Controller
             'titlecard'     => 'Lista de coletadores cadastrados',
             'goback'        => true,
             'add'           => false,
-
             //Lists for select
             'user_list' => $user_list,
-
-            //List of entitie
+            //Info of entitie
             'table' => $this->repository->getTable(),
             'collector' => $collector
         ]);
@@ -184,7 +153,8 @@ class CollectorsController extends Controller
 
     public function update(CollectorUpdateRequest $request, $id)
     {
-        try {
+        try 
+        {
             $this->validator->with($request->all())->passesOrFail(ValidatorInterface::RULE_UPDATE);
             $collector = $this->repository->update($request->all(), $id);
 
@@ -192,39 +162,33 @@ class CollectorsController extends Controller
                 'message' => 'Coletador atualizado',
                 'type'   => 'info',
             ];
-
-            session()->flash('return', $response);
-
-            return redirect()->route('collector.index');
-        } catch (ValidatorException $e) {
-
+        } 
+        catch (ValidatorException $e) 
+        {
             $response = [
                 'message' =>  $e->getMessageBag(),
                 'type'    => 'error'
             ];
-
-            session()->flash('return', $response);
-
-            return redirect()->route('collector.index');
         }
+        session()->flash('return', $response);
+        return redirect()->route('collector.index');
     }
 
+    public function detachCollectorNeighborhoods($collector_id, $neighborhood_id)
+    {   
+        $collector = $this->repository->find($collector_id);
+        $neighborhood = $collector->neighborhoods()->where('neighborhood_id', $neighborhood_id)->get();
 
-    
-    public function destroy($id)
-    {
-        $deleted = $this->repository->delete($id);
+        $detach = $collector->neighborhoods()->detach($neighborhood);
 
         $response = [
-            'message' => 'Coletador deletado',
-            'deleted' => $deleted,
+            'message' => 'Coletador atualizado',
+            'type'   => 'info',
         ];
-
-        if (request()->wantsJson()) {
-
-            return response()->json($response);
-        }
-
-        return redirect()->back()->with('message', $response['message']);
+        session()->flash('return', $response);
+        return redirect()->route('collector.collector_neighborhood.index');
     }
+    
+    //Methods not used
+    public function destroy($id){}
 }

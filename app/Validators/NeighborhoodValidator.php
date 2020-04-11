@@ -19,10 +19,14 @@ class NeighborhoodValidator extends LaravelValidator
      */
     protected $rules = [
         ValidatorInterface::RULE_CREATE => [
-            'name' => 'required|unique:neighborhoods,name',
+            'name' => 'required',
             'displacementRate' => 'required',
             'city_id' => 'required',
         ],
-        ValidatorInterface::RULE_UPDATE => [],
+        ValidatorInterface::RULE_UPDATE => [
+            'name' => 'required',
+            'displacementRate' => 'required',
+            'city_id' => 'required',
+        ],
     ];
 }

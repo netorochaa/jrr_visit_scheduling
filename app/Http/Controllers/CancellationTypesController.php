@@ -44,83 +44,41 @@ class CancellationTypesController extends Controller
 
     public function store(CancellationTypeCreateRequest $request)
     {
-        try {
-
+        try 
+        {
             $this->validator->with($request->all())->passesOrFail(ValidatorInterface::RULE_CREATE);
-
             $cancellationType = $this->repository->create($request->all());
 
             $response = [
                 'message' => 'Cancelamento cadastrado',
                 'type'   => 'info',
-            ];
-
-            session()->flash('return', $response);
-
-            return redirect()->route('cancellationType.index');
-        } catch (ValidatorException $e) {
+            ];    
+        } 
+        catch (ValidatorException $e) 
+        {
             $response = [
                 'message' =>  $e->getMessageBag(),
                 'type'    => 'error'
             ];
-
-            session()->flash('return', $response);
-
-            return redirect()->route('cancellationType.index');
         }
+        session()->flash('return', $response);
+        return redirect()->route('cancellationType.index');
     }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  int $id
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function show($id)
-    {
-        $cancellationType = $this->repository->find($id);
-
-        if (request()->wantsJson()) {
-
-            return response()->json([
-                'data' => $cancellationType,
-            ]);
-        }
-
-        return view('cancellationTypes.show', compact('cancellationType'));
-    }
-
-    public function edit($id)
-    {
-       
-    }
-
-    public function update(CancellationTypeUpdateRequest $request, $id)
-    {
-        
-    }
-
-
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int $id
-     *
-     * @return \Illuminate\Http\Response
-     */
     public function destroy($id)
     {
         $deleted = $this->repository->delete($id);
 
-        if (request()->wantsJson()) {
-
-            return response()->json([
-                'message' => 'CancellationType deleted.',
-                'deleted' => $deleted,
-            ]);
-        }
-
-        return redirect()->back()->with('message', 'CancellationType deleted.');
+        $response = [
+            'message' => 'Cancelamento deletado',
+            'type'   => 'info',
+        ];
+        session()->flash('return', $response);
+        return redirect()->route('cancellationType.index');
     }
+
+    //Method not used
+    public function show($id){}
+    public function edit($id){}
+    public function update(CancellationTypeUpdateRequest $request, $id){}
 }

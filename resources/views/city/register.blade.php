@@ -1,6 +1,10 @@
 
 <div class="card">
-    {!! Form::open(['route' => 'city.store', 'method' => 'post', 'role' => 'form', 'class' => 'form-horizontal']) !!}
+    @if ($city ?? null)
+        {!! Form::model($city, ['route' => ['city.update', $city->id], 'method' => 'put', 'role' => 'form', 'class' => 'form-horizontal']) !!}
+    @else
+        {!! Form::open(['route' => 'city.store', 'method' => 'post', 'role' => 'form', 'class' => 'form-horizontal']) !!}
+    @endif
         <div class="card-body">
             <div class="row">
                 @include('templates.components.input', ['label' => 'Nome da cidade',  'col' => '8', 'input' => 'name',  'attributes' => ['require' => 'true', 'class' => 'form-control']])

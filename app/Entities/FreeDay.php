@@ -14,7 +14,7 @@ class FreeDay extends Model implements Transformable
 
     public $timestamps = true;
     protected $table = 'freeDays';
-    protected $fillable = ['name', 'type', 'dateRange', 'active'];
+    protected $fillable = ['name', 'type', 'dateRange', 'active', 'freedays_id', 'city_id'];
 
 
     public function cities()
