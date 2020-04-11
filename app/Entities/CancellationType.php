@@ -16,19 +16,18 @@ class CancellationType extends Model implements Transformable
     protected $table = 'cancellationTypes';
     protected $fillable = ['name', 'active'];
 
-    public function getFormattedNeedReponsibleAttribute()
+    public function getFormattedActiveAttribute()
     {
-        switch ($this->attributes['needReponsible']) {
+        switch ($this->attributes['active']) {
             case "on":
-                return "SIM";
+                return "ATIVO";
                 break;
             case "off":
-                return "NÃO";
+                return "INATIVO";
                 break;
             default:
-                return $this->attributes['needReponsible'];
+                return $this->attributes['active'];
                 break;
         }
     }
-
 }

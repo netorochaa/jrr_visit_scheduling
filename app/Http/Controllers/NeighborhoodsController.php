@@ -37,9 +37,9 @@ class NeighborhoodsController extends Controller
             'numberModal'   => '2',
             'threeview'     => 'Cadastros',
             'titlespage'    => ['Cadastro de bairros'],
-            'titlecard'     => 'Bairros cadastrados',
+            'titlecard'     => 'Lista de bairros',
             'titlemodal'    => 'Cadastrar bairro',
-            'titlecard2'    => 'Cidades cadastradas',
+            'titlecard2'    => 'Lista de cidades',
             'titlemodal2'   => 'Cadastrar cidade',
             'add'           => true,
             //Lists of selects

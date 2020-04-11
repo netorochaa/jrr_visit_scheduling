@@ -35,14 +35,14 @@ class UsersController extends Controller
             'namepage'      => 'Usuário',
             'threeview'     => 'Cadastros',
             'titlespage'    => ['Cadastro de usuários'],
-            'titlecard'     => 'Lista de usuários cadastrados',
+            'titlecard'     => 'Lista de usuários',
             'titlemodal'    => 'Cadastrar usuário',
             'add'           => true,
             //Lists for select
             'typeUsers_list' => $typeUsers_list,
             //Info of entitie
             'table' => $this->repository->getTable(),
-            'thead_for_datatable' => ['E-mail', 'Nome', 'Tipo', 'Status', 'Criado', 'Última atualização'],
+            'thead_for_datatable' => ['Nome', 'E-mail', 'Tipo', 'Status', 'Criado', 'Última atualização'],
             'users_list' => $users_list
         ]);
     }

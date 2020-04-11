@@ -23,7 +23,6 @@
                 @endif
              </td>
             <td>{{ $freedays->dateRange }}</td>
-            <td>{{ $freedays->formatted_active }}</td>
             <td>
                 <div class="btn-group">
                   {!! Form::open(['route' => ['freedays.destroy', $freedays->id], 'method' => 'DELETE']) !!}

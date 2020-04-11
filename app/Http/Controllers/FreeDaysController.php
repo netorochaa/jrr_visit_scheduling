@@ -40,8 +40,8 @@ class FreeDaysController extends Controller
             'namepage'      => 'Dias sem coletas',
             'threeview'     => 'Cadastros',
             'titlespage'    => ['Cadastro de dias sem coletas'],
-            'titlecard'     => 'Dias sem coletas cadastrados',
-            'titlemodal'    => 'Cadastrar dia',
+            'titlecard'     => 'Dias sem coletas',
+            'titlemodal'    => 'Cadastrar dias sem coletas',
             'add'           => true,
 
             //Lists for select
@@ -51,7 +51,7 @@ class FreeDaysController extends Controller
 
             //List of entitie
             'table' => $this->repository->getTable(),
-            'thead_for_datatable' => ['Nome', 'Tipo', 'Período', 'Ativo'],
+            'thead_for_datatable' => ['Nome', 'Tipo', 'Período'],
             'freedays_list' => $freedays,
         ]);
     }

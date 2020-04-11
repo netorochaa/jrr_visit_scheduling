@@ -20,7 +20,7 @@
         </div>
     </div>
     <div class="card-footer">
-        @include('templates.components.submit', ['input' => 'Cadastrar', 'attributes' => ['class' => 'btn btn-outline-primary']])
+        @include('templates.components.submit', ['input' => 'Salvar', 'attributes' => ['class' => 'btn btn-outline-primary']])
     </div>
     {!! Form::close() !!}
 </div>

@@ -10,8 +10,8 @@
     <tbody>
         @foreach ($users_list as $user)
         <tr>
-            <td>{{ $user->email }}</td>
             <td>{{ $user->name }}</td>
+            <td>{{ $user->email }}</td>
             <td>{{ $user->formatted_type }}</td>
             <td>{{ $user->formatted_active }}</td>
             <td>{{ $user->created_at }}</td>

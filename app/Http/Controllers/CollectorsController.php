@@ -38,7 +38,7 @@ class CollectorsController extends Controller
             'namepage'      => 'Coletador',
             'threeview'     => 'Cadastros',
             'titlespage'    => ['Cadastro de coletadores'],
-            'titlecard'     => 'Lista de coletadores cadastrados',
+            'titlecard'     => 'Lista de coletadores',
             'titlemodal'    => 'Cadastrar coletador',
             'add'           => true,
             //List for select

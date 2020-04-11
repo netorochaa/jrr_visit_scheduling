@@ -31,7 +31,7 @@ class CancellationTypesController extends Controller
             'namepage'      => 'Cancelamento de coleta',
             'threeview'     => 'Cadastros',
             'titlespage'    => ['Cadastro de cancelamento de coleta'],
-            'titlecard'     => 'Lista dos cancelamentos cadastrados',
+            'titlecard'     => 'Lista dos cancelamentos de coleta',
             'titlemodal'    => 'Cadastrar cancelamento de coleta',
             'add'           => true,
 
