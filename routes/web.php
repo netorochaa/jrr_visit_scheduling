@@ -31,7 +31,7 @@ Route::resource('neighborhood', 'NeighborhoodsController');
 Route::resource('freedays', 'FreedaysController');
 
 // patientType
-Route::resource('patientType', 'PatientTypesController');
+Route::resource('patienttype', 'PatientTypesController');
 
 // cancellationType
-Route::resource('cancellationType', 'CancellationTypesController');
+Route::resource('cancellationtype', 'CancellationTypesController');

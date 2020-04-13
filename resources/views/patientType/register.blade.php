@@ -1,6 +1,6 @@
 
 <div class="card">
-    {!! Form::open(['route' => 'patientType.store', 'method' => 'post', 'role' => 'form', 'class' => 'form-horizontal']) !!}
+    {!! Form::open(['route' => 'patienttype.store', 'method' => 'post', 'role' => 'form', 'class' => 'form-horizontal']) !!}
         <div class="card-body">
             <div class="row">
                 @include('templates.components.input', ['label' => 'Nome',  'col' => '8', 'input' => 'name',  'attributes' => ['require' => 'true', 'class' => 'form-control']])

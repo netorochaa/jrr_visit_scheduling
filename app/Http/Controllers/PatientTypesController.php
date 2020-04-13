@@ -14,7 +14,7 @@ use App\Validators\PatientTypeValidator;
 
 class PatientTypesController extends Controller
 {
-   
+
     protected $repository;
     protected $validator;
 
@@ -28,7 +28,7 @@ class PatientTypesController extends Controller
     {
         $patientTypes  = $this->repository->all();
 
-        return view('patientType.index', [
+        return view('patienttype.index', [
             'namepage'      => 'Tipo de paciente',
             'threeview'     => 'Cadastros',
             'titlespage'    => ['Cadastro de tipo de paciente'],
@@ -44,7 +44,7 @@ class PatientTypesController extends Controller
 
     public function store(PatientTypeCreateRequest $request)
     {
-        try 
+        try
         {
             $this->validator->with($request->all())->passesOrFail(ValidatorInterface::RULE_CREATE);
             $patientType = $this->repository->create($request->all());
@@ -53,8 +53,8 @@ class PatientTypesController extends Controller
                 'message' => 'Tipo de paciente cadastrado',
                 'type'   => 'info',
             ];
-        } 
-        catch (ValidatorException $e) 
+        }
+        catch (ValidatorException $e)
         {
             $response = [
                 'message' =>  $e->getMessageBag(),
@@ -62,7 +62,7 @@ class PatientTypesController extends Controller
             ];
         }
         session()->flash('return', $response);
-        return redirect()->route('patientType.index');
+        return redirect()->route('patienttype.index');
     }
 
     public function destroy($id)
@@ -74,7 +74,7 @@ class PatientTypesController extends Controller
             'type'   => 'info',
         ];
         session()->flash('return', $response);
-        return redirect()->route('patientType.index');
+        return redirect()->route('patienttype.index');
     }
 
     //Method not used

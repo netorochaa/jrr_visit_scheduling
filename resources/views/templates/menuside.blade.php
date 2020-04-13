@@ -93,13 +93,13 @@
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a href="{{ route('patientType.index') }}" class="nav-link @if($namepage == 'Tipo de paciente') active @endif">
+                            <a href="{{ route('patienttype.index') }}" class="nav-link @if($namepage == 'Tipo de paciente') active @endif">
                                 <i class="far fa-circle nav-icon"></i>
                                 <p>Tipo de paciente</p>
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a href="{{ route('cancellationType.index') }}" class="nav-link @if($namepage == 'Cancelamento de coleta') active @endif">
+                            <a href="{{ route('cancellationtype.index') }}" class="nav-link @if($namepage == 'Cancelamento de coleta') active @endif">
                                 <i class="far fa-circle nav-icon"></i>
                                 <p>Cancelamento de coleta</p>
                             </a>

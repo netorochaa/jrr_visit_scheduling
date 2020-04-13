@@ -16,7 +16,7 @@
             <td>{{ $cancellationType->updated_at }}</td>
             <td>
                 <div class="btn-group">
-                  {!! Form::open(['route' => ['cancellationType.destroy', $cancellationType->id], 'method' => 'DELETE']) !!}
+                  {!! Form::open(['route' => ['cancellationtype.destroy', $cancellationType->id], 'method' => 'DELETE']) !!}
                     <div class="btn-group">
                         {{-- <button type="button" onclick="location.href='{{ route('patientType.edit', $patientType->id) }}'" class="btn btn-info"  ><i class='fas fa-pen'></i></button> --}}
                         @include('templates.components.submit', ['input' => 'Deletar', 'attributes' => ['class' => 'btn btn-danger']])

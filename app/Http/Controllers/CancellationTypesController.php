@@ -27,7 +27,7 @@ class CancellationTypesController extends Controller
     {
         $cancellationTypes  = $this->repository->all();
 
-        return view('cancellationType.index', [
+        return view('cancellationtype.index', [
             'namepage'      => 'Cancelamento de coleta',
             'threeview'     => 'Cadastros',
             'titlespage'    => ['Cadastro de cancelamento de coleta'],
@@ -44,7 +44,7 @@ class CancellationTypesController extends Controller
 
     public function store(CancellationTypeCreateRequest $request)
     {
-        try 
+        try
         {
             $this->validator->with($request->all())->passesOrFail(ValidatorInterface::RULE_CREATE);
             $cancellationType = $this->repository->create($request->all());
@@ -52,9 +52,9 @@ class CancellationTypesController extends Controller
             $response = [
                 'message' => 'Cancelamento cadastrado',
                 'type'   => 'info',
-            ];    
-        } 
-        catch (ValidatorException $e) 
+            ];
+        }
+        catch (ValidatorException $e)
         {
             $response = [
                 'message' =>  $e->getMessageBag(),
@@ -62,7 +62,7 @@ class CancellationTypesController extends Controller
             ];
         }
         session()->flash('return', $response);
-        return redirect()->route('cancellationType.index');
+        return redirect()->route('cancellationtype.index');
     }
 
     public function destroy($id)
@@ -74,7 +74,7 @@ class CancellationTypesController extends Controller
             'type'   => 'info',
         ];
         session()->flash('return', $response);
-        return redirect()->route('cancellationType.index');
+        return redirect()->route('cancellationtype.index');
     }
 
     //Method not used

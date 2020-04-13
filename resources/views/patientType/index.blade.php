@@ -2,8 +2,8 @@
 
 @section('content')
   @include('templates.content.header')
-  @include('templates.content.content1col', ['contentbody' => 'patientType.list'])
-  @include('templates.content.modallarge', ['titlemodal' => $titlemodal , 'contentmodal' => 'patientType.register'])
+  @include('templates.content.content1col', ['contentbody' => 'patienttype.list'])
+  @include('templates.content.modallarge', ['titlemodal' => $titlemodal , 'contentmodal' => 'patienttype.register'])
 @endsection
 
 @section('footer-distinct')

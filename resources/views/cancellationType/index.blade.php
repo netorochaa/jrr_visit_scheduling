@@ -2,8 +2,8 @@
 
 @section('content')
   @include('templates.content.header')
-  @include('templates.content.content1col', ['contentbody' => 'cancellationType.list'])
-  @include('templates.content.modallarge', ['titlemodal' => $titlemodal , 'contentmodal' => 'cancellationType.register'])
+  @include('templates.content.content1col', ['contentbody' => 'cancellationtype.list'])
+  @include('templates.content.modallarge', ['titlemodal' => $titlemodal , 'contentmodal' => 'cancellationtype.register'])
 @endsection
 
 @section('footer-distinct')
