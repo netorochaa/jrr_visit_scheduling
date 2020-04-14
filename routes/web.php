@@ -35,3 +35,6 @@ Route::resource('patienttype', 'PatientTypesController');
 
 // cancellationType
 Route::resource('cancellationtype', 'CancellationTypesController');
+
+// Collect
+Route::resource('collect', 'CollectsController');

@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Repositories;
+use DB;
 
 use Prettus\Repository\Eloquent\BaseRepository;
 use Prettus\Repository\Criteria\RequestCriteria;
@@ -54,5 +55,11 @@ class NeighborhoodRepositoryEloquent extends BaseRepository implements Neighborh
 
       return $list;
     }
-    
+
+    public function neighborhoodsCities_list()
+    {
+        return DB::table('neighborhoods')
+                    ->join('cities', 'neighborhoods.city_id', '=', 'cities.id')
+                    ->select(DB::raw('concat(neighborhoods.name , " - ", cities.name ,"-", cities.UF) as name'), 'neighborhoods.id as id');
+    }
 }

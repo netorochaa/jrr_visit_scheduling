@@ -28,9 +28,11 @@ class CreatePeopleTable extends Migration
 			$table->string('CPF', 45);
 			$table->string('RG', 45)->nullable();
 			$table->string('birth', 45);
-			$table->string('covenant', 45);
-			$table->string('exams', 254);
-			$table->string('medication', 254)->nullable();
+            $table->string('medication', 254)->nullable();
+            $table->string('observationPat', 254)->nullable();
+
+			$table->unsignedInteger('patientTypes_id');
+			$table->foreign('patientTypes_id')->references('id')->on('patientTypes');
 
 			$table->timestamps();
 			$table->softDeletes();

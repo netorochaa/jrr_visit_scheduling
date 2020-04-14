@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use DB;
 
 use App\Http\Requests;
 use Prettus\Validator\Contracts\ValidatorInterface;
@@ -52,7 +51,7 @@ class CollectorsController extends Controller
 
     public function store(CollectorCreateRequest $request)
     {
-        try 
+        try
         {
             $this->validator->with($request->all())->passesOrFail(ValidatorInterface::RULE_CREATE);
             $collector = $this->repository->create($request->all());
@@ -61,8 +60,8 @@ class CollectorsController extends Controller
                 'message' => 'Coletador criado',
                 'type'   => 'info',
             ];
-        } 
-        catch (ValidatorException $e) 
+        }
+        catch (ValidatorException $e)
         {
             $response = [
                 'message' =>  $e->getMessageBag(),
@@ -75,7 +74,7 @@ class CollectorsController extends Controller
 
     public function storeCollectorNeighborhoods(Request $request, $collect_id)
     {
-        try 
+        try
         {
             $collector = $this->repository->find($collect_id);
             $neighborhoods = $request->has('neighborhood_id') ? $request->all()['neighborhood_id'] : null;
@@ -84,27 +83,27 @@ class CollectorsController extends Controller
                 $response = [
                     'message' =>  'Bairros não informados.',
                     'type'    => 'error'
-                ];   
+                ];
                 session()->flash('return', $response);
                 return redirect()->route('collector.index', $collector->id);
             }
             else
             {
-                for ($i=0; $i < count($neighborhoods); $i++) 
+                for ($i=0; $i < count($neighborhoods); $i++)
                     $collector->neighborhoods()->attach($neighborhoods[$i]);
-                
+
                 $response = [
                     'message' => 'Bairros relacionados',
                     'type'   => 'info',
                 ];
             }
-        } 
-        catch (ValidatorException $e) 
+        }
+        catch (ValidatorException $e)
         {
             $response = [
                 'message' =>  $e->getMessageBag(),
                 'type'    => 'error'
-            ];   
+            ];
         }
         session()->flash('return', $response);
         return redirect()->route('collector.index', $collector->id);
@@ -113,10 +112,7 @@ class CollectorsController extends Controller
     public function show($id)
     {
         $collector = $this->repository->find($id);
-        $neighborhoods = DB::table('neighborhoods')
-                                    ->join('cities', 'neighborhoods.city_id', '=', 'cities.id')
-                                    ->select(DB::raw('concat(neighborhoods.name , " - ", cities.name ,"-", cities.UF) as nameWithCity'), 'neighborhoods.id')
-                                    ->pluck('nameWithCity', 'neighborhoods.id');
+        $neighborhoods = $this->neighborhoodRepository->neighborhoodsCities_list()->pluck('name', 'id');
 
         return view('collector.collector_neighborhood.index', [
             'namepage'      => 'Coletador',
@@ -153,7 +149,7 @@ class CollectorsController extends Controller
 
     public function update(CollectorUpdateRequest $request, $id)
     {
-        try 
+        try
         {
             $this->validator->with($request->all())->passesOrFail(ValidatorInterface::RULE_UPDATE);
             $collector = $this->repository->update($request->all(), $id);
@@ -162,8 +158,8 @@ class CollectorsController extends Controller
                 'message' => 'Coletador atualizado',
                 'type'   => 'info',
             ];
-        } 
-        catch (ValidatorException $e) 
+        }
+        catch (ValidatorException $e)
         {
             $response = [
                 'message' =>  $e->getMessageBag(),
@@ -175,7 +171,7 @@ class CollectorsController extends Controller
     }
 
     public function detachCollectorNeighborhoods($collector_id, $neighborhood_id)
-    {   
+    {
         $collector = $this->repository->find($collector_id);
         $neighborhood = $collector->neighborhoods()->where('neighborhood_id', $neighborhood_id)->get();
 
@@ -188,7 +184,7 @@ class CollectorsController extends Controller
         session()->flash('return', $response);
         return redirect()->route('collector.collector_neighborhood.index');
     }
-    
+
     //Methods not used
     public function destroy($id){}
 }

@@ -36,28 +36,11 @@
                         <p>Iniciar atividade</p>
                     </a>
                 </li>
-                <li class="nav-item has-treeview @if($threeview == 'Coleta') menu-open @endif">
-                    <a href="#" class="nav-link @if($threeview == 'Coleta') active @endif">
-                      <i class="nav-icon far fa-calendar-alt"></i>
-                      <p>
-                        Coleta
-                        <i class="fas fa-angle-left right"></i>
-                      </p>
+                <li class="nav-item">
+                    <a href="{{ route('collect.index') }}" class="nav-link @if($namepage == 'Coletas') active @endif">
+                        <i class="nav-icon far fa-calendar-alt"></i>
+                        <p>Coletas</p>
                     </a>
-                    <ul class="nav nav-treeview">
-                      <li class="nav-item">
-                        <a href="#" class="nav-link @if($namepage == 'Agendar coleta') active @endif">
-                          <i class="far fa-circle nav-icon"></i>
-                          <p>Agendar</p>
-                        </a>
-                      </li>
-                      <li class="nav-item">
-                        <a href="#" class="nav-link @if($namepage == 'Listar coletas') active @endif">
-                          <i class="far fa-circle nav-icon"></i>
-                          <p>Listar</p>
-                        </a>
-                      </li>
-                    </ul>
                 </li>
                 <li class="nav-item has-treeview @if($threeview == 'Cadastros') menu-open @endif">
                     <a href="#" class="nav-link @if($threeview == 'Cadastros') active @endif">

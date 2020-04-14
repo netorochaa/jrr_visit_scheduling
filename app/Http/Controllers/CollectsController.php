@@ -10,66 +10,42 @@ use Prettus\Validator\Exceptions\ValidatorException;
 use App\Http\Requests\CollectCreateRequest;
 use App\Http\Requests\CollectUpdateRequest;
 use App\Repositories\CollectRepository;
+use App\Repositories\NeighborhoodRepository;
 use App\Validators\CollectValidator;
 
-/**
- * Class CollectsController.
- *
- * @package namespace App\Http\Controllers;
- */
 class CollectsController extends Controller
 {
-    /**
-     * @var CollectRepository
-     */
-    protected $repository;
-
-    /**
-     * @var CollectValidator
-     */
+    protected $repository, $neighborhoodRepository;
     protected $validator;
 
-    /**
-     * CollectsController constructor.
-     *
-     * @param CollectRepository $repository
-     * @param CollectValidator $validator
-     */
-    public function __construct(CollectRepository $repository, CollectValidator $validator)
+    public function __construct(CollectRepository $repository, CollectValidator $validator, NeighborhoodRepository $neighborhoodRepository)
     {
         $this->repository = $repository;
         $this->validator  = $validator;
+        $this->neighborhoodRepository = $neighborhoodRepository;
     }
 
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
     public function index()
     {
-        $this->repository->pushCriteria(app('Prettus\Repository\Criteria\RequestCriteria'));
-        $collects = $this->repository->all();
+        $collects  = $this->repository->all();
+        $neighborhoodCity_list = $this->neighborhoodRepository->neighborhoodsCities_list()->pluck('name', 'id');
 
-        if (request()->wantsJson()) {
-
-            return response()->json([
-                'data' => $collects,
-            ]);
-        }
-
-        return view('collects.index', compact('collects'));
+        return view('collect.index', [
+            'namepage'      => 'Coletas',
+            'threeview'     => null,
+            'titlespage'    => ['Coletas'],
+            'titlecard'     => 'Lista de coletas',
+            'titlemodal'    => 'Agendar coleta',
+            'add'           => true,
+            //List for select
+            'neighborhoodCity_list' => $neighborhoodCity_list,
+            //Info of entitie
+            'table'               => $this->repository->getTable(),
+            'thead_for_datatable' => ['Data', 'Hora', 'Tipo', 'Status', 'Pagamento', 'Troco', 'Endereço', 'Link', 'Obs. Coleta', 'Anexo', 'Cancelamento', 'Tipo'],
+            'collects'            => $collects
+        ]);
     }
 
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  CollectCreateRequest $request
-     *
-     * @return \Illuminate\Http\Response
-     *
-     * @throws \Prettus\Validator\Exceptions\ValidatorException
-     */
     public function store(CollectCreateRequest $request)
     {
         try {
