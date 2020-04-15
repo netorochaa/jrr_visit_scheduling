@@ -24,10 +24,10 @@ class CreateCollectsTable extends Migration
 			$table->char('payment', 1)->default('1');
 			$table->string('changePayment', 6)->default('0,00')->nullable();
 			$table->string('cep', 9)->nullable();
-			$table->string('address', 140);
-			$table->string('numberAddress', 14);
+			$table->string('address', 140)->nullable();
+			$table->string('numberAddress', 14)->nullable();
 			$table->string('complementAddress', 45)->nullable();
-			$table->string('referenceAddress', 140);
+			$table->string('referenceAddress', 140)->nullable();
 			$table->string('linkMaps', 254)->nullable();
 			$table->char('noFeee', 3)->default('off');
             $table->string('unityCreated', 45)->nullable();
@@ -44,7 +44,7 @@ class CreateCollectsTable extends Migration
 			$table->unsignedInteger('neighborhood_id');
 			$table->foreign('neighborhood_id')->references('id')->on('neighborhoods');
 
-			$table->unsignedInteger('user_id');
+			$table->unsignedInteger('user_id')->nullable();
 			$table->foreign('user_id')->references('id')->on('users');
 
 			$table->timestamps();

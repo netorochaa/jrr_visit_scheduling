@@ -22,4 +22,8 @@ class Collect extends Model implements Transformable
      */
     protected $fillable = [];
 
+    public function listCollects(){
+        
+    }
+
 }

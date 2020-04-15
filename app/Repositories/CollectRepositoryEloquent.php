@@ -44,5 +44,18 @@ class CollectRepositoryEloquent extends BaseRepository implements CollectReposit
     {
         $this->pushCriteria(app(RequestCriteria::class));
     }
+
+    public function statusCollects_list()
+    {
+        $list = [
+            '1' => 'ABERTA',
+            '2' => 'NOVA',
+            '3' => 'CONFIRMADA',
+            '4' => 'CONCLUÍDA',
+            '5' => 'CANCELADA',
+          ];
+    
+          return $list;
+    }
     
 }
