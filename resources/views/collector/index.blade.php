@@ -1,8 +1,12 @@
 @extends('templates.master')
 
 @section('head-distinct')
-    <link rel="stylesheet" href="{{ asset('daterangepicker/daterangepicker.css') }} ">
-    <link rel="stylesheet" href="{{ asset('tempusdominus-bootstrap-4/css/tempusdominus-bootstrap-4.min.css') }}">
+  {{-- daterangepicker --}}
+  <link rel="stylesheet" href="{{ asset('daterangepicker/daterangepicker.css') }} ">
+  <link rel="stylesheet" href="{{ asset('tempusdominus-bootstrap-4/css/tempusdominus-bootstrap-4.min.css') }}">
+  {{-- Select2 --}}
+  <link rel="stylesheet" href="{{ asset('select2/css/select2.min.css') }} ">
+  <link rel="stylesheet" href="{{ asset('css/select2-bootstrap4-theme/select2-bootstrap4.min.css') }}">
 @endsection
 
 @section('content')
@@ -12,77 +16,43 @@
 @endsection
 
 @section('footer-distinct')
-    <script src=" {{ asset('moment/moment.min.js') }}"></script>
-    <script src=" {{ asset('js/inputmask/min/jquery.inputmask.bundle.min.js') }} "></script>
-    <script src=" {{ asset('daterangepicker/daterangepicker.js') }} "></script>
-    <script src=" {{ asset('tempusdominus-bootstrap-4/js/tempusdominus-bootstrap-4.min.js') }}"></script>
-    <script>
-        $(function () {
-          $('#table-{{ $table }}').DataTable({
-            "paging": true,
-            "lengthChange": false,
-            "searching": false,
-            "ordering": true,
-            "info": true,
-            "autoWidth": false,
-            "responsive": true,
-          });
+  <script src=" {{ asset('select2/js/select2.full.min.js') }} "></script>
+  <script src=" {{ asset('moment/moment.min.js') }}"></script>
+  <script src=" {{ asset('js/inputmask/min/jquery.inputmask.bundle.min.js') }} "></script>
+  <script src=" {{ asset('daterangepicker/daterangepicker.js') }} "></script>
+  <script src=" {{ asset('tempusdominus-bootstrap-4/js/tempusdominus-bootstrap-4.min.js') }}"></script>
+  <script>
+    $(function () {
+      $('.select2bs4').select2({
+        theme: 'bootstrap4'
+      })
 
-          //Timepicker
-          $('#startTime').datetimepicker({
-            format: 'HH:mm',
-            pickDate: false,
-            pickSeconds: false,
-            pick12HourFormat: false
-          });
-          $('#endTime').datetimepicker({
-            format: 'HH:mm',
-            pickDate: false,
-            pickSeconds: false,
-            pick12HourFormat: false
-          });
+      $('#table-{{ $table }}').DataTable({
+        "paging": true,
+        "lengthChange": false,
+        "searching": false,
+        "ordering": true,
+        "info": true,
+        "autoWidth": false,
+        "responsive": true,
+      });
 
-          //Datemask dd/mm/yyyy
-          $('[data-mask]').inputmask('', {'placeholder': ''})
-        });
+      //Timepicker
+      $('#startTime').datetimepicker({
+        format: 'HH:mm',
+        pickDate: false,
+        pickSeconds: false,
+        pick12HourFormat: false
+      });
+      $('#endTime').datetimepicker({
+        format: 'HH:mm',
+        pickDate: false,
+        pickSeconds: false,
+        pick12HourFormat: false
+      });
 
-        function montaHorarios()
-        {
-          var interval = document.getElementById('interval');
-          var initial = document.getElementById('inputStartTime');
-          var end = document.getElementById('inputEndTime');
-          var description = document.getElementById('descriptionHour');
-
-          if(interval.value < 10) interval.value = 10;
-          else if(interval.value > 120) interval.value = 120;
-
-        //   if(interval.value >= 10)
-        //   {
-        //     if(initial.value != "" && end.value != "")
-        //     {
-        //       var hourIni = moment(initial.value, 'HH:mm');
-        //       var hourEnd = moment(end.value, 'HH:mm');
-
-        //       console.log(hourIni.hours() + ":" + hourIni.minutes());
-        //       console.log(hourEnd.hours() + ":" + hourEnd.minutes());
-
-        //       // if(hourIni.isValid() && hourEnd.isValid()){
-        //         while (hourIni.isBefore(hourEnd))
-        //         {
-        //           hourIni.add(interval.value, 'minutes');
-        //           console.log(hourIni.inspect() + "\n");
-        //         }
-        //       // }else{
-        //       //   console.log("Campos não válidos");
-        //       // }
-        //     }else{
-        //       console.log("Início e fim ainda em brancos");
-        //     }
-        //   }else{
-        //     console.log("Número não é inteiro ou < 10");
-        //   }
-
-        }
-
-      </script>
+      //Datemask dd/mm/yyyy
+      $('[data-mask]').inputmask('', {'placeholder': ''})
+    });
+  </script>
 @endsection

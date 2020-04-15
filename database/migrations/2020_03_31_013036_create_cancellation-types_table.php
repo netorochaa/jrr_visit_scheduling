@@ -18,7 +18,7 @@ class CreateCancellationTypesTable extends Migration
 		Schema::create('cancellationTypes', function(Blueprint $table) {
             $table->increments('id');
 			$table->string('name', 140);
-			$table->char('active', 3)->default('on');
+			$table->char('active', 3)->default('off');
 
 			$table->timestamps();
 			$table->softDeletes();

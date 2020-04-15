@@ -34,7 +34,13 @@
           "responsive": true,
         });
         
-        $('input[name="dateRange"]').daterangepicker();
+        $('input[name="dateRange"]').daterangepicker({
+          "timePicker": true,
+          "timePicker24Hour": true,
+          locale: {
+            format: 'DD/MM/YYYY HH:mm'
+          }
+        });
       });
 
       function activeSelect()
@@ -43,7 +49,7 @@
         var collector = document.getElementById('selectCollector');
         var city = document.getElementById('selectCity');
 
-        console.log()
+        // console.log()
 
         if (tipo.value == 1) {
           city.style.display = 'none';

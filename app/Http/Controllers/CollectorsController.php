@@ -32,6 +32,7 @@ class CollectorsController extends Controller
     {
         $collectors_list  = $this->repository->all();
         $user_list        = $this->userRepository->where('type', 2)->pluck('name', 'id');
+        $schedules  = $this->repository->schedules();
 
         return view('collector.index', [
             'namepage'      => 'Coletador',
@@ -42,9 +43,10 @@ class CollectorsController extends Controller
             'add'           => true,
             //List for select
             'user_list'     => $user_list,
+            'schedules'     => $schedules,
             //Info of entitie
             'table'               => $this->repository->getTable(),
-            'thead_for_datatable' => ['Nome', 'Hora inicial', 'Hora final', 'Intervalo entre coletas', 'Endereço inicial', 'Status', 'Colaborador', 'Bairros', 'Criado', 'Última atualização'],
+            'thead_for_datatable' => ['Nome', 'Segunda/Sexta', 'Sábados', 'Domingos', 'Endereço inicial', 'Colaborador', 'Bairros', 'Status'],
             'collectors_list'     => $collectors_list
         ]);
     }
@@ -53,6 +55,10 @@ class CollectorsController extends Controller
     {
         try
         {
+            if($request->has('mondayToFriday')) $request->merge(['mondayToFriday' => implode(',', $request->all()['mondayToFriday'])]);
+            if($request->has('saturday')) $request->merge(['saturday' => implode(',', $request->all()['saturday'])]);
+            if($request->has('sunday')) $request->all()['sunday'] = implode(';', $request->all()['sunday']);
+
             $this->validator->with($request->all())->passesOrFail(ValidatorInterface::RULE_CREATE);
             $collector = $this->repository->create($request->all());
 
@@ -131,6 +137,7 @@ class CollectorsController extends Controller
     {
         $collector = $this->repository->find($id);
         $user_list = $this->userRepository->where('type', 2)->pluck('name', 'id');
+        $schedules  = $this->repository->schedules();
 
         return view('collector.edit', [
             'namepage'      => 'Coletador',
@@ -141,6 +148,7 @@ class CollectorsController extends Controller
             'add'           => false,
             //Lists for select
             'user_list' => $user_list,
+            'schedules' => $schedules,
             //Info of entitie
             'table' => $this->repository->getTable(),
             'collector' => $collector
@@ -151,6 +159,10 @@ class CollectorsController extends Controller
     {
         try
         {
+            if($request->has('mondayToFriday')) $request->merge(['mondayToFriday' => implode(',', $request->all()['mondayToFriday'])]);
+            if($request->has('saturday')) $request->merge(['saturday' => implode(',', $request->all()['saturday'])]);
+            if($request->has('sunday')) $request->all()['sunday'] = implode(';', $request->all()['sunday']);
+
             $this->validator->with($request->all())->passesOrFail(ValidatorInterface::RULE_UPDATE);
             $collector = $this->repository->update($request->all(), $id);
 

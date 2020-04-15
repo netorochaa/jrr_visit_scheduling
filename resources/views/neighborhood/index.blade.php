@@ -1,5 +1,9 @@
 @extends('templates.master')
 
+@section('head-distinct')
+  <link rel="stylesheet" href="{{ asset('tempusdominus-bootstrap-4/css/tempusdominus-bootstrap-4.min.css') }}">
+@endsection
+
 @section('content')
   @include('templates.content.header')
   @include('templates.content.content2col', [
@@ -15,6 +19,8 @@
 @endsection
 
 @section('footer-distinct')
+  <script src=" {{ asset('js/inputmask/min/jquery.inputmask.bundle.min.js') }} "></script>
+  <script src=" {{ asset('tempusdominus-bootstrap-4/js/tempusdominus-bootstrap-4.min.js') }}"></script>
     <script>
         $(function () {
           $('#table-{{ $table }}').DataTable({
@@ -26,8 +32,6 @@
             "autoWidth": false,
             "responsive": true,
           });
-        });
-        $(function () {
           $('#table-{{ $table2 }}').DataTable({
             "paging": false,
             "lengthChange": false,
@@ -37,6 +41,8 @@
             "autoWidth": false,
             "responsive": true,
           });
+          //Datemask 00,00
+          $('[data-mask]').inputmask('', {'placeholder': '00,00'})
         });
 
     </script>

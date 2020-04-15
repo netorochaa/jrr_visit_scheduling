@@ -3,25 +3,19 @@
     @if ($collector ?? null)
         {!! Form::model($collector, ['route' => ['collector.update', $collector->id], 'method' => 'put', 'role' => 'form', 'class' => 'form-horizontal']) !!}
     @else
-    {!! Form::open(['route' => 'collector.store', 'method' => 'post', 'role' => 'form', 'class' => 'form-horizontal']) !!}
+        {!! Form::open(['route' => 'collector.store', 'method' => 'post', 'role' => 'form', 'class' => 'form-horizontal']) !!}
     @endif
     <div class="card-body">
         <div class="row">
-            @include('templates.components.input', ['label' => 'Nome do coletador',                                'col' => '8', 'input' => 'name',             'attributes' => ['require' => 'true', 'class' => 'form-control']])
-            @include('templates.components.input', ['label' => 'Link no mapa do início da atividade do coletador', 'col' => '12', 'input' => 'startingAddress', 'attributes' => ['class' => 'form-control']])
+            @include('templates.components.input', ['label' => 'Nome do coletador',                                'col' => '8', 'input' => 'name',             'attributes' => ['required' => 'true', 'class' => 'form-control']])
+            @include('templates.components.input', ['label' => 'Link no mapa do início da atividade do coletador', 'col' => '6', 'input' => 'startingAddress', 'attributes' => ['class' => 'form-control']])
+            @include('templates.components.select', ['label' => 'Colaborador', 'col' => '6', 'select' => 'user_id', 'data' => $user_list, 'attributes' => ['class' => 'form-control select2', 'style' => 'width: 100%;']])
         </div>
+        <h3>Horários</h3>
         <div class="row">
-            <div class="col-sm-6">
-                @include('templates.components.timepicker', ['label' => 'Início das atividades',                     'col' => '12', 'input' => 'initialTimeCollect',  'attributes' => ['require' => 'true', 'onchange' => 'montaHorarios()', 'class' => 'form-control datetimepicker-input', 'data-target' => '#startTime', 'id' => 'inputStartTime'], 'datatargetdiv' => '#startTime', 'id' => 'startTime'])
-                @include('templates.components.input',      ['label' => 'Intervalo entre as coletas (min.) [> 10] ', 'col' => '12', 'input' => 'collectionInterval',   'attributes' => ['id' => 'interval', 'onchange' => 'montaHorarios()', 'require' => 'true', 'class' => 'form-control', 'data-inputmask' => "'mask': '999'", 'data-mask', 'im-insert' => 'true']])
-            </div>
-            <div class="col-sm-6">
-                @include('templates.components.timepicker', ['label' => 'Fim das atividades',   'col' => '12', 'input' => 'finalTimeCollect',               'attributes' => ['require' => 'true', 'onchange' => 'montaHorarios()', 'class' => 'form-control datetimepicker-input', 'data-target' => '#endTime', 'id' => 'inputEndTime'], 'datatargetdiv' => '#endTime', 'id' => 'endTime'])
-                @include('templates.components.select',     ['label' => 'Colaborador',          'col' => '12', 'select' => 'user_id', 'data' => $user_list, 'attributes' => ['class' => 'form-control select2', 'style' => 'width: 100%;']])
-            </div>
-        </div>
-        <div class="row">
-            @include('templates.components.textarea',   ['label'=>'Horáriosdisponíveis', 'col'=>'12','input'=>'','attributes'=>['class'=>'form-control','id'=>'descriptionHour','readonly'=>'true','rows'=>'2']])
+            @include('templates.components.select', ['label' => 'Segundas/sextas', 'listExists' => $collector->mondayToFriday ?? null, 'col' => '12', 'select' => 'mondayToFriday[]', 'data' => $schedules, 'attributes' => ['class' => 'form-control select2bs4', 'multiple' => 'multiple', 'style' => 'width: 100%;']])
+            @include('templates.components.select', ['label' => 'Sábados', 'listExists' =>  $collector->saturday ?? null, 'col' => '12', 'select' => 'saturday[]', 'data' => $schedules, 'attributes' => ['class' => 'form-control select2bs4', 'multiple' => 'multiple', 'style' => 'width: 100%;']])
+            @include('templates.components.select', ['label' => 'Domingos', 'listExists' => $collector->sunday ?? null, 'col' => '12', 'select' => 'sunday[]', 'data' => $schedules, 'attributes' => ['class' => 'form-control select2bs4', 'multiple' => 'multiple', 'style' => 'width: 100%;']])
         </div>
         <div class="row">
             <div class="col-sm-6">

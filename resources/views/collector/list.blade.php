@@ -12,15 +12,15 @@
         @foreach ($collectors_list as $collector)
         <tr>
             <td>{{ $collector->name }}</td>
-            <td>{{ $collector->initialTimeCollect }}</td>
-            <td>{{ $collector->finalTimeCollect }}</td>
-            <td>{{ $collector->formatted_collectionInterval }}</td>
+            <td>{{ $collector->mondayToFriday }}</td>
+            <td>{{ $collector->saturday }}</td>
+            <td>{{ $collector->sunday }}</td>
             <td>{{ $collector->startingAddress }}</td>
-            <td>{{ $collector->formatted_active }}</td>
             <td>{{ $collector->user->name }}</td>
             <td> {{ count($collector->neighborhoods) }} <a href="{{ route('collector.show', $collector->id) }}"> Editar</a> </td>
-            <td>{{ $collector->created_at }}</td>
-            <td>{{ $collector->updated_at }}</td>
+            <td>{{ $collector->formatted_active }}</td>
+            {{-- <td>{{ $collector->created_at }}</td>
+            <td>{{ $collector->updated_at }}</td> --}}
             <td>
                 <div class="btn-group">
                     {{-- {!! Form::open(['route' => ['collector.destroy', $collector->id], 'method' => 'DELETE']) !!}

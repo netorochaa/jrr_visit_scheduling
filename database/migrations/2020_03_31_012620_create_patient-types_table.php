@@ -19,7 +19,7 @@ class CreatePatientTypesTable extends Migration
             $table->increments('id');
 			$table->string('name', 45);
 			$table->char('needReponsible', 3);
-			$table->char('active', 3)->default('on');
+			$table->char('active', 3)->default('off');
 
 			$table->timestamps();
 			$table->softDeletes();

@@ -16,7 +16,7 @@ class Collector extends Model implements Transformable
 
     public $timestamps = true;
     protected $table = 'collectors';
-    protected $fillable = ['name', 'initialTimeCollect', 'finalTimeCollect', 'collectionInterval', 'startingAddress', 'active', 'user_id'];
+    protected $fillable = ['name', 'mondayToFriday', 'startingAddress', 'active', 'user_id'];
 
     public function neighborhoods()
     {
@@ -45,11 +45,5 @@ class Collector extends Model implements Transformable
                 return $this->attributes['active'];
                 break;
         }
-    }
-
-    public function getFormattedCollectionIntervalAttribute(){
-
-        return $this->attributes['collectionInterval'] . " min.";
-
     }
 }
