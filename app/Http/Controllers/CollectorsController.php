@@ -55,9 +55,12 @@ class CollectorsController extends Controller
     {
         try
         {
+            // dd($request->all());
             if($request->has('mondayToFriday')) $request->merge(['mondayToFriday' => implode(',', $request->all()['mondayToFriday'])]);
             if($request->has('saturday')) $request->merge(['saturday' => implode(',', $request->all()['saturday'])]);
-            if($request->has('sunday')) $request->all()['sunday'] = implode(';', $request->all()['sunday']);
+            if($request->has('sunday')) $request->merge(['sunday' => implode(',', $request->all()['sunday'])]);
+
+            // dd($request->all());
 
             $this->validator->with($request->all())->passesOrFail(ValidatorInterface::RULE_CREATE);
             $collector = $this->repository->create($request->all());
@@ -161,7 +164,7 @@ class CollectorsController extends Controller
         {
             if($request->has('mondayToFriday')) $request->merge(['mondayToFriday' => implode(',', $request->all()['mondayToFriday'])]);
             if($request->has('saturday')) $request->merge(['saturday' => implode(',', $request->all()['saturday'])]);
-            if($request->has('sunday')) $request->all()['sunday'] = implode(';', $request->all()['sunday']);
+            if($request->has('sunday')) $request->merge(['sunday' => implode(',', $request->all()['sunday'])]);
 
             $this->validator->with($request->all())->passesOrFail(ValidatorInterface::RULE_UPDATE);
             $collector = $this->repository->update($request->all(), $id);

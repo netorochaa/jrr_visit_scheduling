@@ -4,6 +4,8 @@
   {{-- Select2 --}}
   <link rel="stylesheet" href="{{ asset('select2/css/select2.min.css') }} ">
   <link rel="stylesheet" href="{{ asset('css/select2-bootstrap4-theme/select2-bootstrap4.min.css') }}">
+  {{-- DateRange --}}
+  <link rel="stylesheet" href="{{ asset('daterangepicker/daterangepicker.css') }} ">
 @endsection
 
 @section('content')
@@ -31,7 +33,15 @@
           "autoWidth": false,
           "responsive": true,
         });
+        $('input[id="schedulingDate"]').daterangepicker({
+          "singleDatePicker": true,
+          locale: {
+            format: 'DD/MM/YYYY'
+          }
+        });
       });
+
+      
 
   </script>
 @endsection

@@ -33,7 +33,6 @@
           "autoWidth": false,
           "responsive": true,
         });
-        
         $('input[name="dateRange"]').daterangepicker({
           "timePicker": true,
           "timePicker24Hour": true,

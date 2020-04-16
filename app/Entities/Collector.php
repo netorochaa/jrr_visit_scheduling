@@ -16,7 +16,7 @@ class Collector extends Model implements Transformable
 
     public $timestamps = true;
     protected $table = 'collectors';
-    protected $fillable = ['name', 'mondayToFriday', 'startingAddress', 'active', 'user_id'];
+    protected $fillable = ['name', 'mondayToFriday', 'saturday', 'sunday', 'startingAddress', 'active', 'user_id'];
 
     public function neighborhoods()
     {

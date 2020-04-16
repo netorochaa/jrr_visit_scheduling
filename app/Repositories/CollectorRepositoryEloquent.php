@@ -129,5 +129,4 @@ class CollectorRepositoryEloquent extends BaseRepository implements CollectorRep
     
           return $list;
     }
-    
 }

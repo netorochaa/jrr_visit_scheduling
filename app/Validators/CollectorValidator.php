@@ -23,8 +23,6 @@ class CollectorValidator extends LaravelValidator
             'user_id' => 'required|unique:collectors'
         ],
         ValidatorInterface::RULE_UPDATE => [
-            'name' => 'required',
-            'user_id' => 'required|unique:collectors'
         ],
     ];
 }

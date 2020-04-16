@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Repositories;
+use DB;
 
 use Prettus\Repository\Eloquent\BaseRepository;
 use Prettus\Repository\Criteria\RequestCriteria;
@@ -56,6 +57,16 @@ class CollectRepositoryEloquent extends BaseRepository implements CollectReposit
           ];
     
           return $list;
+    }
+
+    public function collects_list()
+    {
+        return DB::table('collector_has_neighborhood')
+                    ->join('collectors', 'collector_has_neighborhood.collector_id', '=', 'collectors.id')
+                    ->join('neighborhoods', 'collector_has_neighborhood.neighborhood_id', '=', 'neighborhoods.id')
+                    ->join('cities', 'neighborhoods.city_id', '=', 'cities.id')
+                    ->select('collectors.id as collector_id','collectors.name', 'collectors.mondayToFriday', 'collectors.saturday', 'collectors.sunday', 'neighborhoods.id as neighborhood_id',
+                        DB::raw('concat(neighborhoods.name , ", ", cities.name ,"-", cities.UF) as neighborhoodCity'));
     }
     
 }
