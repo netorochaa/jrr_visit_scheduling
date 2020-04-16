@@ -29,15 +29,12 @@ class CollectsController extends Controller
     {
         $collects  = $this->repository->all();
         $collectScheduling_list  = $this->repository->collects_list()->get();
-        $neighborhoodCity_list = $this->neighborhoodRepository->neighborhoodsCities_list()->pluck('name', 'id');
-        
         for($i = 0; $i < count($collectScheduling_list); $i++){
             if($collectScheduling_list[$i]->mondayToFriday != null) $collectScheduling_list[$i]->mondayToFriday = explode(",", $collectScheduling_list[$i]->mondayToFriday);
             if($collectScheduling_list[$i]->saturday != null) $collectScheduling_list[$i]->saturday = explode(",", $collectScheduling_list[$i]->saturday);
             if($collectScheduling_list[$i]->sunday != null) $collectScheduling_list[$i]->sunday = explode(",", $collectScheduling_list[$i]->sunday);
         }
-
-        // dd($collectScheduling_list);
+        $neighborhoodCity_list = $this->neighborhoodRepository->neighborhoodsCities_list()->pluck('name', 'id');
 
         return view('collect.index', [
             'namepage'      => 'Coletas',
