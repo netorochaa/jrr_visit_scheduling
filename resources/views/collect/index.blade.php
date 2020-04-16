@@ -35,13 +35,59 @@
         });
         $('input[id="schedulingDate"]').daterangepicker({
           "singleDatePicker": true,
+          "startDate": moment(),
           locale: {
-            format: 'DD/MM/YYYY'
-          }
+            format: 'DD/MM/YYYY dd',
+            "daysOfWeek": [
+                "Dom",
+                "Seg",
+                "Ter",
+                "Qua",
+                "Qui",
+                "Sex",
+                "Sab"
+            ]
+          },
         });
       });
 
-      
+      function verificateDate()
+      {
+        var schedulingDate = document.getElementById("schedulingDate");
+        var schedulingDateSplit = schedulingDate.value.split(" ");
+        var dateSplit = schedulingDateSplit[0].split("/");
+        var day = dateSplit[0];
+        var month = dateSplit[1];
+        var year = dateSplit[2];
+        var dateCorrect = year + "-" + month + "-" + day;
+
+        var dateSchedule = moment(dateCorrect);
+        var dateNow = moment().format("YYYY-MM-DD");
+        //console.log(dateSchedule.isBefore(dateNow));
+
+        if(dateSchedule.isBefore(dateNow))
+        {
+          $('input[id="schedulingDate"]').daterangepicker({
+            "startDate": moment(),
+            "singleDatePicker": true,
+            locale: {
+              format: 'DD/MM/YYYY dd',
+              "daysOfWeek": [
+                  "Dom",
+                  "Seg",
+                  "Ter",
+                  "Qua",
+                  "Qui",
+                  "Sex",
+                  "Sab"
+              ]
+            },
+          });
+        }
+
+      }
+
+
 
   </script>
 @endsection
