@@ -66,7 +66,8 @@ class CollectRepositoryEloquent extends BaseRepository implements CollectReposit
                     ->join('neighborhoods', 'collector_has_neighborhood.neighborhood_id', '=', 'neighborhoods.id')
                     ->join('cities', 'neighborhoods.city_id', '=', 'cities.id')
                     ->select('collectors.id as collector_id','collectors.name', 'collectors.mondayToFriday', 'collectors.saturday', 'collectors.sunday', 'neighborhoods.id as neighborhood_id',
-                        DB::raw('concat(neighborhoods.name , ", ", cities.name ,"-", cities.UF) as neighborhoodCity'));
+                        DB::raw('concat(neighborhoods.name , " [" , case when neighborhoods.region = 1 then "ZONA NORTE" when neighborhoods.region = 2 then "ZONA SUL" END, "]") as neighborhoodCity'),
+                        DB::raw('concat(cities.name ,"-", cities.UF) as cityFull'));
     }
     
 }

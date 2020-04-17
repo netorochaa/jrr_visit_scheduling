@@ -9,41 +9,73 @@
             <div class="col-sm-10">
                 <label>Horário/Bairro - <span id="DayOfWeek"></span></label>
                 <div clas="col-12 form-group" id="infoCollectMondayToFriday" style="display: none;">
-                    <select name="infoCollect" id="infoCollectSelMondayToFriday" class="form-control select2bs4" style="width: 100%;" disabled="disabled" required=>
+                    <select name="infoCollect" id="infoCollectSelMondayToFriday" class="form-control select2bs4" style="width: 100%;" disabled="disabled" required>
                         <option value="" selected></option>
-                        @foreach ($collectScheduling_list as $itemCollect)
-                            @if ($itemCollect->mondayToFriday ?? null)
-                                @for ($i = 0; $i < count($itemCollect->mondayToFriday); $i++)
-                                    <option value="{{ $itemCollect->collector_id }},{{ $itemCollect->neighborhood_id }},{{ $itemCollect->mondayToFriday[$i] }}"> {{ $itemCollect->mondayToFriday[$i] }} - {{ $itemCollect->neighborhoodCity}}, {{ $itemCollect->name}}</option>
-                                @endfor
+                        @foreach ($collectScheduling_list as $itemCollectShedulling)
+                            @if ($itemCollectShedulling->mondayToFriday ?? null)
+                                <optgroup label="{{ $itemCollectShedulling->cityFull }} - {{ $itemCollectShedulling->name }}">
+                                    @for ($i = 0; $i < count($itemCollectShedulling->mondayToFriday); $i++)
+                                        <option 
+                                            @foreach ($collects as $itemCollect)
+                                                @if ($itemCollect->hour         == $itemCollectShedulling->mondayToFriday[$i] &&
+                                                    $itemCollect->collector_id  == $itemCollectShedulling->collector_id) 
+                                                    class="{{ $itemCollect->date }}"
+                                                @endif
+                                            @endforeach
+                                                value="{{ $itemCollectShedulling->collector_id }},{{ $itemCollectShedulling->neighborhood_id }},{{ $itemCollectShedulling->mondayToFriday[$i] }}"> 
+                                                {{ $itemCollectShedulling->mondayToFriday[$i] }} - {{ $itemCollectShedulling->neighborhoodCity}}
+                                        </option>
+                                    @endfor
+                                </optgroup>
                             @endif
                         @endforeach
                     </select>
                 </div>
                 <div clas="col-12 form-group" id="infoCollectSaturday" style="display: none;">
-                    <select name="infoCollect" id="infoCollectSelSaturday" class="form-control select2bs4" style="width: 100%" disabled="disabled" required>
+                    <select name="infoCollect" id="infoCollectSelSaturday" class="form-control select2bs4" style="width: 100%;" disabled="disabled" required>
                         <option value="" selected></option>
-                        @foreach ($collectScheduling_list as $itemCollect)
-                            @if ($itemCollect->saturday ?? null)
-                                @for ($i = 0; $i < count($itemCollect->saturday); $i++)
-                                    <option value="{{ $itemCollect->collector_id }},{{ $itemCollect->neighborhood_id }},{{ $itemCollect->saturday[$i] }}"> {{ $itemCollect->saturday[$i] }} - {{ $itemCollect->neighborhoodCity}}, {{ $itemCollect->name}}</option>
-                                @endfor
+                        @foreach ($collectScheduling_list as $itemCollectShedulling)
+                            @if ($itemCollectShedulling->saturday ?? null)
+                                <optgroup label="{{ $itemCollectShedulling->cityFull }} - {{ $itemCollectShedulling->name }}">
+                                    @for ($i = 0; $i < count($itemCollectShedulling->saturday); $i++)
+                                        <option 
+                                            @foreach ($collects as $itemCollect)
+                                                @if ($itemCollect->hour         == $itemCollectShedulling->saturday[$i] &&
+                                                    $itemCollect->collector_id  == $itemCollectShedulling->collector_id) 
+                                                    class="{{ $itemCollect->date }}"
+                                                @endif
+                                            @endforeach
+                                                value="{{ $itemCollectShedulling->collector_id }},{{ $itemCollectShedulling->neighborhood_id }},{{ $itemCollectShedulling->saturday[$i] }}"> 
+                                                {{ $itemCollectShedulling->saturday[$i] }} - {{ $itemCollectShedulling->neighborhoodCity}}
+                                        </option>
+                                    @endfor
+                                </optgroup>
                             @endif
                         @endforeach
                     </select>
                 </div>
                 <div clas="col-12 form-group" id="infoCollectSunday" style="display: none;">
-                    <select name="infoCollect" id="infoCollectSelSunday" class="form-control select2bs4" style="width: 100%" disabled="disabled" required>
+                    <select name="infoCollect" id="infoCollectSelSunday" class="form-control select2bs4" style="width: 100%;" disabled="disabled" required>
                         <option value="" selected></option>
-                        @foreach ($collectScheduling_list as $itemCollect)
-                            @if ($itemCollect->sunday ?? null)
-                                @for ($i = 0; $i < count($itemCollect->sunday); $i++)
-                                    <option value="{{ $itemCollect->collector_id }},{{ $itemCollect->neighborhood_id }},{{ $itemCollect->sunday[$i] }}"> {{ $itemCollect->sunday[$i] }} - {{ $itemCollect->neighborhoodCity}}, {{ $itemCollect->name}}</option>
-                                @endfor
+                        @foreach ($collectScheduling_list as $itemCollectShedulling)
+                            @if ($itemCollectShedulling->sunday ?? null)
+                                <optgroup label="{{ $itemCollectShedulling->cityFull }} - {{ $itemCollectShedulling->name }}">
+                                    @for ($i = 0; $i < count($itemCollectShedulling->sunday); $i++)
+                                        <option 
+                                            @foreach ($collects as $itemCollect)
+                                                @if ($itemCollect->hour         == $itemCollectShedulling->sunday[$i] &&
+                                                    $itemCollect->collector_id  == $itemCollectShedulling->collector_id) 
+                                                    class="{{ $itemCollect->date }}"
+                                                @endif
+                                            @endforeach
+                                                value="{{ $itemCollectShedulling->collector_id }},{{ $itemCollectShedulling->neighborhood_id }},{{ $itemCollectShedulling->sunday[$i] }}"> 
+                                                {{ $itemCollectShedulling->sunday[$i] }} - {{ $itemCollectShedulling->neighborhoodCity}}
+                                        </option>
+                                    @endfor
+                                </optgroup>
                             @endif
                         @endforeach
                     </select>
-                </div>
                 </div>
             </div>
         </div>

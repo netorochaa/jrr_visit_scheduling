@@ -80,9 +80,11 @@
       var schedulingDateSplit = schedulingDate.value.split(" ");
       schedulingDate.value = schedulingDateSplit[0];
       alterLabel(schedulingDateSplit[1]);
+      customizeOptions(schedulingDateSplit[0]);
     }
 
-    function alterLabel(ddd){
+    function alterLabel(ddd)
+    {
       //Label day of week
       var labelDay = document.getElementById("DayOfWeek");
         if( ddd == 'Mon' || 
@@ -120,6 +122,19 @@
           document.getElementById("infoCollectSelSunday").disabled = false;
           labelDay.innerHTML = "Domingo"; 
         }
+    }
+
+    function customizeOptions(date)
+    {
+      // var dateFormatted = date.replace(/[//"]/g, '');
+      console.log(date);
+      var ids = document.getElementsByClassName(date);
+
+      for (var i = 0; i < ids.length; i++) {
+        ids[i].disabled = "disabled";
+        ids[i].innerHTML += " (Reservado)";
+        console.log(ids[i]);
+      }
     }
   </script>
 @endsection

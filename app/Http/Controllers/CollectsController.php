@@ -36,6 +36,8 @@ class CollectsController extends Controller
         }
         $neighborhoodCity_list = $this->neighborhoodRepository->neighborhoodsCities_list()->pluck('name', 'id');
 
+        // dd($collects);
+
         return view('collect.index', [
             'namepage'      => 'Coletas',
             'threeview'     => null,
