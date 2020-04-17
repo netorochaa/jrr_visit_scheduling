@@ -15,15 +15,17 @@
                             @if ($itemCollectShedulling->mondayToFriday ?? null)
                                 <optgroup label="{{ $itemCollectShedulling->cityFull }} - {{ $itemCollectShedulling->name }}">
                                     @for ($i = 0; $i < count($itemCollectShedulling->mondayToFriday); $i++)
-                                        <option 
+                                        <?php $reserved = false; ?>
+                                        <option
                                             @foreach ($collects as $itemCollect)
                                                 @if ($itemCollect->hour         == $itemCollectShedulling->mondayToFriday[$i] &&
-                                                    $itemCollect->collector_id  == $itemCollectShedulling->collector_id) 
+                                                    $itemCollect->collector_id  == $itemCollectShedulling->collector_id)
                                                     class="{{ $itemCollect->date }}"
+                                                    <?php $reserved = true; ?>
                                                 @endif
                                             @endforeach
-                                                value="{{ $itemCollectShedulling->collector_id }},{{ $itemCollectShedulling->neighborhood_id }},{{ $itemCollectShedulling->mondayToFriday[$i] }}"> 
-                                                {{ $itemCollectShedulling->mondayToFriday[$i] }} - {{ $itemCollectShedulling->neighborhoodCity}}
+                                                value="{{ $itemCollectShedulling->collector_id }},{{ $itemCollectShedulling->neighborhood_id }},{{ $itemCollectShedulling->mondayToFriday[$i] }}" <?php if($reserved) echo " disabled"; ?>>
+                                                {{ $itemCollectShedulling->mondayToFriday[$i] }} - {{ $itemCollectShedulling->neighborhoodCity}} <?php if($reserved) echo " (Reservado)"; ?>
                                         </option>
                                     @endfor
                                 </optgroup>
@@ -38,15 +40,17 @@
                             @if ($itemCollectShedulling->saturday ?? null)
                                 <optgroup label="{{ $itemCollectShedulling->cityFull }} - {{ $itemCollectShedulling->name }}">
                                     @for ($i = 0; $i < count($itemCollectShedulling->saturday); $i++)
-                                        <option 
+                                        <?php $reserved = false; ?>
+                                        <option
                                             @foreach ($collects as $itemCollect)
                                                 @if ($itemCollect->hour         == $itemCollectShedulling->saturday[$i] &&
-                                                    $itemCollect->collector_id  == $itemCollectShedulling->collector_id) 
+                                                    $itemCollect->collector_id  == $itemCollectShedulling->collector_id)
                                                     class="{{ $itemCollect->date }}"
+                                                    <?php $reserved = true; ?>
                                                 @endif
                                             @endforeach
-                                                value="{{ $itemCollectShedulling->collector_id }},{{ $itemCollectShedulling->neighborhood_id }},{{ $itemCollectShedulling->saturday[$i] }}"> 
-                                                {{ $itemCollectShedulling->saturday[$i] }} - {{ $itemCollectShedulling->neighborhoodCity}}
+                                                value="{{ $itemCollectShedulling->collector_id }},{{ $itemCollectShedulling->neighborhood_id }},{{ $itemCollectShedulling->saturday[$i] }}" <?php if($reserved) echo " disabled"; ?>>
+                                                {{ $itemCollectShedulling->saturday[$i] }} - {{ $itemCollectShedulling->neighborhoodCity}} <?php if($reserved) echo " (Reservado)"; ?>
                                         </option>
                                     @endfor
                                 </optgroup>
@@ -61,14 +65,14 @@
                             @if ($itemCollectShedulling->sunday ?? null)
                                 <optgroup label="{{ $itemCollectShedulling->cityFull }} - {{ $itemCollectShedulling->name }}">
                                     @for ($i = 0; $i < count($itemCollectShedulling->sunday); $i++)
-                                        <option 
+                                        <option
                                             @foreach ($collects as $itemCollect)
                                                 @if ($itemCollect->hour         == $itemCollectShedulling->sunday[$i] &&
-                                                    $itemCollect->collector_id  == $itemCollectShedulling->collector_id) 
+                                                    $itemCollect->collector_id  == $itemCollectShedulling->collector_id)
                                                     class="{{ $itemCollect->date }}"
                                                 @endif
                                             @endforeach
-                                                value="{{ $itemCollectShedulling->collector_id }},{{ $itemCollectShedulling->neighborhood_id }},{{ $itemCollectShedulling->sunday[$i] }}"> 
+                                                value="{{ $itemCollectShedulling->collector_id }},{{ $itemCollectShedulling->neighborhood_id }},{{ $itemCollectShedulling->sunday[$i] }}">
                                                 {{ $itemCollectShedulling->sunday[$i] }} - {{ $itemCollectShedulling->neighborhoodCity}}
                                         </option>
                                     @endfor

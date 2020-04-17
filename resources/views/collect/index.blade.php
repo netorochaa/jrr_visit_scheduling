@@ -80,14 +80,14 @@
       var schedulingDateSplit = schedulingDate.value.split(" ");
       schedulingDate.value = schedulingDateSplit[0];
       alterLabel(schedulingDateSplit[1]);
-      customizeOptions(schedulingDateSplit[0]);
+      //customizeOptions(schedulingDateSplit[0]);
     }
 
     function alterLabel(ddd)
     {
       //Label day of week
       var labelDay = document.getElementById("DayOfWeek");
-        if( ddd == 'Mon' || 
+        if( ddd == 'Mon' ||
             ddd == 'Tue' ||
             ddd == 'Wed' ||
             ddd == 'Thu' ||
@@ -120,7 +120,7 @@
           document.getElementById("infoCollectSelSaturday").disabled = true;
           document.getElementById("infoCollectSunday").style.display = "block";
           document.getElementById("infoCollectSelSunday").disabled = false;
-          labelDay.innerHTML = "Domingo"; 
+          labelDay.innerHTML = "Domingo";
         }
     }
 
