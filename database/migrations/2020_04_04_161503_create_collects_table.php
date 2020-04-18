@@ -29,19 +29,19 @@ class CreateCollectsTable extends Migration
 			$table->string('complementAddress', 45)->nullable();
 			$table->string('referenceAddress', 140)->nullable();
 			$table->string('linkMaps', 254)->nullable();
-			$table->char('noFeee', 3)->default('off');
+			$table->char('courtesy', 3)->default('off');
             $table->string('unityCreated', 45)->nullable();
             $table->string('observationCollect', 254)->nullable();
             $table->string('attachment', 254)->nullable();
 
 			// FK
-			$table->unsignedInteger('cancelationType_id')->nullable();
-			$table->foreign('cancelationType_id')->references('id')->on('cancellationTypes');
+			$table->unsignedInteger('cancellationType_id')->nullable();
+			$table->foreign('cancellationType_id')->references('id')->on('cancellationTypes');
 
             $table->unsignedInteger('collector_id');
 			$table->foreign('collector_id')->references('id')->on('collectors');
 
-			$table->unsignedInteger('neighborhood_id');
+			$table->unsignedInteger('neighborhood_id')->nullable();
 			$table->foreign('neighborhood_id')->references('id')->on('neighborhoods');
 
 			$table->unsignedInteger('user_id')->nullable();

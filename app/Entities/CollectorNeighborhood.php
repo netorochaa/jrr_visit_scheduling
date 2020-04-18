@@ -12,4 +12,5 @@ class CollectorNeighborhood extends Model
     public $timestamps = true;
     protected $table = 'collector_has_neighborhood';
     protected $fillable = ['collector_id', 'neighborhood_id'];
+
 }

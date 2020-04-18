@@ -1,8 +1,11 @@
 <?php
-
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use DateTime;
+use DateInterval;
+use DatePeriod;
+use DB;
 
 use App\Http\Requests;
 use Prettus\Validator\Contracts\ValidatorInterface;
@@ -13,6 +16,8 @@ use App\Repositories\CollectorRepository;
 use App\Repositories\UserRepository;
 use App\Repositories\NeighborhoodRepository;
 use App\Validators\CollectorValidator;
+
+date_default_timezone_set('America/Recife');
 
 class CollectorsController extends Controller
 {
@@ -55,16 +60,85 @@ class CollectorsController extends Controller
     {
         try
         {
-            // dd($request->all());
-            if($request->has('mondayToFriday')) $request->merge(['mondayToFriday' => implode(',', $request->all()['mondayToFriday'])]);
-            if($request->has('saturday')) $request->merge(['saturday' => implode(',', $request->all()['saturday'])]);
-            if($request->has('sunday')) $request->merge(['sunday' => implode(',', $request->all()['sunday'])]);
+            $arrayMondayToFriday = null;
+            $arraySaturday = null;
+            $arraySunday = null;
 
-            // dd($request->all());
+            if($request->has('mondayToFriday'))
+            { 
+                $arrayMondayToFriday = $request->all()['mondayToFriday'];
+                $request->merge(['mondayToFriday' => implode(',', $request->all()['mondayToFriday'])]); 
+            }
+            if($request->has('saturday'))
+            { 
+                $arraySaturday = $request->all()['saturday'];
+                $request->merge(['saturday' => implode(',', $request->all()['saturday'])]); 
+            }
+            if($request->has('sunday'))
+            { 
+                $arraySunday = $request->all()['sunday'];
+                $request->merge(['sunday' => implode(',', $request->all()['sunday'])]); 
+            }
+
+            $inicio = new DateTime();
+            $inicio->modify('+1 day');
+            $fim = new DateTime();
+            $fim->modify('+3 month');
 
             $this->validator->with($request->all())->passesOrFail(ValidatorInterface::RULE_CREATE);
             $collector = $this->repository->create($request->all());
 
+            $interval = new DateInterval('P1D');
+            $periodo = new DatePeriod($inicio, $interval ,$fim);
+
+            //CRIAR MÉTODO E MOVER PARA ENTIDADE OU REPOSITORIO
+            foreach($periodo as $data){
+                $day = $data->format("l");
+                $date = $data->format("d/m/Y");
+                
+                if( $day == "Monday" ||
+                    $day == "Tuesday" ||
+                    $day == "Wednesday" ||
+                    $day == "Thursday" ||
+                    $day == "Friday")
+                {
+                    if($arrayMondayToFriday)
+                    {
+                        for($i = 0; $i < count($arrayMondayToFriday); $i++)
+                        {
+                            DB::table('collects')->insert(
+                                ['date' => $date, 'hour' => $arrayMondayToFriday[$i], 'collector_id' => $collector->id]
+                            );
+                        }
+                    }
+                }
+                else if ($day == "Saturday")
+                {
+                    if($arraySaturday)
+                    {
+                        for($i = 0; $i < count($arraySaturday); $i++)
+                        {
+                            DB::table('collects')->insert(
+                                ['date' => $date, 'hour' => $arraySaturday[$i], 'collector_id' => $collector->id]
+                            );
+                        }
+                    }
+                }
+                else if ($day == "Sunday")
+                {
+                    if($arraySunday)
+                    {
+                        for($i = 0; $i < count($arraySunday); $i++)
+                        {
+                            DB::table('collects')->insert(
+                                ['date' => $date, 'hour' => $arraySunday[$i], 'collector_id' => $collector->id]
+                            );
+                        }
+                    }
+                }
+
+            }
+            
             $response = [
                 'message' => 'Coletador criado',
                 'type'   => 'info',
@@ -100,7 +174,7 @@ class CollectorsController extends Controller
             {
                 for ($i=0; $i < count($neighborhoods); $i++)
                     $collector->neighborhoods()->attach($neighborhoods[$i]);
-
+                
                 $response = [
                     'message' => 'Bairros relacionados',
                     'type'   => 'info',

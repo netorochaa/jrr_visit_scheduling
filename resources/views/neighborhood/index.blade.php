@@ -1,7 +1,6 @@
 @extends('templates.master')
 
 @section('head-distinct')
-  <link rel="stylesheet" href="{{ asset('tempusdominus-bootstrap-4/css/tempusdominus-bootstrap-4.min.css') }}">
 @endsection
 
 @section('content')
@@ -20,7 +19,6 @@
 
 @section('footer-distinct')
   <script src=" {{ asset('js/inputmask/min/jquery.inputmask.bundle.min.js') }} "></script>
-  <script src=" {{ asset('tempusdominus-bootstrap-4/js/tempusdominus-bootstrap-4.min.js') }}"></script>
     <script>
         $(function () {
           $('#table-{{ $table }}').DataTable({

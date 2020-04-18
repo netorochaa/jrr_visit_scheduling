@@ -27,16 +27,18 @@ class CollectsController extends Controller
 
     public function index()
     {
-        $collects  = $this->repository->all();
-        $collectScheduling_list  = $this->repository->collects_list()->get();
-        for($i = 0; $i < count($collectScheduling_list); $i++){
-            if($collectScheduling_list[$i]->mondayToFriday != null) $collectScheduling_list[$i]->mondayToFriday = explode(",", $collectScheduling_list[$i]->mondayToFriday);
-            if($collectScheduling_list[$i]->saturday != null) $collectScheduling_list[$i]->saturday = explode(",", $collectScheduling_list[$i]->saturday);
-            if($collectScheduling_list[$i]->sunday != null) $collectScheduling_list[$i]->sunday = explode(",", $collectScheduling_list[$i]->sunday);
-        }
-        $neighborhoodCity_list = $this->neighborhoodRepository->neighborhoodsCities_list()->pluck('name', 'id');
-
+        $collects  = $this->repository->all()->where('neighborhood_id', null);
         // dd($collects);
+
+        // $collectScheduling_list  = $this->repository->collects_list()->get();
+        // for($i = 0; $i < count($collectScheduling_list); $i++){
+        //     if($collectScheduling_list[$i]->mondayToFriday != null) $collectScheduling_list[$i]->mondayToFriday = explode(",", $collectScheduling_list[$i]->mondayToFriday);
+        //     if($collectScheduling_list[$i]->saturday != null) $collectScheduling_list[$i]->saturday = explode(",", $collectScheduling_list[$i]->saturday);
+        //     if($collectScheduling_list[$i]->sunday != null) $collectScheduling_list[$i]->sunday = explode(",", $collectScheduling_list[$i]->sunday);
+        // }
+        $neighborhoodCity = $this->neighborhoodRepository->neighborhoodsCities_list()->get();
+
+        // dd($neighborhoodCity);
 
         return view('collect.index', [
             'namepage'      => 'Coletas',
@@ -46,11 +48,11 @@ class CollectsController extends Controller
             'titlemodal'    => 'Agendar coleta',
             'add'           => true,
             //List for select
-            'neighborhoodCity_list' => $neighborhoodCity_list,
-            'collectScheduling_list' => $collectScheduling_list,
+            // 'collectScheduling_list' => $collectScheduling_list,
             //Info of entitie
             'table'               => $this->repository->getTable(),
             'thead_for_datatable' => ['Data', 'Hora', 'Tipo', 'Status', 'Pagamento', 'Troco', 'Endereço', 'Link', 'Obs. Coleta', 'Anexo', 'Cancelamento', 'Tipo'],
+            'neighborhoodCity'    => $neighborhoodCity,
             'collects'            => $collects
         ]);
     }

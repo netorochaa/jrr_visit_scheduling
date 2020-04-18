@@ -2,7 +2,9 @@
 
 namespace App\Entities;
 
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Notifications\Notifiable;
 use Prettus\Repository\Contracts\Transformable;
 use Prettus\Repository\Traits\TransformableTrait;
 
@@ -13,17 +15,36 @@ use Prettus\Repository\Traits\TransformableTrait;
  */
 class Collect extends Model implements Transformable
 {
+    use SoftDeletes;
+    use Notifiable;
     use TransformableTrait;
 
-    /**
-     * The attributes that are mass assignable.
-     *
-     * @var array
-     */
-    protected $fillable = [];
+    public $timestamps = true;
+    protected $table = 'collects';
+    protected $fillable = ['id','date','hour','collectType','status','payment','changePayment','cep','address','numberAddress','complementAddress','referenceAddress','linkMaps','courtesy','unityCreated','observationCollect','attachment','cancellationType_id','collector_id', 'neighborhood_id','user_id'];  
 
-    public function listCollects(){
-        
+    public function people()
+    {
+        return $this->belongsToMany(People::class, 'people_has_collect', 'collect_id', 'people_id');
     }
 
+    public function cancellationtype()
+    {
+        return $this->belongsTo(CancellationType::class, 'cancellationType_id');
+    }
+
+    public function collector()
+    {
+        return $this->belongsTo(Collector::class, 'collector_id');
+    }
+    
+    public function neighborhood()
+    {
+        return $this->belongsTo(Neighborhood::class, 'neighborhood_id');
+    }
+
+    public function user()
+    {
+        return $this->belongsTo(User::class, 'user_id');
+    }
 }

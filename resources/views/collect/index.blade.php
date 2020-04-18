@@ -19,7 +19,8 @@
   <script src=" {{ asset('moment/moment.min.js') }}"></script>
   <script src=" {{ asset('daterangepicker/daterangepicker.js') }} "></script>
   <script>
-    $(function () {
+    $(function () 
+    {
       //Initialize Select2 Elements
       $('.select2bs4').select2({
         theme: 'bootstrap4'
@@ -33,108 +34,95 @@
         "autoWidth": false,
         "responsive": true,
       });
-      $('input[id="schedulingDate"]').daterangepicker(
-        {
-          "minDate": moment().add(1, 'd'),
-          "singleDatePicker": true,
-          locale: {
-            "format": "DD/MM/YYYY ddd",
-            "separator": " - ",
-            "applyLabel": "Aplicar",
-            "cancelLabel": "Cancelar",
-            "fromLabel": "De",
-            "toLabel": "Até",
-            "customRangeLabel": "Custom",
-            "daysOfWeek": [
-                "Dom",
-                "Seg",
-                "Ter",
-                "Qua",
-                "Qui",
-                "Sex",
-                "Sáb"
-            ],
-            "monthNames": [
-                "Janeiro",
-                "Fevereiro",
-                "Março",
-                "Abril",
-                "Maio",
-                "Junho",
-                "Julho",
-                "Agosto",
-                "Setembro",
-                "Outubro",
-                "Novembro",
-                "Dezembro"
-            ],
-            "firstDay": 0
-        },
+      //Initialize daterangepicker Elements
+      $('input[id="schedulingDate"]').daterangepicker({
+        "minDate": moment(),
+        "singleDatePicker": true,
+        locale: {
+          "format": "DD/MM/YYYY",
+          "separator": " - ",
+          "applyLabel": "Aplicar",
+          "cancelLabel": "Cancelar",
+          "fromLabel": "De",
+          "toLabel": "Até",
+          "customRangeLabel": "Custom",
+          "daysOfWeek": [
+              "Dom",
+              "Seg",
+              "Ter",
+              "Qua",
+              "Qui",
+              "Sex",
+              "Sáb"
+          ],
+          "monthNames": [
+              "Janeiro",
+              "Fevereiro",
+              "Março",
+              "Abril",
+              "Maio",
+              "Junho",
+              "Julho",
+              "Agosto",
+              "Setembro",
+              "Outubro",
+              "Novembro",
+              "Dezembro"
+          ],
+          "firstDay": 0
+        }
       });
     });
+    
+    //Jquery to filter options in select
+    jQuery.fn.filterByText = function(textbox) {
+      return this.each(function() {
+        var select = this;
+        var options = [];
+        $(select).find('option').each(function() {
+          options.push({
+            value: $(this).val(),
+            text: $(this).text()
+          });
+        });
+        $(select).data('options', options);
 
-    function verificateDate()
-    {
-      //Convert date to formmat moment()
-      var schedulingDate = document.getElementById("schedulingDate");
-      var schedulingDateSplit = schedulingDate.value.split(" ");
-      schedulingDate.value = schedulingDateSplit[0];
-      alterLabel(schedulingDateSplit[1]);
-      //customizeOptions(schedulingDateSplit[0]);
+        $(textbox).bind('change keyup', function() {
+          var options = $(select).empty().data('options');
+          var search = $.trim($(this).val());
+          var regex = new RegExp(search, "gi");
+
+          $.each(options, function(i) {
+            var option = options[i];
+            if (option.text.match(regex) !== null) {
+              $(select).append(
+                $('<option>').text(option.text).val(option.value)
+              );
+            }
+          });
+        });
+      });
+    };
+    $(function() {
+      $('select').filterByText($('input[id=schedulingDate]'));
+    });
+
+    //Verified date to enable select
+    function verificateDate(){
+      var date = document.getElementById('schedulingDate');
+      var select = document.getElementById('infoCollectSel');
+
+      var dateSplit = date.value.split('/');
+      var day = dateSplit[0];
+      var month = dateSplit[1];
+      var year = dateSplit[2];;
+
+      var dateMomment = moment(year + "-" + month + "-" + day);      
+      var dateNow = moment().format("YYYY-MM-DD");
+
+      if(dateMomment.isAfter(dateNow)) select.disabled = false;
+      else select.disabled = true;
     }
 
-    function alterLabel(ddd)
-    {
-      //Label day of week
-      var labelDay = document.getElementById("DayOfWeek");
-        if( ddd == 'Mon' ||
-            ddd == 'Tue' ||
-            ddd == 'Wed' ||
-            ddd == 'Thu' ||
-            ddd == 'Fri')
-        {
-          document.getElementById("infoCollectSunday").style.display = "none";
-          document.getElementById("infoCollectSelSunday").disabled = true;
-          document.getElementById("infoCollectSaturday").style.display = "none";
-          document.getElementById("infoCollectSelSaturday").disabled = true;
-          document.getElementById("infoCollectMondayToFriday").style.display = "block";
-          document.getElementById("infoCollectSelMondayToFriday").disabled = false;
-          labelDay.innerHTML = "Segunda a Sexta";
-        }
-        else if(ddd == 'Sat')
-        {
-          document.getElementById("infoCollectMondayToFriday").style.display = "none";
-          document.getElementById("infoCollectSelMondayToFriday").disabled = true;
-          document.getElementById("infoCollectSunday").style.display = "none";
-          document.getElementById("infoCollectSelSunday").disabled = true;
-          document.getElementById("infoCollectSaturday").style.display = "block";
-          document.getElementById("infoCollectSelSaturday").disabled = false;
-          console.log(document.getElementById("infoCollectSaturday").disabled);
-          labelDay.innerHTML = "Sábado";
-        }
-        else if(ddd == 'Sun')
-        {
-          document.getElementById("infoCollectMondayToFriday").style.display = "none";
-          document.getElementById("infoCollectSelMondayToFriday").disabled = true;
-          document.getElementById("infoCollectSaturday").style.display = "none";
-          document.getElementById("infoCollectSelSaturday").disabled = true;
-          document.getElementById("infoCollectSunday").style.display = "block";
-          document.getElementById("infoCollectSelSunday").disabled = false;
-          labelDay.innerHTML = "Domingo";
-        }
-    }
-
-    function customizeOptions(date)
-    {
-      // var dateFormatted = date.replace(/[//"]/g, '');
-      console.log(date);
-      var ids = document.getElementsByClassName(date);
-
-      for (var i = 0; i < ids.length; i++) {
-        ids[i].disabled = "disabled";
-        ids[i].innerHTML += " (Reservado)";
-        console.log(ids[i]);
-      }
-    }
   </script>
 @endsection
