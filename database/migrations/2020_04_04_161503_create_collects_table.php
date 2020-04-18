@@ -17,7 +17,7 @@ class CreateCollectsTable extends Migration
 	{
 		Schema::create('collects', function(Blueprint $table) {
 			$table->increments('id');
-			$table->string('date', 10);
+			$table->datetime('date');
 			$table->string('hour', 5);
 			$table->char('collectType', 1)->default('1');
 			$table->char('status', 1)->default('1');

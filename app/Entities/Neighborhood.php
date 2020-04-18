@@ -29,6 +29,11 @@ class Neighborhood extends Model implements Transformable
         return $this->belongsTo(City::class, 'city_id');
     }
 
+    public function collects()
+    {
+        return $this->hasMany(Collect::class);
+    }
+
     public function getFormattedActiveAttribute(){
         switch ($this->attributes['active']) {
             case "on":
@@ -55,5 +60,11 @@ class Neighborhood extends Model implements Transformable
                 return $this->attributes['region'];
                 break;
         }
+    }
+
+    public function getNeighborhoodZone()
+    {
+        $this->attributes['region'] == 1 ? $zone = "ZONA NORTE" : $zone = "ZONA SUL";
+        return $this->attributes['name'] . " [" . $zone . "]";
     }
 }

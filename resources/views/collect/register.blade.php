@@ -11,12 +11,14 @@
                 <div clas="col-12 form-group" id="infoCollect">
                     <select name="infoCollect" id="infoCollectSel" class="form-control select2bs4" style="width: 100%;" disabled>
                         <option value="" selected></option>
-                        @foreach ($collects as $itemCollect)
-                            @foreach ($neighborhoodCity as $itemNeighborhoodCity)
-                                <option value="{{ $itemCollect->id }},{{$itemNeighborhoodCity->id}}">  
-                                    {{ $itemCollect->date }}, {{ $itemCollect->hour }}, {{ $itemNeighborhoodCity->name}} - {{ $itemCollect->collector->name }}
-                                </option>
-                            @endforeach
+                        @foreach ($collect_list->all() as $collect)
+                            @foreach ($collect->collector->where('id', $collect->collector_id)->get() as $collector)
+                                @foreach ($collector->neighborhoods->all() as $neighborhood)
+                                    <option value="">  
+                                        {{ $collect->formatted_date }}, {{ $collect->hour }}, {{ $neighborhood->getNeighborhoodZone() }} - {{ $collector->name }}
+                                    </option>
+                                @endforeach  
+                            @endforeach  
                         @endforeach
                     </select>
                 </div>

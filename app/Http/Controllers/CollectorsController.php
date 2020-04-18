@@ -37,6 +37,7 @@ class CollectorsController extends Controller
     {
         $collectors_list  = $this->repository->all();
         $user_list        = $this->userRepository->where('type', 2)->pluck('name', 'id');
+
         $schedules  = $this->repository->schedules();
 
         return view('collector.index', [
@@ -83,7 +84,7 @@ class CollectorsController extends Controller
             $inicio = new DateTime();
             $inicio->modify('+1 day');
             $fim = new DateTime();
-            $fim->modify('+3 month');
+            $fim->modify('+2 month');
 
             $this->validator->with($request->all())->passesOrFail(ValidatorInterface::RULE_CREATE);
             $collector = $this->repository->create($request->all());
@@ -94,7 +95,7 @@ class CollectorsController extends Controller
             //CRIAR MÉTODO E MOVER PARA ENTIDADE OU REPOSITORIO
             foreach($periodo as $data){
                 $day = $data->format("l");
-                $date = $data->format("d/m/Y");
+                $date = $data->format("Y-m-d");
                 
                 if( $day == "Monday" ||
                     $day == "Tuesday" ||

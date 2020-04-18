@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use DateTime;
 
 use App\Http\Requests;
 use Prettus\Validator\Contracts\ValidatorInterface;
@@ -11,35 +12,37 @@ use App\Http\Requests\CollectCreateRequest;
 use App\Http\Requests\CollectUpdateRequest;
 use App\Repositories\CollectRepository;
 use App\Repositories\NeighborhoodRepository;
+use App\Repositories\CollectorRepository;
 use App\Validators\CollectValidator;
+
+date_default_timezone_set('America/Recife');
 
 class CollectsController extends Controller
 {
-    protected $repository, $neighborhoodRepository;
+    protected $repository, $neighborhoodRepository, $collectorRepository;
     protected $validator;
 
-    public function __construct(CollectRepository $repository, CollectValidator $validator, NeighborhoodRepository $neighborhoodRepository)
+    public function __construct(CollectRepository $repository, CollectValidator $validator, NeighborhoodRepository $neighborhoodRepository, CollectorRepository $collectorRepository)
     {
         $this->repository = $repository;
         $this->validator  = $validator;
         $this->neighborhoodRepository = $neighborhoodRepository;
+        $this->collectorRepository = $collectorRepository;
     }
 
     public function index()
     {
-        $collects  = $this->repository->all()->where('neighborhood_id', null);
-        // dd($collects);
+        $collect_list = $this->repository->where([
+                ['neighborhood_id', '=' , null],
+                ['date', '>' , new DateTime()],
+            ])->with('collector')->get();
+            // ->with('collector')
+        // $neighborhoodCity_list = $this->neighborhoodRepository->neighborhoodsCities_list()->get();
+        // $collector_list = $this->collectorRepository->with('neighborhoods')->get();
+        // $neighborhood = $collector->neighborhoods->get();
 
-        // $collectScheduling_list  = $this->repository->collects_list()->get();
-        // for($i = 0; $i < count($collectScheduling_list); $i++){
-        //     if($collectScheduling_list[$i]->mondayToFriday != null) $collectScheduling_list[$i]->mondayToFriday = explode(",", $collectScheduling_list[$i]->mondayToFriday);
-        //     if($collectScheduling_list[$i]->saturday != null) $collectScheduling_list[$i]->saturday = explode(",", $collectScheduling_list[$i]->saturday);
-        //     if($collectScheduling_list[$i]->sunday != null) $collectScheduling_list[$i]->sunday = explode(",", $collectScheduling_list[$i]->sunday);
-        // }
-        $neighborhoodCity = $this->neighborhoodRepository->neighborhoodsCities_list()->get();
-
-        // dd($neighborhoodCity);
-
+        // $collect_list = $collect_list->all(array('id', 'date', 'hour', 'collector_id'));
+        //  dd($collector_list->flatMap->neighborhoods->all());
         return view('collect.index', [
             'namepage'      => 'Coletas',
             'threeview'     => null,
@@ -52,8 +55,9 @@ class CollectsController extends Controller
             //Info of entitie
             'table'               => $this->repository->getTable(),
             'thead_for_datatable' => ['Data', 'Hora', 'Tipo', 'Status', 'Pagamento', 'Troco', 'Endereço', 'Link', 'Obs. Coleta', 'Anexo', 'Cancelamento', 'Tipo'],
-            'neighborhoodCity'    => $neighborhoodCity,
-            'collects'            => $collects
+            // 'neighborhoodCity_list' => $neighborhoodCity_list,
+            'collect_list' => $collect_list,
+            // 'collector_list' => $collector_list
         ]);
     }
 

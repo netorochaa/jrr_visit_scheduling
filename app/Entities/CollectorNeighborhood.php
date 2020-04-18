@@ -3,6 +3,8 @@
 namespace App\Entites;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Notifications\Notifiable;
+use Prettus\Repository\Traits\TransformableTrait;
 
 class CollectorNeighborhood extends Model
 {

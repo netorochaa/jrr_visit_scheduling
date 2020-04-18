@@ -47,4 +47,15 @@ class Collect extends Model implements Transformable
     {
         return $this->belongsTo(User::class, 'user_id');
     }
+
+    public function getFormattedDateAttribute(){
+        $date = explode(' ', $this->attributes['date']);
+        $date = explode('-', $date[0]);
+
+        $day = $date[2];
+        $month = $date[1];
+        $year = $date[0];
+
+        return $day . "/" . $month . "/" . $year;
+    }
 }
