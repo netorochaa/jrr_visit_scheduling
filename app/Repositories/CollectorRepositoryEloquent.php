@@ -126,7 +126,7 @@ class CollectorRepositoryEloquent extends BaseRepository implements CollectorRep
             '18:20' => '18:20',
             '18:30' => '18:30',
           ];
-    
+
           return $list;
     }
 }

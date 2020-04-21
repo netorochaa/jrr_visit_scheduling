@@ -55,19 +55,19 @@ class CollectRepositoryEloquent extends BaseRepository implements CollectReposit
             '4' => 'CONCLUÍDA',
             '5' => 'CANCELADA',
           ];
-    
+
           return $list;
     }
 
     public function collects_list()
     {
-        return DB::table('collector_has_neighborhood')
-                    ->join('collectors', 'collector_has_neighborhood.collector_id', '=', 'collectors.id')
-                    ->join('neighborhoods', 'collector_has_neighborhood.neighborhood_id', '=', 'neighborhoods.id')
-                    ->join('cities', 'neighborhoods.city_id', '=', 'cities.id')
-                    ->select('collectors.id as collector_id','collectors.name', 'collectors.mondayToFriday', 'collectors.saturday', 'collectors.sunday', 'neighborhoods.id as neighborhood_id',
-                        DB::raw('concat(neighborhoods.name , " [" , case when neighborhoods.region = 1 then "ZONA NORTE" when neighborhoods.region = 2 then "ZONA SUL" END, "]") as neighborhoodCity'),
-                        DB::raw('concat(cities.name ,"-", cities.UF) as cityFull'));
+        return DB::table('collects')
+                ->join('collectors', 'collects.collector_id', '=', 'collectors.id')
+                        ->select('collectors.id as collector_id',
+                         'collectors.name as collector',
+                         DB::raw('DATE_FORMAT(collects.date, "%d/%m/%Y") as date'),
+                         'collects.hour',
+                         'collects.id');
     }
-    
+
 }

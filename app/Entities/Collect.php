@@ -21,7 +21,7 @@ class Collect extends Model implements Transformable
 
     public $timestamps = true;
     protected $table = 'collects';
-    protected $fillable = ['id','date','hour','collectType','status','payment','changePayment','cep','address','numberAddress','complementAddress','referenceAddress','linkMaps','courtesy','unityCreated','observationCollect','attachment','cancellationType_id','collector_id', 'neighborhood_id','user_id'];  
+    protected $fillable = ['id','date','hour','collectType','status','payment','changePayment','cep','address','numberAddress','complementAddress','referenceAddress','linkMaps','courtesy','unityCreated','observationCollect','attachment','cancellationType_id','collector_id', 'neighborhood_id','user_id'];
 
     public function people()
     {
@@ -37,7 +37,7 @@ class Collect extends Model implements Transformable
     {
         return $this->belongsTo(Collector::class, 'collector_id');
     }
-    
+
     public function neighborhood()
     {
         return $this->belongsTo(Neighborhood::class, 'neighborhood_id');

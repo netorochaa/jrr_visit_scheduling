@@ -19,7 +19,7 @@
   <script src=" {{ asset('moment/moment.min.js') }}"></script>
   <script src=" {{ asset('daterangepicker/daterangepicker.js') }} "></script>
   <script>
-    $(function () 
+    $(function ()
     {
       //Initialize Select2 Elements
       $('.select2bs4').select2({
@@ -73,7 +73,7 @@
         }
       });
     });
-    
+
     //Jquery to filter options in select
     jQuery.fn.filterByText = function(textbox) {
       return this.each(function() {
@@ -117,7 +117,7 @@
       var month = dateSplit[1];
       var year = dateSplit[2];;
 
-      var dateMomment = moment(year + "-" + month + "-" + day);      
+      var dateMomment = moment(year + "-" + month + "-" + day);
       var dateNow = moment().format("YYYY-MM-DD");
 
       if(dateMomment.isAfter(dateNow)) select.disabled = false;
