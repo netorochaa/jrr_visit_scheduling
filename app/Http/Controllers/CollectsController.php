@@ -31,19 +31,10 @@ class CollectsController extends Controller
 
     public function index()
     {
-        // $collect_list = $this->repository->where([
-        //         ['neighborhood_id', '=' , null],
-        //         ['date', '>' , new DateTime()],
-        //     ])->with('collector')->get();
-            // ->with('collector')
         $neighborhoodCity_list = $this->neighborhoodRepository->neighborhoodsCities_list()->get();
-        $collector_list = $this->collectorRepository->with('neighborhoods')->get();
-        // $collector_list = $collector_list->all();
-        // $neighborhood = $collector->neighborhoods->get();
-
-        // $collect_list = $this->repository->collects_list()->get();
-        $collect_list = $this->repository->all();
-        //  dd($collect_list->collector);
+        $collector_list        = $this->collectorRepository->with('neighborhoods')->get();
+        $collect_list          = $this->repository->all();
+        // dd($collect_list->where('neighborhood_id', null));
         return view('collect.index', [
             'namepage'      => 'Coletas',
             'threeview'     => null,
@@ -52,13 +43,12 @@ class CollectsController extends Controller
             'titlemodal'    => 'Agendar coleta',
             'add'           => true,
             //List for select
-            // 'collectScheduling_list' => $collectScheduling_list,
+            'neighborhoodCity_list' => $neighborhoodCity_list,
+            'collect_list'          => $collect_list,
             //Info of entitie
             'table'               => $this->repository->getTable(),
             'thead_for_datatable' => ['Data', 'Hora', 'Tipo', 'Status', 'Pagamento', 'Troco', 'Endereço', 'Link', 'Obs. Coleta', 'Anexo', 'Cancelamento', 'Tipo'],
-            'neighborhoodCity_list' => $neighborhoodCity_list,
-            'collect_list' => $collect_list,
-            'collector_list' => $collector_list
+            'collector_list'      => $collector_list
         ]);
     }
 
