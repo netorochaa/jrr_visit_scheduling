@@ -12,21 +12,29 @@ use App\Http\Requests\CollectUpdateRequest;
 use App\Repositories\CollectRepository;
 use App\Repositories\NeighborhoodRepository;
 use App\Repositories\CollectorRepository;
+use App\Repositories\CancellationTypeRepository;
+use App\Repositories\UserRepository;
+use App\Repositories\PeopleRepository;
 use App\Validators\CollectValidator;
 
 date_default_timezone_set('America/Recife');
 
 class CollectsController extends Controller
 {
-    protected $repository, $neighborhoodRepository, $collectorRepository;
+    protected $repository, $neighborhoodRepository, $collectorRepository, $cancellationTypeRepository;
     protected $validator;
 
-    public function __construct(CollectRepository $repository, CollectValidator $validator, NeighborhoodRepository $neighborhoodRepository, CollectorRepository $collectorRepository)
+    public function __construct(CollectRepository $repository, CollectValidator $validator, NeighborhoodRepository $neighborhoodRepository, 
+                                CollectorRepository $collectorRepository, CancellationTypeRepository $cancellationTypeRepository, UserRepository $userRepository,
+                                PeopleRepository $peopleRepository)
     {
-        $this->repository = $repository;
-        $this->validator  = $validator;
-        $this->neighborhoodRepository = $neighborhoodRepository;
-        $this->collectorRepository = $collectorRepository;
+        $this->repository                 = $repository;
+        $this->validator                  = $validator;
+        $this->neighborhoodRepository     = $neighborhoodRepository;
+        $this->collectorRepository        = $collectorRepository;
+        $this->cancellationTypeRepository = $cancellationTypeRepository;
+        $this->userRepository             = $userRepository;
+        $this->peopleRepository           = $peopleRepository;
     }
 
     public function index()
@@ -34,7 +42,7 @@ class CollectsController extends Controller
         $neighborhoodCity_list = $this->neighborhoodRepository->neighborhoodsCities_list()->get();
         $collector_list        = $this->collectorRepository->with('neighborhoods')->get();
         $collect_list          = $this->repository->all();
-        // dd($collect_list->where('neighborhood_id', null));
+        
         return view('collect.index', [
             'namepage'      => 'Coletas',
             'threeview'     => null,
@@ -83,51 +91,32 @@ class CollectsController extends Controller
         }
     }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  int $id
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function show($id)
-    {
-        $collect = $this->repository->find($id);
 
-        if (request()->wantsJson()) {
-
-            return response()->json([
-                'data' => $collect,
-            ]);
-        }
-
-        return view('collects.show', compact('collect'));
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int $id
-     *
-     * @return \Illuminate\Http\Response
-     */
     public function edit($id)
     {
         $collect = $this->repository->find($id);
+        $cancellationType = $this->CancellationTypeRepository->pluck('name', 'id');
+        $collectType_list = $this->repository->collectType_list();
+        $statusCollects_list = $this->repository->statusCollects_list();
+        $payment_list = $this->repository->payment_list();
+        $userAuth_list = $this->userRepository->where('type', '>', 2)->pluck('name', 'name');
+        $people_list = $this->$peopleRepository->all();
 
-        return view('collects.edit', compact('collect'));
+        return view('collect.schedule', [
+            'namepage'      => 'Coletas',
+            'threeview'     => null,
+            'titlespage'    => ['Coletas'],
+            'titlecard'     => 'Agendamento de coleta',
+            'goback'        => true,
+            'add'           => false,
+            //Lists for select
+            'schedules' => $schedules,
+            //Info of entitie
+            'table' => $this->repository->getTable(),
+            'collect' => $collect
+        ]);
     }
 
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  CollectUpdateRequest $request
-     * @param  string            $id
-     *
-     * @return Response
-     *
-     * @throws \Prettus\Validator\Exceptions\ValidatorException
-     */
     public function update(CollectUpdateRequest $request, $id)
     {
         try {
@@ -163,24 +152,9 @@ class CollectsController extends Controller
 
 
     /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int $id
-     *
-     * @return \Illuminate\Http\Response
+     * Methods not used
      */
-    public function destroy($id)
-    {
-        $deleted = $this->repository->delete($id);
+    public function destroy($id){}
 
-        if (request()->wantsJson()) {
-
-            return response()->json([
-                'message' => 'Collect deleted.',
-                'deleted' => $deleted,
-            ]);
-        }
-
-        return redirect()->back()->with('message', 'Collect deleted.');
-    }
+    public function show($id){}
 }

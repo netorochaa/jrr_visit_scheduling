@@ -96,7 +96,7 @@ class CollectorsController extends Controller
             foreach($periodo as $data){
                 $day = $data->format("l");
                 $date = $data->format("Y-m-d");
-                
+
                 if( $day == "Monday" ||
                     $day == "Tuesday" ||
                     $day == "Wednesday" ||

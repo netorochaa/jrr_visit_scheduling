@@ -25,7 +25,7 @@
     </div>
     <div class="card-footer">
         @include('templates.components.submit', ['input' => 'Continuar', 'attributes' => ['class' => 'btn btn-outline-primary']])
-        <button type="button" onclick="location.href='{{ route('collect.index') }}'" class="btn btn-outline-danger" >Cancelar</button>
+        <button type="button" onclick="location.href='{{ route('collect.edit') }}'" class="btn btn-outline-danger" >Cancelar</button>
     </div>
     {!! Form::close() !!}
 </div>

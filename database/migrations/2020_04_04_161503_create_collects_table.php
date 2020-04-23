@@ -29,7 +29,7 @@ class CreateCollectsTable extends Migration
 			$table->string('complementAddress', 45)->nullable();
 			$table->string('referenceAddress', 140)->nullable();
 			$table->string('linkMaps', 254)->nullable();
-			$table->char('courtesy', 3)->default('off');
+			$table->string('AuthCourtesy', 140)->nullable();
             $table->string('unityCreated', 45)->nullable();
             $table->string('observationCollect', 254)->nullable();
             $table->string('attachment', 254)->nullable();
