@@ -120,7 +120,7 @@
       var dateMomment = moment(year + "-" + month + "-" + day);
       var dateNow = moment().format("YYYY-MM-DD");
 
-      dateMomment.isAfter(dateNow)) ? select.disabled = false : select.disabled = true;
+      dateMomment.isAfter(dateNow) ? select.disabled = false : select.disabled = true;
     }
 
   </script>

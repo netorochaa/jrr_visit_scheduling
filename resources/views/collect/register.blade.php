@@ -1,6 +1,6 @@
 
 <div class="card">
-    {!! Form::open(['route' => 'collect.store', 'method' => 'post', 'role' => 'form', 'class' => 'form-horizontal']) !!}
+    {!! Form::open(['route' => 'collect.schedule', 'method' => 'post', 'role' => 'form', 'class' => 'form-horizontal']) !!}
     <div class="card-body">
         <div class="row">
             <div class="col-sm-2">
@@ -13,7 +13,7 @@
                         <option value="" selected></option>
                         @foreach ($collect_list->where('neighborhood_id', null) as $collect)
                             @foreach ($collector_list->find($collect->collector->id)->neighborhoods as $neighborhood)
-                                <option value="{{ $collect->id }}, {{ $neighborhood->id }}">
+                                <option value="{{ $collect->id }},{{ $neighborhood->id }}">
                                     {{ $collect->formatted_date }} - {{ $collect->hour }}, {{ $neighborhood->getNeighborhoodZone() }}, {{ $neighborhood->city->name }}
                                 </option>
                             @endforeach
@@ -25,7 +25,7 @@
     </div>
     <div class="card-footer">
         @include('templates.components.submit', ['input' => 'Continuar', 'attributes' => ['class' => 'btn btn-outline-primary']])
-        <button type="button" onclick="location.href='{{ route('collect.edit') }}'" class="btn btn-outline-danger" >Cancelar</button>
+        <button type="button" onclick="#" class="btn btn-outline-danger" >Cancelar</button>
     </div>
     {!! Form::close() !!}
 </div>

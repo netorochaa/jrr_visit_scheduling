@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use App\Http\Requests;
 use Prettus\Validator\Contracts\ValidatorInterface;
 use Prettus\Validator\Exceptions\ValidatorException;
+use Exception;
 use App\Http\Requests\CollectCreateRequest;
 use App\Http\Requests\CollectUpdateRequest;
 use App\Repositories\CollectRepository;
@@ -14,19 +15,19 @@ use App\Repositories\NeighborhoodRepository;
 use App\Repositories\CollectorRepository;
 use App\Repositories\CancellationTypeRepository;
 use App\Repositories\UserRepository;
-use App\Repositories\PeopleRepository;
+use App\Repositories\PersonRepository;
 use App\Validators\CollectValidator;
 
 date_default_timezone_set('America/Recife');
 
 class CollectsController extends Controller
 {
-    protected $repository, $neighborhoodRepository, $collectorRepository, $cancellationTypeRepository;
+    protected $repository, $neighborhoodRepository, $collectorRepository, $cancellationTypeRepository, $userRepository, $peopleRepository;
     protected $validator;
 
     public function __construct(CollectRepository $repository, CollectValidator $validator, NeighborhoodRepository $neighborhoodRepository, 
                                 CollectorRepository $collectorRepository, CancellationTypeRepository $cancellationTypeRepository, UserRepository $userRepository,
-                                PeopleRepository $peopleRepository)
+                                PersonRepository $peopleRepository)
     {
         $this->repository                 = $repository;
         $this->validator                  = $validator;
@@ -91,30 +92,58 @@ class CollectsController extends Controller
         }
     }
 
-
-    public function edit($id)
+    public function schedule(Request $request)
     {
-        $collect = $this->repository->find($id);
-        $cancellationType = $this->CancellationTypeRepository->pluck('name', 'id');
-        $collectType_list = $this->repository->collectType_list();
-        $statusCollects_list = $this->repository->statusCollects_list();
-        $payment_list = $this->repository->payment_list();
-        $userAuth_list = $this->userRepository->where('type', '>', 2)->pluck('name', 'name');
-        $people_list = $this->$peopleRepository->all();
 
-        return view('collect.schedule', [
-            'namepage'      => 'Coletas',
-            'threeview'     => null,
-            'titlespage'    => ['Coletas'],
-            'titlecard'     => 'Agendamento de coleta',
-            'goback'        => true,
-            'add'           => false,
-            //Lists for select
-            'schedules' => $schedules,
-            //Info of entitie
-            'table' => $this->repository->getTable(),
-            'collect' => $collect
-        ]);
+        try
+        {
+            $id = explode(",", $request->all()['infoCollect']);
+            $id = $id[0];
+            $idNeighborhood = $id[1];
+            $collect = $this->repository->find($id);
+
+            if(!$collect->neighborhood)
+            {
+                $response = [
+                    'message' =>  'Este horário já estava ou acabou de ser reservado! Escolha outro horário disponível na lista abaixo.',
+                    'type'    => 'error'
+                ];
+                session()->flash('return', $response);
+                return redirect()->route('collect.index'); 
+            }
+            else
+            {
+                $cancellationType = $this->cancellationTypeRepository->pluck('name', 'id');
+                $collectType_list = $this->repository->collectType_list();
+                $statusCollects_list = $this->repository->statusCollects_list();
+                $payment_list = $this->repository->payment_list();
+                $userAuth_list = $this->userRepository->where('type', '>', 2)->pluck('name', 'name');
+                $people_list = $this->$peopleRepository->all();
+
+                return view('collect.schedule', [
+                    'namepage'      => 'Coletas',
+                    'threeview'     => null,
+                    'titlespage'    => ['Coletas'],
+                    'titlecard'     => 'Agendamento de coleta',
+                    'goback'        => true,
+                    'add'           => false,
+                    //Lists for select
+                    'schedules' => $schedules,
+                    //Info of entitie
+                    'table' => $this->repository->getTable(),
+                    'collect' => $collect
+                ]);
+            }
+        }
+        catch(Exception $e)
+        {
+            $response = [
+                'message' =>  $e->getMessage(),
+                'type'    => 'error'
+            ];
+            session()->flash('return', $response);
+            return redirect()->route('collect.index'); 
+        }
     }
 
     public function update(CollectUpdateRequest $request, $id)
@@ -155,6 +184,6 @@ class CollectsController extends Controller
      * Methods not used
      */
     public function destroy($id){}
-
+    public function edit($id){}
     public function show($id){}
 }

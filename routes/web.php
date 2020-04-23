@@ -38,3 +38,4 @@ Route::resource('cancellationtype', 'CancellationTypesController');
 
 // Collect
 Route::resource('collect', 'CollectsController');
+Route::post('/schedule', ['as' => 'collect.schedule', 'uses' => 'CollectsController@schedule']);
