@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 
-use App\Http\Requests;
+use DateTime;
 use Prettus\Validator\Contracts\ValidatorInterface;
 use Prettus\Validator\Exceptions\ValidatorException;
 use Exception;
@@ -17,6 +17,7 @@ use App\Repositories\CancellationTypeRepository;
 use App\Repositories\UserRepository;
 use App\Repositories\PersonRepository;
 use App\Validators\CollectValidator;
+use App\Entities\Collect;
 
 date_default_timezone_set('America/Recife');
 
@@ -25,7 +26,7 @@ class CollectsController extends Controller
     protected $repository, $neighborhoodRepository, $collectorRepository, $cancellationTypeRepository, $userRepository, $peopleRepository;
     protected $validator;
 
-    public function __construct(CollectRepository $repository, CollectValidator $validator, NeighborhoodRepository $neighborhoodRepository, 
+    public function __construct(CollectRepository $repository, CollectValidator $validator, NeighborhoodRepository $neighborhoodRepository,
                                 CollectorRepository $collectorRepository, CancellationTypeRepository $cancellationTypeRepository, UserRepository $userRepository,
                                 PersonRepository $peopleRepository)
     {
@@ -43,7 +44,7 @@ class CollectsController extends Controller
         $neighborhoodCity_list = $this->neighborhoodRepository->neighborhoodsCities_list()->get();
         $collector_list        = $this->collectorRepository->with('neighborhoods')->get();
         $collect_list          = $this->repository->all();
-        
+
         return view('collect.index', [
             'namepage'      => 'Coletas',
             'threeview'     => null,
@@ -94,31 +95,33 @@ class CollectsController extends Controller
 
     public function schedule(Request $request)
     {
-
         try
         {
             $id = explode(",", $request->all()['infoCollect']);
-            $id = $id[0];
+            $idCollect = $id[0];
             $idNeighborhood = $id[1];
-            $collect = $this->repository->find($id);
+            $collect = $this->repository->find($idCollect);
 
-            if(!$collect->neighborhood)
+            if($collect->neighborhood != null)
             {
                 $response = [
                     'message' =>  'Este horário já estava ou acabou de ser reservado! Escolha outro horário disponível na lista abaixo.',
                     'type'    => 'error'
                 ];
                 session()->flash('return', $response);
-                return redirect()->route('collect.index'); 
+                return redirect()->route('collect.index');
             }
             else
             {
-                $cancellationType = $this->cancellationTypeRepository->pluck('name', 'id');
+                Collect::where('id', $idCollect)->update(['neighborhood_id' => $idNeighborhood, 'status' => 2, 'reserved_at' => new DateTime()]);
+                $collect = $collect->fresh();
+
+                $cancellationType_list = $this->cancellationTypeRepository->pluck('name', 'id');
                 $collectType_list = $this->repository->collectType_list();
                 $statusCollects_list = $this->repository->statusCollects_list();
                 $payment_list = $this->repository->payment_list();
                 $userAuth_list = $this->userRepository->where('type', '>', 2)->pluck('name', 'name');
-                $people_list = $this->$peopleRepository->all();
+                $people_list = $this->peopleRepository->all();
 
                 return view('collect.schedule', [
                     'namepage'      => 'Coletas',
@@ -128,7 +131,13 @@ class CollectsController extends Controller
                     'goback'        => true,
                     'add'           => false,
                     //Lists for select
-                    'schedules' => $schedules,
+                    'cancellationType_list' => $cancellationType_list,
+                    'collectType_list' => $collectType_list,
+                    'statusCollects_list' => $statusCollects_list,
+                    'cancellationType' => $statusCollects_list,
+                    'payment_list' => $payment_list,
+                    'userAuth_list' => $userAuth_list,
+                    'people_list' => $people_list,
                     //Info of entitie
                     'table' => $this->repository->getTable(),
                     'collect' => $collect
@@ -142,7 +151,7 @@ class CollectsController extends Controller
                 'type'    => 'error'
             ];
             session()->flash('return', $response);
-            return redirect()->route('collect.index'); 
+            return redirect()->route('collect.index');
         }
     }
 
