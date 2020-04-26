@@ -11,7 +11,7 @@
                 <div clas="col-12 form-group" id="infoCollect">
                     <select name="infoCollect" id="infoCollectSel" class="form-control select2bs4" style="width: 100%;" disabled>
                         <option value="" selected></option>
-                        @foreach ($collect_list->where('neighborhood_id', null) as $collect)
+                        @foreach ($collectAvailables_list->where('neighborhood_id', null) as $collect)
                             @foreach ($collector_list->find($collect->collector->id)->neighborhoods as $neighborhood)
                                 <option value="{{ $collect->id }},{{ $neighborhood->id }}">
                                     {{ $collect->formatted_date }} - {{ $collect->hour }}, {{ $neighborhood->getNeighborhoodZone() }}, {{ $neighborhood->city->name }}

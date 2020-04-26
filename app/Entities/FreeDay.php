@@ -14,7 +14,7 @@ class FreeDay extends Model implements Transformable
 
     public $timestamps = true;
     protected $table = 'freeDays';
-    protected $fillable = ['name', 'type', 'dateRange', 'active', 'freedays_id', 'city_id'];
+    protected $fillable = ['name', 'type', 'dateStart', 'dateEnd', 'active', 'freedays_id', 'city_id'];
 
 
     public function cities()
@@ -27,7 +27,8 @@ class FreeDay extends Model implements Transformable
         return $this->belongsToMany(Collector::class, 'collector_has_freedays', 'freedays_id', 'collector_id',);
     }
 
-    public function getFormattedTypeAttribute(){
+    public function getFormattedTypeAttribute()
+    {
         switch ($this->attributes['type']) {
             case 1:
                 return "POR COLETADOR";
@@ -40,4 +41,11 @@ class FreeDay extends Model implements Transformable
                 break;
         }
     }
+
+    public function getDateRange()
+    {
+        return date("d/m/Y H:i", strtotime($this->attributes['dateStart'])) . " - " . date("d/m/Y H:i", strtotime($this->attributes['dateEnd']));
+    }
+
+
 }

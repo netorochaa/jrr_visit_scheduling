@@ -43,9 +43,13 @@ class CollectsController extends Controller
 
     public function index()
     {
-        $neighborhoodCity_list = $this->neighborhoodRepository->neighborhoodsCities_list()->get();
-        $collector_list        = $this->collectorRepository->with('neighborhoods')->get();
-        $collect_list          = $this->repository->all();
+        $dateNow = date("Y-m-d h:i");
+        $collector_list         = $this->collectorRepository->with('neighborhoods')->get();
+        $freeDay_list           = $this->freeDayRepository->where('dateStart', '>', $dateNow)->get();
+        $collect_list           = $this->repository->all();
+        $collectAvailables_list = $collect_list;
+        
+        for ($i=0; $i < count($freeDay_list); $i++) $collectAvailables_list = $collectAvailables_list->whereNotBetween('date', [$freeDay_list[$i]['dateStart'], $freeDay_list[$i]['dateEnd']]);
 
         return view('collect.index', [
             'namepage'      => 'Coletas',
@@ -55,8 +59,9 @@ class CollectsController extends Controller
             'titlemodal'    => 'Agendar coleta',
             'add'           => true,
             //List for select
-            'neighborhoodCity_list' => $neighborhoodCity_list,
-            'collect_list'          => $collect_list,
+            'freeDay_list'              => $freeDay_list,
+            'collect_list'              => $collect_list,
+            'collectAvailables_list'    => $collectAvailables_list,
             //Info of entitie
             'table'               => $this->repository->getTable(),
             'thead_for_datatable' => ['Data', 'Hora', 'Tipo', 'Status', 'Pagamento', 'Troco', 'Endereço', 'Link', 'Obs. Coleta', 'Anexo', 'Cancelamento', 'Tipo'],
