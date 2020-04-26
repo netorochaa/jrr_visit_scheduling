@@ -16,6 +16,7 @@ use App\Repositories\CollectorRepository;
 use App\Repositories\CancellationTypeRepository;
 use App\Repositories\UserRepository;
 use App\Repositories\PersonRepository;
+use App\Repositories\FreeDayRepository;
 use App\Validators\CollectValidator;
 use App\Entities\Collect;
 
@@ -23,12 +24,12 @@ date_default_timezone_set('America/Recife');
 
 class CollectsController extends Controller
 {
-    protected $repository, $neighborhoodRepository, $collectorRepository, $cancellationTypeRepository, $userRepository, $peopleRepository;
+    protected $repository, $neighborhoodRepository, $collectorRepository, $cancellationTypeRepository, $userRepository, $peopleRepository, $freeDayRepository;
     protected $validator;
 
     public function __construct(CollectRepository $repository, CollectValidator $validator, NeighborhoodRepository $neighborhoodRepository,
                                 CollectorRepository $collectorRepository, CancellationTypeRepository $cancellationTypeRepository, UserRepository $userRepository,
-                                PersonRepository $peopleRepository)
+                                PersonRepository $peopleRepository, FreeDayRepository $freeDayRepository)
     {
         $this->repository                 = $repository;
         $this->validator                  = $validator;
@@ -37,6 +38,7 @@ class CollectsController extends Controller
         $this->cancellationTypeRepository = $cancellationTypeRepository;
         $this->userRepository             = $userRepository;
         $this->peopleRepository           = $peopleRepository;
+        $this->freeDayRepository          = $freeDayRepository;
     }
 
     public function index()

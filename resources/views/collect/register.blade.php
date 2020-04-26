@@ -25,6 +25,7 @@
     </div>
     <div class="card-footer">
         @include('templates.components.submit', ['input' => 'Continuar', 'attributes' => ['class' => 'btn btn-outline-primary']])
+        {{-- Ao cancelar deve-se deixar vago o horário --}}
         <button type="button" onclick="#" class="btn btn-outline-danger" >Cancelar</button>
     </div>
     {!! Form::close() !!}

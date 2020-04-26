@@ -56,10 +56,43 @@ class FreeDaysController extends Controller
         ]);
     }
 
+    public function convertDateTime($fullDateRange)
+    {
+        $fulldate = explode("-", $fullDateRange);
+        $fullDateStart = trim($fulldate[0]);
+        $fullDateEnd = trim($fulldate[1]);
+
+        // dd($fullDateEnd);
+        //Start Date
+        $dateStart = explode(" ", $fullDateStart);
+        $onlyDateStart = $dateStart[0];
+        $hourStart = $dateStart[1];
+        $dateStartSplit = explode("/", $onlyDateStart);
+        $dayStart = $dateStartSplit[0];
+        $monthStart = $dateStartSplit[1];
+        $yearStart = $dateStartSplit[2];
+        $finalStartDate = $yearStart . "-" . $monthStart . "-" . $dayStart . " " . $hourStart;
+
+        //End Date
+        $dateEnd = explode(" ", $fullDateEnd);
+        $onlyDateEnd = $dateEnd[0];
+        $hourEnd = $dateEnd[1];
+        $dateEndSplit = explode("/", $onlyDateEnd);
+        $dayEnd = $dateEndSplit[0];
+        $monthEnd = $dateEndSplit[1];
+        $yearEnd = $dateEndSplit[2];
+        $finalEndDate = $yearEnd . "-" . $monthEnd . "-" . $dayEnd . " " . $hourEnd;
+
+        return $finalStartDate . "  " . $finalEndDate;
+    }
+
     public function store(FreeDayCreateRequest $request)
     {
         try 
         {
+            if($request->has('dateRange'))
+                $request->merge(['dateRange' => $this->convertDateTime($request->all()['dateRange'])]);
+
             $this->validator->with($request->all())->passesOrFail(ValidatorInterface::RULE_CREATE);
 
             $collectors = $request->has('collector_id') ? $request->all()['collector_id'] : null;
