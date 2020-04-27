@@ -1,6 +1,6 @@
 
 <div class="card">
-    {!! Form::open(['route' => 'collect.schedule', 'method' => 'post', 'role' => 'form', 'class' => 'form-horizontal']) !!}
+    {!! Form::open(['route' => 'collect.reserve', 'method' => 'post', 'role' => 'form', 'class' => 'form-horizontal']) !!}
     <div class="card-body">
         <div class="row">
             <div class="col-sm-2">

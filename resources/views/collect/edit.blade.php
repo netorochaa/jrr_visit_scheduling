@@ -9,6 +9,12 @@
 @section('content')
   @include('templates.content.header')
   @include('templates.content.content1col', ['contentbody' => 'collect.schedule'])
+  @include('templates.content.modallarge',  [
+    'titlemodal' => $titlemodal , 
+    'contentmodal' => 'collect.person.register',
+    'titlemodal2' => $titlemodal, 
+    'contentmodal2' => 'collect.person.registered'
+    ])
 @endsection
 
 @section('footer-distinct')
@@ -19,6 +25,15 @@
       $('.select2bs4').select2({
         theme: 'bootstrap4'
       })
+      $('#table-people').DataTable({
+        "paging": true,
+        "lengthChange": false,
+        "searching": false,
+        "ordering": true,
+        "info": true,
+        "autoWidth": false,
+        "responsive": true,
+      });
     });
   </script>
 @endsection

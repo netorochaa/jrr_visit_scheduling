@@ -38,4 +38,10 @@ Route::resource('cancellationtype', 'CancellationTypesController');
 
 // Collect
 Route::resource('collect', 'CollectsController');
-Route::post('/schedule', ['as' => 'collect.schedule', 'uses' => 'CollectsController@schedule']);
+Route::post('/reserve', ['as' => 'collect.reserve', 'uses' => 'CollectsController@reserve']);
+Route::get('/schedule/{id}', ['as' => 'collect.schedule', 'uses' => 'CollectsController@schedule']);
+
+// Person
+Route::resource('person', 'PeopleController');
+Route::post('/people/collect', ['as' => 'person.collect.attach', 'uses' => 'PeopleController@attachPeopleCollect']);
+Route::post('/people/{people_id}/collect/{collect_id}', ['as' => 'person.collect.detach', 'uses' => 'PeopleController@detachPeopleCollect']);

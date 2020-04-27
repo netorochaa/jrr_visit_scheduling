@@ -11,7 +11,7 @@
         @foreach ($freedays_list as $freedays)
         <tr>
             <td>{{ $freedays->name }}</td>
-            <td>{{ $freedays->formatted_type }}:<br>
+            {{-- <td>{{ $freedays->formatted_type }}:<br>
                 @if ($freedays->type == 1 )
                     @foreach ($freedays->collectors as $item)
                         - {{ $item->name }}<br>
@@ -21,7 +21,7 @@
                         - {{ $item->name }}<br>
                     @endforeach
                 @endif
-             </td>
+             </td> --}}
             <td>{{ $freedays->getDateRange() }}</td>
             <td>
                 <div class="btn-group">

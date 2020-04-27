@@ -18,7 +18,12 @@ class PersonValidator extends LaravelValidator
      * @var array
      */
     protected $rules = [
-        ValidatorInterface::RULE_CREATE => [],
+        ValidatorInterface::RULE_CREATE => [
+            // 'name' => 'required|unique',
+            // 'fone' => 'required',
+            // 'CPF' => 'required',
+            // 'birth' => 'required',
+        ],
         ValidatorInterface::RULE_UPDATE => [],
     ];
 }

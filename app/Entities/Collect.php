@@ -25,7 +25,7 @@ class Collect extends Model implements Transformable
 
     public function people()
     {
-        return $this->belongsToMany(People::class, 'people_has_collect', 'collect_id', 'people_id');
+        return $this->belongsToMany(Person::class, 'people_has_collect', 'collect_id', 'people_id');
     }
 
     public function cancellationtype()

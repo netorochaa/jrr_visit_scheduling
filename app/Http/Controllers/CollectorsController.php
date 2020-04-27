@@ -93,7 +93,8 @@ class CollectorsController extends Controller
             $periodo = new DatePeriod($inicio, $interval ,$fim);
 
             //CRIAR MÉTODO E MOVER PARA ENTIDADE OU REPOSITORIO
-            foreach($periodo as $data){
+            foreach($periodo as $data)
+            {
                 $day = $data->format("l");
                 $date = $data->format("Y-m-d");
 
@@ -108,7 +109,7 @@ class CollectorsController extends Controller
                         for($i = 0; $i < count($arrayMondayToFriday); $i++)
                         {
                             DB::table('collects')->insert(
-                                ['date' => $date, 'hour' => $arrayMondayToFriday[$i], 'collector_id' => $collector->id]
+                                ['date' => $date . " " . $arrayMondayToFriday[$i], 'hour' => $arrayMondayToFriday[$i], 'collector_id' => $collector->id]
                             );
                         }
                     }
@@ -120,7 +121,7 @@ class CollectorsController extends Controller
                         for($i = 0; $i < count($arraySaturday); $i++)
                         {
                             DB::table('collects')->insert(
-                                ['date' => $date, 'hour' => $arraySaturday[$i], 'collector_id' => $collector->id]
+                                ['date' => $date . " " . $arraySaturday[$i], 'hour' => $arraySaturday[$i], 'collector_id' => $collector->id]
                             );
                         }
                     }
@@ -132,14 +133,12 @@ class CollectorsController extends Controller
                         for($i = 0; $i < count($arraySunday); $i++)
                         {
                             DB::table('collects')->insert(
-                                ['date' => $date, 'hour' => $arraySunday[$i], 'collector_id' => $collector->id]
+                                ['date' => $date . " " . $arraySunday[$i], 'hour' => $arraySunday[$i], 'collector_id' => $collector->id]
                             );
                         }
                     }
                 }
-
             }
-            
             $response = [
                 'message' => 'Coletador criado',
                 'type'   => 'info',
@@ -243,6 +242,8 @@ class CollectorsController extends Controller
 
             $this->validator->with($request->all())->passesOrFail(ValidatorInterface::RULE_UPDATE);
             $collector = $this->repository->update($request->all(), $id);
+
+            //Adicionar data de virgência e criar script para atualizar horário das coletas
 
             $response = [
                 'message' => 'Coletador atualizado',

@@ -2,19 +2,19 @@
     <div class="card">
         <div class="card-body">
             <div class="row">
-                @include('templates.components.input', ['label' => 'Nome do coletador',                                'col' => '8', 'input' => 'name',            'attributes' => ['required' => 'true', 'class' => 'form-control']])
-                @include('templates.components.input', ['label' => 'Link no mapa do início da atividade do coletador', 'col' => '6', 'input' => 'startingAddress', 'attributes' => ['class' => 'form-control']])
-                @include('templates.components.select', ['label' => 'Colaborador', 'col' => '6', 'select' => 'user_id', 'data' => $user_list, 'attributes' => ['class' => 'form-control select2', 'style' => 'width: 100%;']])
+                @include('templates.components.input',  ['label' => 'Data',   'col' => '2', 'input'  => 'date',         'attributes' => ['required' => 'true', 'class' => 'form-control', 'disabled' => 'true']])
+                @include('templates.components.input',  ['label' => 'Hora',   'col' => '2', 'input'  => 'hour',         'attributes' => ['required' => 'true', 'class' => 'form-control', 'disabled' => 'true']])
+                @include('templates.components.input',  ['label' => 'Bairro', 'col' => '6', 'input'  => 'neighborhood', 'attributes' => ['required' => 'true', 'class' => 'form-control', 'disabled' => 'true'], 'value' => $collect->neighborhood->getNeighborhoodZone()])
+                @include('templates.components.select', ['label' => 'Tipo',   'col' => '2', 'select' => 'collectType',  'attributes' => ['class' => 'form-control'], 'data' => $collectType_list,])
             </div>
-            <h3>Horários</h3>
+            <h3>Paciente(s)
+                <button type="button" data-toggle="modal" data-target="#modal-xl" class="btn btn-outline-success"><i class="fas fa-plus"></i> Novo</button> 
+                <button type="button" data-toggle="modal" data-target="#modal-lg" class="btn btn-outline-success"><i class="fas fa-plus"></i> Já possui cadastro</button> 
+            </h3>
+            <hr>
             <div class="row">
-                @include('templates.components.select', ['label' => 'Segundas/sextas', 'listExists' => $collector->mondayToFriday ?? null, 'col' => '12', 'select' => 'mondayToFriday[]', 'data' => $schedules, 'attributes' => ['class' => 'form-control select2bs4', 'multiple' => 'multiple', 'style' => 'width: 100%;']])
-                @include('templates.components.select', ['label' => 'Sábados', 'listExists' =>  $collector->saturday ?? null, 'col' => '12', 'select' => 'saturday[]', 'data' => $schedules, 'attributes' => ['class' => 'form-control select2bs4', 'multiple' => 'multiple', 'style' => 'width: 100%;']])
-                @include('templates.components.select', ['label' => 'Domingos', 'listExists' => $collector->sunday ?? null, 'col' => '12', 'select' => 'sunday[]', 'data' => $schedules, 'attributes' => ['class' => 'form-control select2bs4', 'multiple' => 'multiple', 'style' => 'width: 100%;']])
-            </div>
-            <div class="row">
-                <div class="col-sm-6">
-                    @include('templates.components.checkbox', ['label' => 'Ativo', 'col' => '4', 'input' => 'active', 'checked' => 'true'])
+                <div class="col-12">
+                    @include('collect.person.list')
                 </div>
             </div>
         </div>

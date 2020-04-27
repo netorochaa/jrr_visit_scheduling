@@ -51,7 +51,7 @@ class FreeDaysController extends Controller
 
             //List of entitie
             'table' => $this->repository->getTable(),
-            'thead_for_datatable' => ['Nome', 'Tipo', 'Período'],
+            'thead_for_datatable' => ['Nome', 'Período'],
             'freedays_list' => $freedays,
         ]);
     }
@@ -87,34 +87,35 @@ class FreeDaysController extends Controller
 
             $this->validator->with($request->all())->passesOrFail(ValidatorInterface::RULE_CREATE);
 
-            $collectors = $request->has('collector_id') ? $request->all()['collector_id'] : null;
-            $cities     = $request->has('city_id') ? $request->all()['city_id'] : null;
-            $collectors == null && $cities == null ? $freeDay = null : $freeDay = $this->repository->create($request->except(['city_id', 'collector_id', 'dateRange']));
+            // $collectors = $request->has('collector_id') ? $request->all()['collector_id'] : null;
+            // $cities     = $request->has('city_id') ? $request->all()['city_id'] : null;
+            // $collectors == null && $cities == null ? $freeDay = null : $freeDay = $this->repository->create($request->except(['city_id', 'collector_id', 'dateRange']));
+            $freeDay = $this->repository->create($request->except(['city_id', 'collector_id', 'dateRange']));
             
-            if($freeDay == null){
-                $response = [
-                    'message' => 'Coletadores/Cidades não iformadas.',
-                    'type'   => 'error',
-                ];
-                session()->flash('return', $response);
-                return redirect()->route('freedays.index');
-            }
-            else{
-                if($collectors != null)
-                {
-                    for ($i=0; $i < count($collectors); $i++) 
-                        $freeDay->collectors()->attach($collectors[$i]);
-                }
-                else if($cities != null)
-                {
-                    for ($i=0; $i < count($cities); $i++) 
-                        $freeDay->cities()->attach($cities[$i]);
-                }
+            // if($freeDay == null){
+            //     $response = [
+            //         'message' => 'Coletadores/Cidades não iformadas.',
+            //         'type'   => 'error',
+            //     ];
+            //     session()->flash('return', $response);
+            //     return redirect()->route('freedays.index');
+            // }
+            // else{
+            //     if($collectors != null)
+            //     {
+            //         for ($i=0; $i < count($collectors); $i++) 
+            //             $freeDay->collectors()->attach($collectors[$i]);
+            //     }
+            //     else if($cities != null)
+            //     {
+            //         for ($i=0; $i < count($cities); $i++) 
+            //             $freeDay->cities()->attach($cities[$i]);
+            //     }
                 $response = [
                     'message' => 'Dias sem coletas cadastrados',
                     'type'   => 'info',
                 ];
-            }
+            // }
         } 
         catch (ValidatorException $e) 
         {

@@ -10,142 +10,67 @@ use Prettus\Validator\Exceptions\ValidatorException;
 use App\Http\Requests\PersonCreateRequest;
 use App\Http\Requests\PersonUpdateRequest;
 use App\Repositories\PersonRepository;
+use App\Repositories\PatientTypeRepository;
 use App\Validators\PersonValidator;
 
-/**
- * Class PeopleController.
- *
- * @package namespace App\Http\Controllers;
- */
 class PeopleController extends Controller
 {
-    /**
-     * @var PersonRepository
-     */
-    protected $repository;
-
-    /**
-     * @var PersonValidator
-     */
+    protected $repository, $patientTypeRepository;
     protected $validator;
 
-    /**
-     * PeopleController constructor.
-     *
-     * @param PersonRepository $repository
-     * @param PersonValidator $validator
-     */
-    public function __construct(PersonRepository $repository, PersonValidator $validator)
+    public function __construct(PersonRepository $repository, PersonValidator $validator, PatientTypeRepository $patientTypeRepository)
     {
         $this->repository = $repository;
         $this->validator  = $validator;
+        $this->patientTypeRepository = $patientTypeRepository;
     }
 
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function index()
-    {
-        $this->repository->pushCriteria(app('Prettus\Repository\Criteria\RequestCriteria'));
-        $people = $this->repository->all();
-
-        if (request()->wantsJson()) {
-
-            return response()->json([
-                'data' => $people,
-            ]);
-        }
-
-        return view('people.index', compact('people'));
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  PersonCreateRequest $request
-     *
-     * @return \Illuminate\Http\Response
-     *
-     * @throws \Prettus\Validator\Exceptions\ValidatorException
-     */
     public function store(PersonCreateRequest $request)
     {
-        try {
-
+        //Ver a possibilidade de atrelar endereço da coleta com endereço do paciente, para assim os endereço entrar automaticamente na coleta
+        // dd($request->all());
+        $idCollect = $request->all()['idCollect'];
+        try
+        {
             $this->validator->with($request->all())->passesOrFail(ValidatorInterface::RULE_CREATE);
+            $person = $this->repository->create($request->except('idCollect'));
 
-            $person = $this->repository->create($request->all());
+            if($person != null) $person->collects()->attach($idCollect);
 
             $response = [
-                'message' => 'Person created.',
-                'data'    => $person->toArray(),
+                'message' => 'Paciente cadastrado',
+                'type'   => 'info',
             ];
-
-            if ($request->wantsJson()) {
-
-                return response()->json($response);
-            }
-
-            return redirect()->back()->with('message', $response['message']);
-        } catch (ValidatorException $e) {
-            if ($request->wantsJson()) {
-                return response()->json([
-                    'error'   => true,
-                    'message' => $e->getMessageBag()
-                ]);
-            }
-
-            return redirect()->back()->withErrors($e->getMessageBag())->withInput();
         }
+        catch (ValidatorException $e)
+        {
+            $response = [
+                'message' =>  $e->getMessageBag(),
+                'type'    => 'error'
+            ];
+        }
+        session()->flash('return', $response);
+        return redirect()->route('collect.schedule', $idCollect);
     }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  int $id
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function show($id)
-    {
-        $person = $this->repository->find($id);
-
-        if (request()->wantsJson()) {
-
-            return response()->json([
-                'data' => $person,
-            ]);
-        }
-
-        return view('people.show', compact('person'));
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int $id
-     *
-     * @return \Illuminate\Http\Response
-     */
     public function edit($id)
     {
         $person = $this->repository->find($id);
+        $patientType_list = $this->patientTypeRepository; //pluck in page register
 
-        return view('people.edit', compact('person'));
+        return view('collect.person.edit', [
+            'namepage'   => 'Coletas',
+            'threeview'  => null,
+            'titlespage' => ['Cadastro de pessoas'],
+            'titlecard'  => 'Editar paciente',
+            'patientType_list' => $patientType_list,
+            'table'      => $this->repository->getTable(),
+            'goback'     => true,
+            'add'        => false,
+            'person'     => $person
+        ]);
     }
 
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  PersonUpdateRequest $request
-     * @param  string            $id
-     *
-     * @return Response
-     *
-     * @throws \Prettus\Validator\Exceptions\ValidatorException
-     */
     public function update(PersonUpdateRequest $request, $id)
     {
         try {
@@ -155,38 +80,21 @@ class PeopleController extends Controller
             $person = $this->repository->update($request->all(), $id);
 
             $response = [
-                'message' => 'Person updated.',
-                'data'    => $person->toArray(),
+                'message' => 'Paciente atualizado',
+                'type'   => 'info',
             ];
-
-            if ($request->wantsJson()) {
-
-                return response()->json($response);
-            }
-
-            return redirect()->back()->with('message', $response['message']);
-        } catch (ValidatorException $e) {
-
-            if ($request->wantsJson()) {
-
-                return response()->json([
-                    'error'   => true,
-                    'message' => $e->getMessageBag()
-                ]);
-            }
-
-            return redirect()->back()->withErrors($e->getMessageBag())->withInput();
+        } 
+        catch (ValidatorException $e) 
+        { 
+            $response = [
+                'message' =>  $e->getMessageBag(),
+                'type'    => 'error'
+            ];
         }
+        session()->flash('return', $response);
+        return redirect()->route('collect.index');
     }
 
-
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int $id
-     *
-     * @return \Illuminate\Http\Response
-     */
     public function destroy($id)
     {
         $deleted = $this->repository->delete($id);
@@ -201,4 +109,62 @@ class PeopleController extends Controller
 
         return redirect()->back()->with('message', 'Person deleted.');
     }
+    
+    public function attachPeopleCollect(Request $request)
+    {
+        $registeredPatient = $request->all()['registeredPatient'];
+        $collect = $request->all()['idCollect'];
+
+        try
+        {
+            $person = $this->repository->find($registeredPatient);
+
+            $person->collects()->attach($collect);
+
+            $response = [
+                'message' => 'Paciente adicionado',
+                'type'    => 'error'
+            ];
+        }
+        catch(Exception $e)
+        {
+            $response = [
+                'message' =>  $e->getMessage(),
+                'type'    => 'error'
+            ];
+        }
+
+        session()->flash('return', $response);
+        return redirect()->route('collect.schedule', $collect);
+    }
+
+    public function detachPeopleCollect($people_id, $collect_id)
+    {
+        try
+        {
+            $person = $this->repository->find($people_id);
+
+            $person->collects()->detach($collect_id);
+
+            $response = [
+                'message' => 'Paciente adicionado',
+                'type'    => 'error'
+            ];
+        }
+        catch(Exception $e)
+        {
+            $response = [
+                'message' =>  $e->getMessage(),
+                'type'    => 'error'
+            ];
+        }
+
+        session()->flash('return', $response);
+        return redirect()->route('collect.schedule', $collect_id);
+    }
+
+
+    //Methods not used
+    public function show($id){}
+    public function index(){}
 }
