@@ -10,5 +10,5 @@
 		@if ($listExists ?? null)
 			- <span style="color: #228B22; font-size: larger">{{ $listExists }}</span>
 		@endif</label>
-	{!! Form::select($select, $data, null, $attributes) !!}
+	{!! Form::select($select, $data, $selected ?? null, $attributes) !!}
 </div>

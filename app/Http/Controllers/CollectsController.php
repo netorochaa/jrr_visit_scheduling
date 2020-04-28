@@ -178,6 +178,9 @@ class CollectsController extends Controller
             $payment_list = $this->repository->payment_list();
             $userAuth_list = $this->userRepository->where('type', '>', 2)->pluck('name', 'name');
             $people_list = $this->peopleRepository->all();
+            $covenant_list = $this->peopleRepository->covenant_list();
+
+            // dd($collect->people->pluck('id'));
 
             return view('collect.edit', [
                 'namepage'      => 'Coletas',
@@ -198,6 +201,7 @@ class CollectsController extends Controller
                 'payment_list'          => $payment_list,
                 'userAuth_list'         => $userAuth_list,
                 'people_list'           => $people_list,
+                'covenant_list'         => $covenant_list,
                 //Info of entitie
                 'table' => $this->repository->getTable(),
                 'collect' => $collect

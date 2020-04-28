@@ -8,7 +8,7 @@
                     <label>Procure pelo paciente</label>
                     <select name="registeredPatient" id="registeredPatientSel" class="form-control select2bs4" style="width: 100%;">
                         <option value="" selected></option>
-                        @foreach ($people_list as $people)
+                        @foreach ($people_list->whereNotIn('id', $collect->people->pluck('id')) as $people)
                             <option value="{{ $people->id }}">
                                 {{ $people->name }} | CPF: {{ $people->CPF }} | RG: {{ $people->RG }} | Nasc: {{ $people->birth }} | {{ $people->patientType->name }}
                             </option>

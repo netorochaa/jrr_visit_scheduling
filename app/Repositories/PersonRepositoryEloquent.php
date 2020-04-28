@@ -44,5 +44,17 @@ class PersonRepositoryEloquent extends BaseRepository implements PersonRepositor
     {
         $this->pushCriteria(app(RequestCriteria::class));
     }
+
+    public function covenant_list()
+    {
+        $list = [
+            '1' => 'PARTICULAR',
+            '2' => 'UNIMED',
+            '3' => 'BRADESCO',
+            '4' => 'CORTESIA'
+          ];
+
+          return $list;
+    }
     
 }

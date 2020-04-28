@@ -82,15 +82,4 @@ class CollectRepositoryEloquent extends BaseRepository implements CollectReposit
 
           return $list;
     }
-
-    // public function collects_list()
-    // {
-    //     return DB::table('collects')
-    //             ->join('collectors', 'collects.collector_id', '=', 'collectors.id')
-    //                     ->select('collectors.id as collector_id',
-    //                      'collectors.name as collector',
-    //                      DB::raw('DATE_FORMAT(collects.date, "%d/%m/%Y") as date'),
-    //                      'collects.hour',
-    //                      'collects.id');
-    // }
 }

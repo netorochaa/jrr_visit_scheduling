@@ -20,7 +20,7 @@ class CreateFreeDaysTable extends Migration
 			$table->char('type', 1);
 			$table->string('name', 50);
 			$table->datetime('dateStart');
-			$table->datetime('dateDateEnd');
+			$table->datetime('dateEnd');
 			$table->char('active', 3)->default('off');
 
 			$table->timestamps();

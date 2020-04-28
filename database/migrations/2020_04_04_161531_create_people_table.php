@@ -24,7 +24,7 @@ class CreatePeopleTable extends Migration
 			$table->string('otherFone', 45)->nullable();
 			$table->char('typeResponsible', 3)->nullable();
 			$table->string('nameResponsible', 45)->nullable();
-			$table->string('foneResponsible', 45);
+			$table->string('foneResponsible', 45)->nullable();
 			$table->string('CPF', 45);
 			$table->string('RG', 45)->nullable();
 			$table->string('birth', 45);

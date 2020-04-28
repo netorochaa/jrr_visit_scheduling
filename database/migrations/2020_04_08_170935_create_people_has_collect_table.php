@@ -18,8 +18,10 @@ class CreatePeopleHasCollectTable extends Migration
             $table->unsignedInteger('collect_id');
             $table->char('starRating', 1)->nullable();
             $table->string('obsRating', 254)->nullable();
-            $table->string('covenant', 45);
-            $table->string('exams', 254);
+            $table->string('covenant', 45)->nullable();
+            $table->string('exams', 254)->nullable();
+
+            $table->primary(['people_id', 'collect_id']);
 
             //FK
             $table->foreign('people_id')->references('id')->on('people');

@@ -11,6 +11,7 @@ use App\Http\Requests\PersonCreateRequest;
 use App\Http\Requests\PersonUpdateRequest;
 use App\Repositories\PersonRepository;
 use App\Repositories\PatientTypeRepository;
+use App\Repositories\CollectRepository;
 use App\Validators\PersonValidator;
 
 class PeopleController extends Controller
@@ -18,24 +19,25 @@ class PeopleController extends Controller
     protected $repository, $patientTypeRepository;
     protected $validator;
 
-    public function __construct(PersonRepository $repository, PersonValidator $validator, PatientTypeRepository $patientTypeRepository)
+    public function __construct(PersonRepository $repository, PersonValidator $validator, PatientTypeRepository $patientTypeRepository,
+                                CollectRepository $collectRepository)
     {
-        $this->repository = $repository;
-        $this->validator  = $validator;
+        $this->repository            = $repository;
+        $this->validator             = $validator;
         $this->patientTypeRepository = $patientTypeRepository;
+        $this->collectRepository     = $collectRepository;
     }
 
-    public function store(PersonCreateRequest $request)
+    public function store(PersonCreateRequest $request, $collect_id)
     {
         //Ver a possibilidade de atrelar endereço da coleta com endereço do paciente, para assim os endereço entrar automaticamente na coleta
         // dd($request->all());
-        $idCollect = $request->all()['idCollect'];
         try
         {
             $this->validator->with($request->all())->passesOrFail(ValidatorInterface::RULE_CREATE);
-            $person = $this->repository->create($request->except('idCollect'));
+            $person = $this->repository->create($request->all());
 
-            if($person != null) $person->collects()->attach($idCollect);
+            if($person != null) $person->collects()->attach($collect_id, $request->only('covenant', 'exams'));
 
             $response = [
                 'message' => 'Paciente cadastrado',
@@ -50,13 +52,21 @@ class PeopleController extends Controller
             ];
         }
         session()->flash('return', $response);
-        return redirect()->route('collect.schedule', $idCollect);
+        return redirect()->route('collect.schedule', $collect_id);
     }
 
-    public function edit($id)
+    public function edit($collect_id, $person_id)
     {
-        $person = $this->repository->find($id);
+        // dd($request->all());
+        $person = $this->repository->find($person_id);
         $patientType_list = $this->patientTypeRepository; //pluck in page register
+        $covenant_list = $this->repository->covenant_list();
+        $collect = $this->collectRepository->find($collect_id);
+        $peopleCollects = $person->with('collects')->get();
+        $personHasCollect = $peopleCollects->find($person->id)->collects->find($collect->id)->pivot;
+        
+        // $covenant = $peopleCollects->find($person->id)->collects->find($collect->id)->pivot->covenant;
+        // $exams = $peopleCollects->find($person->id)->collects->find($collect->id)->pivot->exams;
 
         return view('collect.person.edit', [
             'namepage'   => 'Coletas',
@@ -64,20 +74,26 @@ class PeopleController extends Controller
             'titlespage' => ['Cadastro de pessoas'],
             'titlecard'  => 'Editar paciente',
             'patientType_list' => $patientType_list,
+            'covenant_list'    => $covenant_list,
             'table'      => $this->repository->getTable(),
             'goback'     => true,
             'add'        => false,
+            'personHasCollect'   => $personHasCollect,
+            // 'exams'      => $exams,
+            'collect'    => $collect,
             'person'     => $person
         ]);
     }
 
-    public function update(PersonUpdateRequest $request, $id)
+    public function update(PersonUpdateRequest $request, $collect_id, $people_id)
     {
         try {
 
             $this->validator->with($request->all())->passesOrFail(ValidatorInterface::RULE_UPDATE);
+            $person = $this->repository->update($request->all(), $people_id);
+            $collect = $this->collectRepository->find($collect_id);
 
-            $person = $this->repository->update($request->all(), $id);
+            $person->collects()->updateExistingPivot($collect, $request->only('covenant', 'exams'));
 
             $response = [
                 'message' => 'Paciente atualizado',
@@ -92,29 +108,13 @@ class PeopleController extends Controller
             ];
         }
         session()->flash('return', $response);
-        return redirect()->route('collect.index');
-    }
-
-    public function destroy($id)
-    {
-        $deleted = $this->repository->delete($id);
-
-        if (request()->wantsJson()) {
-
-            return response()->json([
-                'message' => 'Person deleted.',
-                'deleted' => $deleted,
-            ]);
-        }
-
-        return redirect()->back()->with('message', 'Person deleted.');
+        return redirect()->route('collect.schedule', $collect_id);
     }
     
     public function attachPeopleCollect(Request $request)
     {
         $registeredPatient = $request->all()['registeredPatient'];
         $collect = $request->all()['idCollect'];
-
         try
         {
             $person = $this->repository->find($registeredPatient);
@@ -123,7 +123,7 @@ class PeopleController extends Controller
 
             $response = [
                 'message' => 'Paciente adicionado',
-                'type'    => 'error'
+                'type'    => 'info'
             ];
         }
         catch(Exception $e)
@@ -145,10 +145,11 @@ class PeopleController extends Controller
             $person = $this->repository->find($people_id);
 
             $person->collects()->detach($collect_id);
+            // $person->collects()->sync([]);
 
             $response = [
-                'message' => 'Paciente adicionado',
-                'type'    => 'error'
+                'message' => 'Paciente removido',
+                'type'    => 'info'
             ];
         }
         catch(Exception $e)
@@ -167,4 +168,5 @@ class PeopleController extends Controller
     //Methods not used
     public function show($id){}
     public function index(){}
+    public function destroy($id){}
 }
