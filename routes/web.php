@@ -10,16 +10,12 @@ Route::post('/login', ['as' => 'auth.login', 'uses' => 'HomeController@doinglogi
 Route::get('/home', ['as' => 'home', 'uses' => 'HomeController@index']);
 
 // Users routes
-// Route::get('/user', ['as' => 'user.index', 'uses' => 'UsersController@index']);
-// Route::post('/user', ['as' => 'user.store', 'uses' => 'UsersController@store']);
 Route::resource('user', 'UsersController');
 
 // Collector routes
-// Route::get('/collector', ['as' => 'collector.index', 'uses' => 'CollectorsController@index']);
-// Route::post('/collector', ['as' => 'collector.store', 'uses' => 'CollectorsController@store']);
 Route::resource('collector', 'CollectorsController');
-Route::post('collecotor/{collector_id}/neighborhoods',                   ['as' => 'collector.neighborhoods.store', 'uses' => 'CollectorsController@storeCollectorNeighborhoods']);
-Route::post('collecotor/{collector_id}/neighborhoods/{neighborhood_id}', ['as' => 'collector.neighborhoods.detach', 'uses' => 'CollectorsController@detachCollectorNeighborhoods']);
+Route::post('collector/{collector_id}/neighborhoods',                   ['as' => 'collector.neighborhoods.store', 'uses' => 'CollectorsController@storeCollectorNeighborhoods']);
+Route::post('collector/{collector_id}/neighborhoods/{neighborhood_id}', ['as' => 'collector.neighborhoods.detach', 'uses' => 'CollectorsController@detachCollectorNeighborhoods']);
 
 // City routes
 Route::resource('city', 'CitiesController');
@@ -40,6 +36,7 @@ Route::resource('cancellationtype', 'CancellationTypesController');
 Route::resource('collect', 'CollectsController');
 Route::post('/reserve', ['as' => 'collect.reserve', 'uses' => 'CollectsController@reserve']);
 Route::get('/schedule/{id}', ['as' => 'collect.schedule', 'uses' => 'CollectsController@schedule']);
+Route::get('/collect/{id}', ['as' => 'collect.confirmed', 'uses' => 'CollectsController@confirmed']);
 
 // Person
 Route::resource('collect.person', 'PeopleController');

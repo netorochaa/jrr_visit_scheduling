@@ -8,7 +8,7 @@
         <div class="card-body">
             <div class="row">
                 @include('templates.components.input', ['label' => 'Nome do bairro',  'col' => '8', 'input' => 'name',  'attributes' => ['require' => 'true', 'class' => 'form-control']])
-                @include('templates.components.input', ['label' => 'Taxa', 'col' => '4', 'input' => 'displacementRate',  'attributes' => ['require' => 'true', 'class' => 'form-control', 'data-inputmask' => "'mask': '99,99'", 'data-mask', 'im-insert' => 'true']])
+                @include('templates.components.input', ['label' => 'Taxa', 'col' => '4', 'input' => 'displacementRate',  'attributes' => ['require' => 'true', 'class' => 'form-control', 'data-inputmask' => "'mask': '99.99'", 'data-mask', 'im-insert' => 'true']])
             </div>
             <div class="row">
                 <div class="col-sm-6">

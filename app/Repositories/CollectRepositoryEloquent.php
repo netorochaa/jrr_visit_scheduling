@@ -50,8 +50,8 @@ class CollectRepositoryEloquent extends BaseRepository implements CollectReposit
     {
         $list = [
             '1' => 'ABERTA',
-            '2' => 'RESERVADA',
-            '3' => 'NOVA',
+            '2' => 'NOVA',
+            '3' => 'RESERVADA',
             '4' => 'CONFIRMADA',
             '5' => 'EM ANDAMENTO',
             '6' => 'CONCLUÍDA',

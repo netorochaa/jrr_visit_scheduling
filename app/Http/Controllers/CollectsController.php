@@ -143,7 +143,7 @@ class CollectsController extends Controller
 
         $collect = $this->repository->find($idCollect);
 
-        if($collect->neighborhood != null && $collect->status > 2)
+        if($collect->neighborhood != null && $collect->status > 1)
         {
             $response = [
                 'message' => 'Este horário já estava ou acabou de ser reservado! Escolha outro horário disponível na lista abaixo.',
@@ -154,7 +154,7 @@ class CollectsController extends Controller
         }
         else
         {
-            Collect::where('id', $idCollect)->update(['neighborhood_id' => $idNeighborhood, 'status' => 2, 'reserved_at' => new DateTime()]);
+            Collect::where('id', $idCollect)->update(['neighborhood_id' => $idNeighborhood, 'status' => 3, 'reserved_at' => new DateTime()]);
 
             $response = [
                 'message' => 'Data e horário reservados',
@@ -179,6 +179,9 @@ class CollectsController extends Controller
             $userAuth_list = $this->userRepository->where('type', '>', 2)->pluck('name', 'name');
             $people_list = $this->peopleRepository->all();
             $covenant_list = $this->peopleRepository->covenant_list();
+            $quant = count($collect->people);
+            $price = "R$ " . (string) count($collect->people) * $collect->neighborhood->displacementRate;
+            
 
             // dd($collect->people->pluck('id'));
 
@@ -202,6 +205,8 @@ class CollectsController extends Controller
                 'userAuth_list'         => $userAuth_list,
                 'people_list'           => $people_list,
                 'covenant_list'         => $covenant_list,
+                'quant'                 => $quant,
+                'price'                 => $price,
                 //Info of entitie
                 'table' => $this->repository->getTable(),
                 'collect' => $collect
@@ -212,6 +217,32 @@ class CollectsController extends Controller
             $response = [
                 'message' =>  $e->getMessage(),
                 'type'    => 'error'
+            ];
+            session()->flash('return', $response);
+            return redirect()->route('collect.index');
+        }
+    }
+
+    public function confirmed($id)
+    {
+        $collect = $this->repository->find($id);
+
+        if($collect->status > 3)
+        {
+            $response = [
+                'message' => 'Coleta já foi confirmada',
+                'type'    => 'error'
+            ];
+            session()->flash('return', $response);
+            return redirect()->route('collect.index');
+        }
+        else
+        {
+            Collect::where('id', $collect->id)->update(['status' => 4]);
+
+            $response = [
+                'message' => 'Coleta ' . $collect->id . ' confirmada',
+                'type'    => 'info'
             ];
             session()->flash('return', $response);
             return redirect()->route('collect.index');

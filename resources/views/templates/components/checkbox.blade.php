@@ -1,8 +1,6 @@
-<div class="col-xs-{{ $col ?? null }}">
-	<div class="checkbox">
-		<label>
+<div class="form-group">
+	<div class="form-check">
 		{!! Form::checkbox($input, $value ?? null, $checked ?? null, $attributes ?? null) !!}
-		{{ $label ?? $input ?? "ERRO" }}
-		</label>
+		<label class="form-check-label lead">{{ $label ?? null }}</label>
 	</div>
 </div>

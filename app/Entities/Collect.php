@@ -58,4 +58,33 @@ class Collect extends Model implements Transformable
 
         return $day . "/" . $month . "/" . $year;
     }
+    
+    public function getFormattedStatusAttribute(){
+        switch ($this->attributes['status']) {
+            case "1":
+                return "ABERTA";
+                break;
+            case "2":
+                return "NOVA";
+                break;
+            case "3":
+                return "RESERVADA";
+                break;
+            case "4":
+                return "CONFIRMADA";
+                break;
+            case "5":
+                return "EM ANDAMENTO";
+                break;
+            case "6":
+                return "CONCLUÍDA";
+                break;
+            case "7":
+                return "CANCELADA";
+                break;
+            default:
+                return $this->attributes['status'];
+                break;
+        }
+    }
 }

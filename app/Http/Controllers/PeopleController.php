@@ -61,6 +61,7 @@ class PeopleController extends Controller
         $person = $this->repository->find($person_id);
         $patientType_list = $this->patientTypeRepository; //pluck in page register
         $covenant_list = $this->repository->covenant_list();
+        $typeResponsible_list = $this->repository->typeResponsible_list();
         $collect = $this->collectRepository->find($collect_id);
         $peopleCollects = $person->with('collects')->get();
         $personHasCollect = $peopleCollects->find($person->id)->collects->find($collect->id)->pivot;
@@ -75,6 +76,7 @@ class PeopleController extends Controller
             'titlecard'  => 'Editar paciente',
             'patientType_list' => $patientType_list,
             'covenant_list'    => $covenant_list,
+            'typeResponsible_list' => $typeResponsible_list,
             'table'      => $this->repository->getTable(),
             'goback'     => true,
             'add'        => false,

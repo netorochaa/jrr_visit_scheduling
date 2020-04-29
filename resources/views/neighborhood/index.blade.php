@@ -40,7 +40,7 @@
             "responsive": true,
           });
           //Datemask 00,00
-          $('[data-mask]').inputmask('', {'placeholder': '00,00'})
+          $('[data-mask]').inputmask('', {'placeholder': '00.00'})
         });
 
     </script>

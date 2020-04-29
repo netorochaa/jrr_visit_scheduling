@@ -56,5 +56,21 @@ class PersonRepositoryEloquent extends BaseRepository implements PersonRepositor
 
           return $list;
     }
+
+    public function typeResponsible_list()
+    {
+        $list = [
+            '1' => 'PAI/MÃE',
+            '2' => 'FILHO',
+            '3' => 'IRMÃO',
+            '4' => 'PADRASTO/MADRASTA',
+            '5' => 'AVÔ/AVÓ',
+            '6' => 'TIO',
+            '7' => 'PRIMO',
+            '8' => 'OUTRO'
+          ];
+
+          return $list;
+    }
     
 }

@@ -19,6 +19,7 @@
 
 @section('footer-distinct')
   <script src=" {{ asset('select2/js/select2.full.min.js') }} "></script>
+  <script src=" {{ asset('js/inputmask/min/jquery.inputmask.bundle.min.js') }} "></script>
   <script>
     $(function () {
       //Initialize Select2 Elements
@@ -26,13 +27,108 @@
         theme: 'bootstrap4'
       })
       $('#table-people').DataTable({
-        "paging": true,
+        "paging": false,
         "lengthChange": false,
         "searching": false,
-        "ordering": true,
-        "info": true,
+        "ordering": false,
+        "info": false,
         "autoWidth": false,
         "responsive": true,
+      });
+      $('[data-mask]').inputmask('', {'placeholder': '00,00'})
+      $('[data-cep]').inputmask('', {'placeholder': '00000-000'})
+      $('[data-date]').inputmask('', {'placeholder': '00/00/0000'})
+      $('[data-ra]').inputmask('', {'placeholder': '0000000000'})
+      $('[data-cpf]').inputmask('', {'placeholder': '00000000000'})
+      $('[data-fone]').inputmask('', {'placeholder': '(00) 00000-0000)'})
+    });
+
+    function changeAuthUser()
+    {
+      var selectPayment = document.getElementById('selPayament');
+      var selectAuthUser = document.getElementById('selAuthUser');
+      var inputChangePay = document.getElementById('changePay');
+
+      if(selectPayment.selectedIndex == "3"){
+        selectAuthUser.disabled = false;
+        inputChangePay.disabled = true;
+      }
+      else if(selectPayment.selectedIndex != "0")
+      {
+        inputChangePay.disabled = true;
+      }
+      else
+      {
+        selectAuthUser.disabled = true;
+        inputChangePay.disabled = false;
+      }
+    }
+
+    function changeCancellation()
+    {
+      var checkCancellation = document.getElementById('cancellationCheck');
+      var selectCancellation = document.getElementById('cancellationSelect');
+
+      if(checkCancellation.checked)
+        selectCancellation.disabled = false;    
+      else
+      {
+        selectCancellation.selectedIndex = 0;
+        selectCancellation.disabled = true;
+      }
+       
+    }
+
+    $(document).ready(function() {
+      changeAuthUser();
+      function limpa_formulário_cep() 
+      {
+          // Limpa valores do formulário de cep.
+          $("#rua").val("");
+      }
+
+      //Quando o campo cep perde o foco.
+      $("#cep").blur(function() 
+      {
+
+          //Nova variável "cep" somente com dígitos.
+          var cep = $(this).val().replace(/\D/g, '');
+
+          //Verifica se campo cep possui valor informado.
+          if (cep != "") {
+
+              //Expressão regular para validar o CEP.
+              var validacep = /^[0-9]{8}$/;
+
+              //Valida o formato do CEP.
+              if(validacep.test(cep)) {
+
+                  //Preenche os campos com "..." enquanto consulta webservice.
+                  $("#rua").val("...");
+                  //Consulta o webservice viacep.com.br/
+                  $.getJSON("https://viacep.com.br/ws/"+ cep +"/json/?callback=?", function(dados) {
+
+                      if (!("erro" in dados)) {
+                          //Atualiza os campos com os valores da consulta.
+                          $("#rua").val(dados.logradouro);
+                      } //end if.
+                      else {
+                          //CEP pesquisado não foi encontrado.
+                          limpa_formulário_cep();
+                          alert("CEP não encontrado.");
+                      }
+                  });
+              } //end if.
+              else {
+                  //cep é inválido.
+                  limpa_formulário_cep();
+                  alert("Formato de CEP inválido.");
+              }
+          } //end if.
+          else {
+              //cep sem valor, limpa formulário.
+              limpa_formulário_cep();
+          }
       });
     });
   </script>
