@@ -7,7 +7,7 @@
             </div>
             <div class="row">
                 <div class="col-sm-6">
-                    @include('templates.components.checkbox', ['label' => 'Precisa de reponsável', 'col' => '4', 'input' => 'needReponsible', 'checked' => 'true'])
+                    @include('templates.components.checkbox', ['label' => 'Precisa de reponsável', 'col' => '4', 'input' => 'needResponsible', 'checked' => 'true'])
                 </div>
                 <div class="col-sm-6">
                     @include('templates.components.checkbox', ['label' => 'Ativo', 'col' => '4', 'input' => 'active', 'checked' => 'true'])

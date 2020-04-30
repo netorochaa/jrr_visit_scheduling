@@ -2,6 +2,7 @@
 
 namespace App\Repositories;
 
+use DB;
 use Prettus\Repository\Eloquent\BaseRepository;
 use Prettus\Repository\Criteria\RequestCriteria;
 use App\Repositories\PatientTypeRepository;
@@ -44,5 +45,12 @@ class PatientTypeRepositoryEloquent extends BaseRepository implements PatientTyp
     {
         $this->pushCriteria(app(RequestCriteria::class));
     }
-    
+
+    public function patientTypeWithResponsible_list()
+    {
+        return DB::table('patienttypes')
+                    ->select(DB::raw('concat(name, " ", case
+                                        when needResponsible = "on" then "[RESPONSÁVEL]"
+                                        when needResponsible = "off" then "" END, "") as nameFull'), 'id');
+    }
 }

@@ -11,7 +11,7 @@
         @foreach ($patientTypes as $patientType)
         <tr>
             <td>{{ $patientType->name }}</td>
-            <td>{{ $patientType->formatted_needReponsible }}</td>
+            <td>{{ $patientType->formatted_needResponsible }}</td>
             <td>{{ $patientType->formatted_active }}</td>
             <td>{{ $patientType->created_at }}</td>
             <td>{{ $patientType->updated_at }}</td>

@@ -19,7 +19,6 @@
 
 @section('footer-distinct')
   <script src=" {{ asset('select2/js/select2.full.min.js') }} "></script>
-  <script src=" {{ asset('js/inputmask/min/jquery.inputmask.bundle.min.js') }} "></script>
   <script>
     $(function () {
       //Initialize Select2 Elements
@@ -35,12 +34,6 @@
         "autoWidth": false,
         "responsive": true,
       });
-      $('[data-mask]').inputmask('', {'placeholder': '00,00'})
-      $('[data-cep]').inputmask('', {'placeholder': '00000-000'})
-      $('[data-date]').inputmask('', {'placeholder': '00/00/0000'})
-      $('[data-ra]').inputmask('', {'placeholder': '0000000000'})
-      $('[data-cpf]').inputmask('', {'placeholder': '00000000000'})
-      $('[data-fone]').inputmask('', {'placeholder': '(00) 00000-0000)'})
     });
 
     function changeAuthUser()
@@ -78,6 +71,44 @@
       }
        
     }
+
+    function changeResponsible(sel)
+      {
+        var selectType = document.getElementById('selectType');
+        var inputName = document.getElementById('inputName');
+        var inputFone = document.getElementById('inputFone');
+
+        if(sel.options[sel.selectedIndex].text.includes('[RESPONSÁVEL]'))
+          selectType.disabled = false;
+        else
+        {
+          selectType.selectedIndex = 0;
+          selectType.disabled = true;
+          inputName.value = "";
+          inputName.disabled = true;
+          inputFone.value = "";
+          inputFone.disabled = true;
+        }
+      }
+
+      function changeTypeResponsible(sel)
+      {
+        var inputName = document.getElementById('inputName');
+        var inputFone = document.getElementById('inputFone');
+
+        if(sel.value != "1")
+        {
+          inputName.disabled = false;
+          inputFone.disabled = false;
+        }
+        else
+        {
+          inputName.value = "";
+          inputName.disabled = true;
+          inputFone.value = "";
+          inputFone.disabled = true;
+        }
+      }
 
     $(document).ready(function() {
       changeAuthUser();

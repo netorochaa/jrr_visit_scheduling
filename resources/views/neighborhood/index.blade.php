@@ -18,7 +18,6 @@
 @endsection
 
 @section('footer-distinct')
-  <script src=" {{ asset('js/inputmask/min/jquery.inputmask.bundle.min.js') }} "></script>
     <script>
         $(function () {
           $('#table-{{ $table }}').DataTable({
@@ -39,8 +38,6 @@
             "autoWidth": false,
             "responsive": true,
           });
-          //Datemask 00,00
-          $('[data-mask]').inputmask('', {'placeholder': '00.00'})
         });
 
     </script>

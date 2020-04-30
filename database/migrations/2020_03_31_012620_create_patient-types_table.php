@@ -18,7 +18,7 @@ class CreatePatientTypesTable extends Migration
 		Schema::create('patientTypes', function(Blueprint $table) {
             $table->increments('id');
 			$table->string('name', 45);
-			$table->char('needReponsible', 3)->default('off');
+			$table->char('needResponsible', 3)->default('off');
 			$table->char('active', 3)->default('off');
 
 			$table->timestamps();

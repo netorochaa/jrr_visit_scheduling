@@ -171,19 +171,23 @@ class CollectsController extends Controller
         {
             $collect = $this->repository->find($id);
 
-            $cancellationType_list = $this->cancellationTypeRepository->pluck('name', 'id');
-            $patientType_list       = $this->patientTypeRepository->all();
-            $collectType_list = $this->repository->collectType_list();
-            $statusCollects_list = $this->repository->statusCollects_list();
-            $payment_list = $this->repository->payment_list();
-            $userAuth_list = $this->userRepository->where('type', '>', 2)->pluck('name', 'name');
-            $people_list = $this->peopleRepository->all();
-            $covenant_list = $this->peopleRepository->covenant_list();
-            $quant = count($collect->people);
-            $price = "R$ " . (string) count($collect->people) * $collect->neighborhood->displacementRate;
+            $cancellationType_list  = $this->cancellationTypeRepository->pluck('name', 'id');
+            $patientType_list       = $this->patientTypeRepository->patientTypeWithResponsible_list();
+            $collectType_list       = $this->repository->collectType_list();
+            $statusCollects_list    = $this->repository->statusCollects_list();
+            $payment_list           = $this->repository->payment_list();
+            $userAuth_list          = $this->userRepository->where('type', '>', 2)->pluck('name', 'name');
+            $people_list            = $this->peopleRepository->all();
+            $typeResponsible_list   = $this->peopleRepository->typeResponsible_list();
+            $covenant_list          = $this->peopleRepository->covenant_list();
+            $quant                  = count($collect->people);
+            $price                  = "R$ " . (string) count($collect->people) * $collect->neighborhood->displacementRate;
             
 
-            // dd($collect->people->pluck('id'));
+            // dd($patientType_list['name']);
+            //  for ($i=1; $i <= count($patientType_list); $i++) { 
+            //     dd($patientType_list[$i]['name']);
+            //  }
 
             return view('collect.edit', [
                 'namepage'      => 'Coletas',
@@ -204,6 +208,7 @@ class CollectsController extends Controller
                 'payment_list'          => $payment_list,
                 'userAuth_list'         => $userAuth_list,
                 'people_list'           => $people_list,
+                'typeResponsible_list'  => $typeResponsible_list,
                 'covenant_list'         => $covenant_list,
                 'quant'                 => $quant,
                 'price'                 => $price,

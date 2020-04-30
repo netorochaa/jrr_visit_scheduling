@@ -19,7 +19,7 @@ class PatientType extends Model implements Transformable
 
     public $timestamps = true;
     protected $table = 'patientTypes';
-    protected $fillable = ['name', 'needReponsible', 'active'];
+    protected $fillable = ['name', 'needResponsible', 'active'];
 
     public function getFormattedActiveAttribute()
     {
@@ -36,9 +36,9 @@ class PatientType extends Model implements Transformable
         }
     }
 
-    public function getFormattedNeedReponsibleAttribute()
+    public function getFormattedNeedResponsibleAttribute()
     {
-        switch ($this->attributes['needReponsible']) {
+        switch ($this->attributes['needResponsible']) {
             case "on":
                 return "SIM";
                 break;
@@ -46,9 +46,8 @@ class PatientType extends Model implements Transformable
                 return "NÃO";
                 break;
             default:
-                return $this->attributes['needReponsible'];
+                return $this->attributes['needResponsible'];
                 break;
         }
     }
-
 }

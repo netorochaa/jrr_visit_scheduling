@@ -16,7 +16,7 @@
             <td>{{ $person->name }}</td>
             <td>{{ $person->ra }}</td>
             <td>{{ $person->patientType->name }}</td>
-            <td>{{ $person->nameReponsible }}</td>
+            <td>{{ $person->formatted_TypeResponsible }} {{ $person->nameResponsible }}</td>
             <td>{{ $person->getCovenantAttribute($person->pivot->covenant) ?? "NÃO INFORMADO" }}</td>
             <td>{{ $person->pivot->exams ?? "NÃO INFORMADO" }}</td>
             <td>

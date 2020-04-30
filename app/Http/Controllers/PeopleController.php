@@ -59,16 +59,13 @@ class PeopleController extends Controller
     {
         // dd($request->all());
         $person = $this->repository->find($person_id);
-        $patientType_list = $this->patientTypeRepository; //pluck in page register
+        $patientType_list = $this->patientTypeRepository->patientTypeWithResponsible_list();
         $covenant_list = $this->repository->covenant_list();
         $typeResponsible_list = $this->repository->typeResponsible_list();
         $collect = $this->collectRepository->find($collect_id);
         $peopleCollects = $person->with('collects')->get();
         $personHasCollect = $peopleCollects->find($person->id)->collects->find($collect->id)->pivot;
-        
-        // $covenant = $peopleCollects->find($person->id)->collects->find($collect->id)->pivot->covenant;
-        // $exams = $peopleCollects->find($person->id)->collects->find($collect->id)->pivot->exams;
-
+      
         return view('collect.person.edit', [
             'namepage'   => 'Coletas',
             'threeview'  => null,
@@ -80,8 +77,7 @@ class PeopleController extends Controller
             'table'      => $this->repository->getTable(),
             'goback'     => true,
             'add'        => false,
-            'personHasCollect'   => $personHasCollect,
-            // 'exams'      => $exams,
+            'personHasCollect'   => $personHasCollect,            
             'collect'    => $collect,
             'person'     => $person
         ]);
@@ -90,7 +86,7 @@ class PeopleController extends Controller
     public function update(PersonUpdateRequest $request, $collect_id, $people_id)
     {
         try {
-
+            // dd($request->all());
             $this->validator->with($request->all())->passesOrFail(ValidatorInterface::RULE_UPDATE);
             $person = $this->repository->update($request->all(), $people_id);
             $collect = $this->collectRepository->find($collect_id);
