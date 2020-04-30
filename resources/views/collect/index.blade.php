@@ -39,7 +39,7 @@
           "emptyTable": "Sem dados disponíveis",
           "loadingRecords": "A carregar dados...",
           "processing": "A processar...",
-          "search": "Procurar:",
+          "search": "<span class='text-muted'><small>Digite mais de um valor separando por espaço</span><br> Procurar:</small>",
           "zeroRecords": "Não foram encontrados resultados",
           "paginate": {
             "first": "Primeiro",

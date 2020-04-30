@@ -43,13 +43,16 @@ class CollectsController extends Controller
         $this->patientTypeRepository      = $patientTypeRepository;
     }
 
-    public function index()
+    public function index(Request $request)
     {
         $dateNow = date("Y-m-d h:i");
         $collector_list         = $this->collectorRepository->with('neighborhoods')->get();
         $freeDay_list           = $this->freeDayRepository->where('dateStart', '>', $dateNow)->get();
         $collect_list           = $this->repository->all();
         $collectAvailables_list = $collect_list;
+        $term = $request->has('status') ? $request->all()['status'] : null;
+
+        // dd($term);
 
         for ($i=0; $i < count($freeDay_list); $i++) $collectAvailables_list = $collectAvailables_list->whereNotBetween('date', [$freeDay_list[$i]['dateStart'], $freeDay_list[$i]['dateEnd']]);
 
