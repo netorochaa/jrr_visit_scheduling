@@ -1,4 +1,4 @@
-<table id="table-people" class="table table-bordered table-striped">
+<table id="table-people" class="table table-striped display compact">
     <thead>
         <tr>
             <th>Nome</th>

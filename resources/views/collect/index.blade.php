@@ -27,12 +27,27 @@
       })
       $('#table-{{ $table }}').DataTable({
         "paging": true,
-        "lengthChange": false,
-        "searching": false,
+        "lengthChange": true,
+        "searching": true,
         "ordering": true,
+        "order": [[ 0, 'desc' ]],
         "info": true,
         "autoWidth": false,
         "responsive": true,
+        "language": {
+          "decimal": "",
+          "emptyTable": "Sem dados disponíveis",
+          "loadingRecords": "A carregar dados...",
+          "processing": "A processar...",
+          "search": "Procurar:",
+          "zeroRecords": "Não foram encontrados resultados",
+          "paginate": {
+            "first": "Primeiro",
+            "last": "Último",
+            "next": "Seguinte",
+            "previous": "Anterior"
+          }
+        }
       });
       //Initialize daterangepicker Elements
       $('input[id="schedulingDate"]').daterangepicker({

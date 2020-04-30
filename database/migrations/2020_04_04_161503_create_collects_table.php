@@ -22,7 +22,7 @@ class CreateCollectsTable extends Migration
 			$table->char('collectType', 1)->default('1');
 			$table->char('status', 1)->default('1');
 			$table->char('payment', 1)->default('1');
-			$table->string('changePayment', 6)->default('0,00')->nullable();
+			$table->string('changePayment', 6)->default('0.00')->nullable();
 			$table->string('cep', 9)->nullable();
 			$table->string('address', 140)->nullable();
 			$table->string('numberAddress', 14)->nullable();

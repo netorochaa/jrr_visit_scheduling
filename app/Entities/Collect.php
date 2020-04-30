@@ -87,4 +87,24 @@ class Collect extends Model implements Transformable
                 break;
         }
     }
+
+    public function getFormattedPaymentAttribute(){
+        switch ($this->attributes['payment']) {
+            case "1":
+                return "EM ESPÉCIE";
+                break;
+            case "2":
+                return "DÉBITO";
+                break;
+            case "3":
+                return "CRÉDITO";
+                break;
+            case "4":
+                return "CORTESIA";
+                break;
+            default:
+                return $this->attributes['payment'];
+                break;
+        }
+    }
 }
