@@ -3,8 +3,12 @@
         <title>Login | RDomciliar</title>
     <link rel="stylesheet" href="{{ asset('css/stylesheet.css') }}">
     <link href="https://fonts.googleapis.com/css?family=Fredoka+One&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ asset('css/sweetalert2-theme-bootstrap-4/bootstrap-4.min.css') }}">
     </head>
     <body>
+        @if (session('return'))
+                <input type="hidden" id="{{ session('return')['type'] }}" value="{{ session('return')['message'] }}" class="btn btn-info swalDefaultInfo"/>
+            @endif
         <div class="conteudo-info">
             <img src="{{ asset('img/1.png') }}" alt="">
         </div>
@@ -28,4 +32,34 @@
             {!! Form::close() !!}
         </section>
     </body>
+    <script src="{{ asset('js/jquery/jquery.min.js') }}"></script>
+    <script src="{{ asset('js/sweetalert2/sweetalert2.min.js') }}"></script>
+    <script>
+        const Toast = Swal.mixin({
+            toast: true,
+            position: 'top-end',
+            showConfirmButton: false,
+            timer: 7000
+        });
+
+        if(document.getElementById('info')){
+            var hiddenInput = document.getElementById('info');
+            $(document).ready(function(){
+                Toast.fire({
+                type: 'info',
+                title: hiddenInput.value
+                })
+            });
+        }
+
+        if(document.getElementById('error')){
+            var hiddenInput = document.getElementById('error');
+            $(document).ready(function(){
+                Toast.fire({
+                type: 'error',
+                title: hiddenInput.value
+                })
+            });
+        }
+    </script>
 </html>

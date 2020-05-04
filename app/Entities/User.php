@@ -16,7 +16,13 @@ class User extends Authenticatable
     protected $fillable = ['password', 'name', 'email', 'type', 'active'];
     protected $hidden = ['password', 'remember_token'];
 
-    public function getFormattedTypeAttribute(){
+    public function setPasswordAttribute($value)
+    {
+        $this->attributes['password'] = env('PASSWORD_HASH') ? \bcrypt($value) : $value;
+    }
+
+    public function getFormattedTypeAttribute()
+    {
         switch ($this->attributes['type']) {
             case 1:
                 return "RECEPÇÃO";

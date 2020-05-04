@@ -26,7 +26,7 @@ class UsersController extends Controller
         $this->collectorRepository = $collectorRepository;
     }
 
-    public function index()
+    public function index(Request $request)
     {
         $users_list  = $this->repository->all();
         $typeUsers_list = $this->repository->typeUser_list();
@@ -38,6 +38,7 @@ class UsersController extends Controller
             'titlecard'     => 'Lista de usuários',
             'titlemodal'    => 'Cadastrar usuário',
             'add'           => true,
+            'logged'        => $request->session()->get('logged'),
             //Lists for select
             'typeUsers_list' => $typeUsers_list,
             //Info of entitie
@@ -70,7 +71,7 @@ class UsersController extends Controller
         return redirect()->route('user.index');
     }
 
-    public function edit($id)
+    public function edit(Request $request, $id)
     {
         $user = $this->repository->find($id);
         $typeUsers_list = $this->repository->typeUser_list();
@@ -80,6 +81,7 @@ class UsersController extends Controller
             'threeview'      => 'Cadastros',
             'titlespage'     => ['Cadastro de usuários'],
             'titlecard'      => 'Editar usuário',
+            'logged'         => $request->session()->get('logged'),
             'typeUsers_list' => $typeUsers_list,
             'table'          => $this->repository->getTable(),
             'goback'         => true,

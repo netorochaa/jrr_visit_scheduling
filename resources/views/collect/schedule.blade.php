@@ -15,7 +15,6 @@
                 <button type="button" data-toggle="modal" data-target="#modal-xl" class="btn btn-outline-success"><i class="fas fa-plus"></i> Novo</button> 
                 <button type="button" data-toggle="modal" data-target="#modal-lg" class="btn btn-outline-success"><i class="fas fa-plus"></i> Já possui cadastro</button> 
             </h5>
-            <hr>
             <div class="row">
                 <div class="col-12">
                     @include('collect.person.list')

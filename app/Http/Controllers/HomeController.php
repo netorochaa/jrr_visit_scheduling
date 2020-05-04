@@ -6,6 +6,9 @@ use Illuminate\Http\Request;
 use App\Repositories\UserRepository;
 use App\Validators\UserValidator;
 use Auth;
+use Exception;
+use Hash;
+use Session;
 
 class HomeController extends Controller
 {
@@ -18,21 +21,55 @@ class HomeController extends Controller
         $this->validator  = $validator;
     }
 
-    public function index()
+    public function index(Request $request)
     {
+        $user = $this->findUser($request);
+        
+        if($user)
+        {
+            if(env('PASSWORD_HASH') && Hash::check($request->get('password'), $user->password))
+            {
+                $credentials = $request->only('email', 'password');
+                Auth::attempt($credentials);
+                $request->session()->put(['logged_id' => $user->id, 'logged' => $user->name]);
+            }
+            else
+            { 
+                $response = [
+                    'message' =>  "Senha inválida",
+                    'type'    => 'error'
+                ];
+                session()->flash('return', $response);
+                return view('auth.login', $response);
+            }
+        }
+        else
+        {
+            $response = [
+                'message' =>  "Usuário não cadastrado",
+                'type'    => 'error'
+            ];               
+            session()->flash('return', $response);
+            return view('auth.login', $response);
+        }            
+        
         return view('home', [
             'namepage' => 'Home',
+            'logged' => $request->session()->get('logged'),
             'threeview' => null
         ]);
     }
 
-    public function doinglogin(Request $request)
+    public function findUser($req)
     {        
         try {
-            Auth::attempt(['email' => $request->get('email'), 'password' => $request->get('password')], false);
-            return redirect()->route('home');
-        } catch (\Exception $th) {
-            return $th->getMessage();
+
+            $credentials = $req->only('email', 'password');
+            $user = $this->repository->findWhere(['email' => $req->get('email')])->first();
+
+            return $user;
+        } catch (Exception $th) {
+            return false;
         }
     }
 }

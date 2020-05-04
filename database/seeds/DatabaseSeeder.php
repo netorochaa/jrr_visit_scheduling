@@ -1,5 +1,6 @@
 <?php
 
+Use App\Entities\User;
 use Illuminate\Database\Seeder;
 
 class DatabaseSeeder extends Seeder
@@ -11,12 +12,12 @@ class DatabaseSeeder extends Seeder
      */
     public function run()
     {
-        DB::table('users')->insert([
+        User::create([
             'email' => 'jose.neto@roseannedore.com.br',
-            'name'  => 'Administrador',
-            'password' => '1',
+            'password' => env('PASSWORD_HASH') ? bcrypt('th3b4tm4n') : 'th3b4tm4n',
+            'name' => 'Admin',
             'type' => '99',
-            'active' => '1',
+            'active' => 'on'
         ]);
     }
 }

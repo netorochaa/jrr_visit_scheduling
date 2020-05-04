@@ -50,7 +50,7 @@ class CollectsController extends Controller
         $freeDay_list           = $this->freeDayRepository->where('dateStart', '>', $dateNow)->get();
         $collect_list           = $this->repository->all();
         $collectAvailables_list = $collect_list;
-        $term = $request->has('status') ? $request->all()['status'] : null;
+        $term                   = $request->has('status') ? $request->all()['status'] : null;
 
         // dd($term);
 
@@ -63,6 +63,7 @@ class CollectsController extends Controller
             'titlecard'  => 'Lista de coletas',
             'titlemodal' => 'Agendar coleta',
             'add'        => true,
+            'logged'     => $request->session()->get('logged'),
             //List for select
             'freeDay_list'           => $freeDay_list,
             'collector_list'         => $collector_list,
@@ -143,6 +144,7 @@ class CollectsController extends Controller
         $ids = explode(",", $request->all()['infoCollect']);
         $idCollect = $ids[0];
         $idNeighborhood = $ids[1];
+        $idOrigin = $request->session()->get('logged_id');
 
         $collect = $this->repository->find($idCollect);
 
@@ -157,7 +159,7 @@ class CollectsController extends Controller
         }
         else
         {
-            Collect::where('id', $idCollect)->update(['neighborhood_id' => $idNeighborhood, 'status' => 3, 'reserved_at' => new DateTime()]);
+            Collect::where('id', $idCollect)->update(['user_id' => $idOrigin, 'neighborhood_id' => $idNeighborhood, 'status' => 3, 'reserved_at' => new DateTime()]);
 
             $response = [
                 'message' => 'Data e horário reservados',
@@ -168,7 +170,7 @@ class CollectsController extends Controller
         }
     }
     
-    public function schedule($id)
+    public function schedule(Request $request, $id)
     {
         try
         {
@@ -185,7 +187,7 @@ class CollectsController extends Controller
             $covenant_list          = $this->peopleRepository->covenant_list();
             $quant                  = count($collect->people);
             $price                  = "R$ " . (string) count($collect->people) * $collect->neighborhood->displacementRate;
-           
+
             return view('collect.edit', [
                 'namepage'      => 'Coletas',
                 'numberModal'   => '2',
@@ -196,6 +198,7 @@ class CollectsController extends Controller
                 'titlemodal'    => 'Cadastrar paciente',
                 'goback'        => false,
                 'add'           => false,
+                'logged'        => $request->session()->get('logged'),
                 //Lists for select
                 'cancellationType_list' => $cancellationType_list,
                 'patientType_list'      => $patientType_list,

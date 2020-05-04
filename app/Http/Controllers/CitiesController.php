@@ -46,7 +46,7 @@ class CitiesController extends Controller
         return redirect()->route('neighborhood.index');
     }
 
-    public function edit($id)
+    public function edit(Request $request, $id)
     {
         $city = $this->repository->find($id);
 
@@ -55,6 +55,7 @@ class CitiesController extends Controller
             'threeview'      => 'Cadastros',
             'titlespage'     => ['Cadastro de Cidade'],
             'titlecard'      => 'Editar cidade',
+            'logged'         => $request->session()->get('logged'),
             'table'          => $this->repository->getTable(),
             'goback'         => true,
             'add'            => false,

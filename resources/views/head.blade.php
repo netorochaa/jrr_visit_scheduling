@@ -20,3 +20,6 @@
         @yield('head-distinct')
     </head>
     <body class="hold-transition sidebar-mini">
+        @if (session('return'))
+            <input type="hidden" id="{{ session('return')['type'] }}" value="{{ session('return')['message'] }}" class="btn btn-info swalDefaultInfo"/>
+        @endif

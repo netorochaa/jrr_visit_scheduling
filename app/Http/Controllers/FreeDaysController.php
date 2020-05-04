@@ -28,10 +28,10 @@ class FreeDaysController extends Controller
         $this->cityRepository = $cityRepository;
     }
 
-    public function index()
+    public function index(Request $request)
     {
-        $freedays       = $this->repository->all();
-        $collectors     = $this->collectorRepository->all();
+        $freedays           = $this->repository->all();
+        $collectors         = $this->collectorRepository->all();
         $collectors_list    = $this->collectorRepository->pluck('name', 'id');
         $cities_list        = $this->cityRepository->pluck('name', 'id');
         $type_list          = $this->repository->type_list();
@@ -43,12 +43,11 @@ class FreeDaysController extends Controller
             'titlecard'     => 'Dias sem coletas',
             'titlemodal'    => 'Cadastrar dias sem coletas',
             'add'           => true,
-
+            'logged'        => $request->session()->get('logged'),
             //Lists for select
             'collectors_list' => $collectors_list,
             'cities_list' => $cities_list,
             'type_list' => $type_list,
-
             //List of entitie
             'table' => $this->repository->getTable(),
             'thead_for_datatable' => ['Nome', 'Período'],

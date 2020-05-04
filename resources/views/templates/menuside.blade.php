@@ -17,7 +17,7 @@
                 <img src="../img/avatar.png" class="img-circle elevation-2" alt="User Image">
             </div>
             <div class="info">
-                <a href="#" class="d-block">Usuário</a>
+                <a href="#" class="d-block">{{ $logged }}</a>
             </div>
         </div>
 

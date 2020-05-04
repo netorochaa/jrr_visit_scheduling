@@ -55,31 +55,34 @@ class PeopleController extends Controller
         return redirect()->route('collect.schedule', $collect_id);
     }
 
-    public function edit($collect_id, $person_id)
+    public function edit(Request $request, $collect_id, $person_id)
     {
         // dd($request->all());
-        $person = $this->repository->find($person_id);
-        $patientType_list = $this->patientTypeRepository->patientTypeWithResponsible_list();
-        $covenant_list = $this->repository->covenant_list();
-        $typeResponsible_list = $this->repository->typeResponsible_list();
-        $collect = $this->collectRepository->find($collect_id);
-        $peopleCollects = $person->with('collects')->get();
-        $personHasCollect = $peopleCollects->find($person->id)->collects->find($collect->id)->pivot;
+        $person                 = $this->repository->find($person_id);
+        $patientType_list       = $this->patientTypeRepository->patientTypeWithResponsible_list();
+        $covenant_list          = $this->repository->covenant_list();
+        $typeResponsible_list   = $this->repository->typeResponsible_list();
+        $collect                = $this->collectRepository->find($collect_id);
+        $peopleCollects         = $person->with('collects')->get();
+        $personHasCollect       = $peopleCollects->find($person->id)->collects->find($collect->id)->pivot;
       
         return view('collect.person.edit', [
-            'namepage'   => 'Coletas',
-            'threeview'  => null,
-            'titlespage' => ['Cadastro de pessoas'],
-            'titlecard'  => 'Editar paciente',
-            'patientType_list' => $patientType_list,
-            'covenant_list'    => $covenant_list,
-            'typeResponsible_list' => $typeResponsible_list,
-            'table'      => $this->repository->getTable(),
-            'goback'     => true,
-            'add'        => false,
-            'personHasCollect'   => $personHasCollect,            
-            'collect'    => $collect,
-            'person'     => $person
+            'namepage'              => 'Coletas',
+            'threeview'             => null,
+            'titlespage'            => ['Cadastro de pessoas'],
+            'titlecard'             => 'Editar paciente',
+            'goback'                => true,
+            'add'                   => false,
+            'logged'                => $request->session()->get('logged'),
+            // list
+            'patientType_list'      => $patientType_list,
+            'covenant_list'         => $covenant_list,
+            'typeResponsible_list'  => $typeResponsible_list,
+            // model
+            'table'                 => $this->repository->getTable(),
+            'personHasCollect'      => $personHasCollect,            
+            'collect'               => $collect,
+            'person'                => $person
         ]);
     }
 
