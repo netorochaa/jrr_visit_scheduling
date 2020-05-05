@@ -101,4 +101,19 @@ return [
         ],
     ],
 
+    'channels' => [
+        'stack' => [
+            'driver' => 'stack',
+            'channels' => ['mysql'],
+        ],
+
+        'mysql' => [
+            'driver' => 'custom',
+            'via' => Logger\Laravel\Logging\MySQLLogger::class,
+            'connection' => env('DB_LOG_CONNECTION'),
+            'table' => env('DB_LOG_TABLE'),
+            'name' => 'RDOMICILIAR' // optional
+        ],
+    ],
+
 ];

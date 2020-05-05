@@ -9,6 +9,7 @@ use Auth;
 use Exception;
 use Hash;
 use Session;
+use Log;
 
 class HomeController extends Controller
 {
@@ -32,6 +33,7 @@ class HomeController extends Controller
                 $credentials = $request->only('email', 'password');
                 Auth::attempt($credentials);
                 $request->session()->put(['logged_id' => $user->id, 'logged' => $user->name]);
+                Log::channel('mysql')->info('Something happened!');
             }
             else
             { 
