@@ -5,21 +5,31 @@ namespace App\Entities;
 use Illuminate\Database\Eloquent\Model;
 use Prettus\Repository\Contracts\Transformable;
 use Prettus\Repository\Traits\TransformableTrait;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
-/**
- * Class Activity.
- *
- * @package namespace App\Entities;
- */
 class Activity extends Model implements Transformable
 {
     use TransformableTrait;
+    use SoftDeletes;
 
-    /**
-     * The attributes that are mass assignable.
-     *
-     * @var array
-     */
-    protected $fillable = [];
+    public $timestamps = true;
+    protected $fillable = ['dateStart', 'status', 'reasonCancellation', 'start', 'end', 'collector_id', 'user_id'];
 
+    public function getFormattedStatusAttribute()
+    {
+        switch ($this->attributes['status']) {
+            case "1":
+                return "EM ANDAMENTO";
+                break;
+            case "2":
+                return "FINALIZADA";
+                break;
+            case "3":
+                return "CANCELADA";
+                break;
+            default:
+                return $this->attributes['status'];
+                break;
+        }
+    }
 }

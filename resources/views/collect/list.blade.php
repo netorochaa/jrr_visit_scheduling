@@ -13,7 +13,10 @@
             {{-- COLETA --}}
             <td> 
                 <span style="display:none">{{ $collectMarked->date }}</span>
-                <p><b>{{ $collectMarked->formatted_date }} - {{ $collectMarked->hour }}</b></p>
+                <b>{{ $collectMarked->formatted_date }} - {{ $collectMarked->hour }}</b>
+                @if($collectMarked->user != null)
+                    <br><small><span class="text-muted">Origem: {{ $collectMarked->user->name }}</span></small>
+                @endif
             </td>
             {{-- CÓDIGO --}}
             <td>
@@ -21,12 +24,9 @@
             </td>
             {{-- STATUS --}}
             <td>
+                {{ $collectMarked->formatted_status }}
                 @if(count($collectMarked->people) != 0)
-                    <span class="text-muted">Pacientes: {{ count($collectMarked->people) }} <br>
-                @endif
-                Status:</span> {{ $collectMarked->formatted_status }}
-                @if($collectMarked->user != null)
-                <small><span class="text-muted">Origem: {{ $collectMarked->user->name }}</span></small>
+                    <br><span class="text-muted">Pacientes: {{ count($collectMarked->people) }}</span>
                 @endif
             </td>
             {{-- PAG. TAXA --}}
@@ -50,6 +50,8 @@
                     <span class="text-muted">Complemento: {{ $collectMarked->complementAddress }} <br>
                     Referência: {{ $collectMarked->referenceAddress }}</span>
                  </small>
+                 @else
+                    <p class="lead" style="color: red"> NÃO INFORMADO </p>
                 @endif
             </td>
             {{-- COLETADOR --}}

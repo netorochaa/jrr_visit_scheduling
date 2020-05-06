@@ -3,13 +3,14 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash;
 use App\Repositories\UserRepository;
 use App\Validators\UserValidator;
 use Auth;
 use Exception;
-use Illuminate\Support\Facades\Hash;
-use Session;
 use Log;
+
+date_default_timezone_set('America/Recife');
 
 class HomeController extends Controller
 {
@@ -26,15 +27,17 @@ class HomeController extends Controller
     {
         $user = $this->findUser($request);
         $pass = $request->get('password');
-
+        // dd($request->all());
         if($user)
         {
             // if(env('PASSWORD_HASH') && Hash::check($request->get('password'), $user->password))
             if($pass == $user->password)
             {
                 $credentials = $request->only('email', 'password');
-                Auth::attempt($credentials);
-                Log::channel('mysql')->info('Usuário: ' . $user->name . ' logou!');
+                // dd($credentials);
+                // Auth::attempt($credentials);
+                Auth::login($user);
+                Auth::user() ? Log::channel('mysql')->info('Usuário: ' . $user->name . ' logou!') : Log::channel('mysql')->error('Usuário: ' . $user->name . ' erro, não logou!');
             }
             else
             { 

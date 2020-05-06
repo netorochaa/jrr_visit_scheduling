@@ -4,10 +4,8 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 
-use DateTime;
 use Prettus\Validator\Contracts\ValidatorInterface;
 use Prettus\Validator\Exceptions\ValidatorException;
-use Exception;
 use App\Http\Requests\CollectCreateRequest;
 use App\Http\Requests\CollectUpdateRequest;
 use App\Repositories\CollectRepository;
@@ -20,6 +18,9 @@ use App\Repositories\FreeDayRepository;
 use App\Repositories\PatientTypeRepository;
 use App\Validators\CollectValidator;
 use App\Entities\Collect;
+use DateTime;
+use Exception;
+use Auth;
 
 date_default_timezone_set('America/Recife');
 
@@ -202,7 +203,7 @@ class CollectsController extends Controller
         $ids = explode(",", $request->all()['infoCollect']);
         $idCollect = $ids[0];
         $idNeighborhood = $ids[1];
-        $idOrigin = $request->session()->get('logged_id');
+        $idOrigin = Auth::user()->id;
 
         $collect = $this->repository->find($idCollect);
 

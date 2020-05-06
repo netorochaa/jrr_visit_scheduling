@@ -11,7 +11,9 @@ use App\Http\Requests\ActivityCreateRequest;
 use App\Http\Requests\ActivityUpdateRequest;
 use App\Repositories\ActivityRepository;
 use App\Repositories\CollectRepository;
+use App\Repositories\CollectorRepository;
 use App\Validators\ActivityValidator;
+use Auth;
 
 date_default_timezone_set('America/Recife');
 
@@ -20,11 +22,12 @@ class ActivitiesController extends Controller
     protected $repository, $collectRepository;
     protected $validator;
 
-    public function __construct(ActivityRepository $repository, ActivityValidator $validator, CollectRepository $collectRepository)
+    public function __construct(ActivityRepository $repository, ActivityValidator $validator, CollectRepository $collectRepository, CollectorRepository $collectorRepository)
     {
         $this->repository           = $repository;
         $this->validator            = $validator;
         $this->collectRepository    = $collectRepository;
+        $this->collectorRepository  = $collectorRepository; 
     }
 
     public function index()
@@ -32,27 +35,26 @@ class ActivitiesController extends Controller
         if(auth()->check())
         {
             $dateNow = date("Y-m-d");
+            $acitivity   = $this->repository->whereDate('dateStart', $dateNow)->where('user_id', Auth::user()->id)->first();
+            $collector   = $this->collectorRepository->where('user_id', Auth::user()->id)->first();
             $collect_list   = $this->collectRepository->whereDate('date', $dateNow)->where([
                                                                                             ['collector_id', auth()->user()->id], 
                                                                                             ['status', 4]
                                                                                            ])->get();
-            dd(count($collect_list));
+            // dd($collector);
 
             return view('activity.index', [
                 'namepage'   => 'Atividade do dia',
                 'threeview'  => null,
                 'titlespage' => ['Atividade'],
-                // 'titlecard'  => 'Lista de coletas',
-                // 'titlemodal' => 'Agendar coleta',
-                // 'add'        => true,
+                'titlecard'  => $acitivity ? $activity->dateStart . " - " .  $activity->id : null,
+                'collector'  => $collector,
                 //List for select
-                // 'freeDay_list'           => $freeDay_list,
-                // 'collector_list'         => $collector_list,
-                // 'collectAvailables_list' => $collectAvailables_list,
+                'collect_list'  => $collect_list,
                 //Info of entitie
                 'table'               => $this->repository->getTable(),
                 // 'thead_for_datatable' => ['Data/Hora', 'Código', 'Status', 'Pagamento Taxa', 'Bairro', 'Endereço', 'Coletador'],
-                // 'collect_list'        => $collect_list
+                'acitivity'     => $acitivity
             ]);
         }
         else return view('auth.login');
