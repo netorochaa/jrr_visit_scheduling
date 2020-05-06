@@ -69,49 +69,63 @@
         selectCancellation.selectedIndex = 0;
         selectCancellation.disabled = true;
       }
-       
     }
 
     function changeResponsible(sel)
+    {
+      var selectType = document.getElementById('selectType');
+      var inputName = document.getElementById('inputName');
+      var inputFone = document.getElementById('inputFone');
+
+      if(sel.options[sel.selectedIndex].text.includes('[RESPONSÁVEL]'))
+        selectType.disabled = false;
+      else
       {
-        var selectType = document.getElementById('selectType');
-        var inputName = document.getElementById('inputName');
-        var inputFone = document.getElementById('inputFone');
-
-        if(sel.options[sel.selectedIndex].text.includes('[RESPONSÁVEL]'))
-          selectType.disabled = false;
-        else
-        {
-          selectType.selectedIndex = 0;
-          selectType.disabled = true;
-          inputName.value = "";
-          inputName.disabled = true;
-          inputFone.value = "";
-          inputFone.disabled = true;
-        }
+        selectType.selectedIndex = 0;
+        selectType.disabled = true;
+        inputName.value = "";
+        inputName.disabled = true;
+        inputFone.value = "";
+        inputFone.disabled = true;
       }
+    }
 
-      function changeTypeResponsible(sel)
+    function changeTypeResponsible(sel)
+    {
+      var inputName = document.getElementById('inputName');
+      var inputFone = document.getElementById('inputFone');
+
+      if(sel.value != "1")
       {
-        var inputName = document.getElementById('inputName');
-        var inputFone = document.getElementById('inputFone');
-
-        if(sel.value != "1")
-        {
-          inputName.disabled = false;
-          inputFone.disabled = false;
-        }
-        else
-        {
-          inputName.value = "";
-          inputName.disabled = true;
-          inputFone.value = "";
-          inputFone.disabled = true;
-        }
+        inputName.disabled = false;
+        inputFone.disabled = false;
       }
+      else
+      {
+        inputName.value = "";
+        inputName.disabled = true;
+        inputFone.value = "";
+        inputFone.disabled = true;
+      }
+    }
+
+    function activeButton(){
+      var submitSchedule = document.getElementById('submitSchedule');
+      var buttonConfirmed = document.getElementById('buttonConfirmed');
+      var labelValue = document.getElementById('labelValue');
+
+      if(labelValue.innerHTML != "R$ 0"){
+        submitSchedule.disabled = false;
+        buttonConfirmed.disabled = false;
+      }else{
+        submitSchedule.disabled = true;
+        buttonConfirmed.disabled = true;
+      }
+    }
 
     $(document).ready(function() {
       changeAuthUser();
+      activeButton();
       function limpa_formulário_cep() 
       {
           // Limpa valores do formulário de cep.

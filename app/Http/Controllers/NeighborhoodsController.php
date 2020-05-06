@@ -25,7 +25,7 @@ class NeighborhoodsController extends Controller
         $this->cityRepository  = $cityRepository;
     }
 
-    public function index(Request $request)
+    public function index()
     {
         $neighborhoods  = $this->repository->all();
         $cities_list  = $this->cityRepository->all(); // for card city
@@ -42,7 +42,6 @@ class NeighborhoodsController extends Controller
             'titlecard2'    => 'Lista de cidades',
             'titlemodal2'   => 'Cadastrar cidade',
             'add'           => true,
-            'logged'        => $request->session()->get('logged'),
             //Lists of selects
             'regions_list' => $regions_list,
             'cities_list' => $cities_list,
@@ -79,7 +78,7 @@ class NeighborhoodsController extends Controller
         return redirect()->route('neighborhood.index');
     }
     
-    public function edit(Request $request, $id)
+    public function edit($id)
     {
         $neighborhood = $this->repository->find($id);
         $regions_list = $this->repository->regions_list();
@@ -93,7 +92,6 @@ class NeighborhoodsController extends Controller
             'titlemodal'    => 'Cadastrar bairro',
             'add'           => false,
             'goback'        => true,
-            'logged'        => $request->session()->get('logged'),
             //Lists of selects
             'regions_list'      => $regions_list,
             'cities_pluck_list' => $cities_pluck_list,

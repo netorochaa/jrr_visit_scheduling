@@ -138,5 +138,7 @@
       dateMomment.isAfter(dateNow) ? select.disabled = false : select.disabled = true;
     }
 
+    
+
   </script>
 @endsection

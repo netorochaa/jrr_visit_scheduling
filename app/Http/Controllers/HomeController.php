@@ -7,7 +7,7 @@ use App\Repositories\UserRepository;
 use App\Validators\UserValidator;
 use Auth;
 use Exception;
-use Hash;
+use Illuminate\Support\Facades\Hash;
 use Session;
 use Log;
 
@@ -25,15 +25,16 @@ class HomeController extends Controller
     public function index(Request $request)
     {
         $user = $this->findUser($request);
-        
+        $pass = $request->get('password');
+
         if($user)
         {
-            if(env('PASSWORD_HASH') && Hash::check($request->get('password'), $user->password))
+            // if(env('PASSWORD_HASH') && Hash::check($request->get('password'), $user->password))
+            if($pass == $user->password)
             {
                 $credentials = $request->only('email', 'password');
                 Auth::attempt($credentials);
-                $request->session()->put(['logged_id' => $user->id, 'logged' => $user->name]);
-                Log::channel('mysql')->info('Something happened!');
+                Log::channel('mysql')->info('Usuário: ' . $user->name . ' logou!');
             }
             else
             { 
@@ -57,7 +58,6 @@ class HomeController extends Controller
         
         return view('home', [
             'namepage' => 'Home',
-            'logged' => $request->session()->get('logged'),
             'threeview' => null
         ]);
     }
@@ -65,8 +65,6 @@ class HomeController extends Controller
     public function findUser($req)
     {        
         try {
-
-            $credentials = $req->only('email', 'password');
             $user = $this->repository->findWhere(['email' => $req->get('email')])->first();
 
             return $user;

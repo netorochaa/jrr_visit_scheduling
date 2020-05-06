@@ -43,36 +43,94 @@ class CollectsController extends Controller
         $this->patientTypeRepository      = $patientTypeRepository;
     }
 
-    public function index(Request $request)
+    // CRUD AND MARK COLLECT
+    public function index()
     {
-        $dateNow = date("Y-m-d h:i");
-        $collector_list         = $this->collectorRepository->with('neighborhoods')->get();
-        $freeDay_list           = $this->freeDayRepository->where('dateStart', '>', $dateNow)->get();
-        $collect_list           = $this->repository->all();
-        $collectAvailables_list = $collect_list;
-        $term                   = $request->has('status') ? $request->all()['status'] : null;
+        if(auth()->check())
+        {
+            $dateNow = date("Y-m-d h:i");
+            $collector_list         = $this->collectorRepository->with('neighborhoods')->get();
+            $freeDay_list           = $this->freeDayRepository->where('dateStart', '>', $dateNow)->get();
+            $collect_list           = $this->repository->all();
+            $collectAvailables_list = $collect_list;
 
-        // dd($term);
+            for ($i=0; $i < count($freeDay_list); $i++) $collectAvailables_list = $collectAvailables_list->whereNotBetween('date', [$freeDay_list[$i]['dateStart'], $freeDay_list[$i]['dateEnd']]);
 
-        for ($i=0; $i < count($freeDay_list); $i++) $collectAvailables_list = $collectAvailables_list->whereNotBetween('date', [$freeDay_list[$i]['dateStart'], $freeDay_list[$i]['dateEnd']]);
+            return view('collect.index', [
+                'namepage'   => 'Coletas',
+                'threeview'  => null,
+                'titlespage' => ['Coletas'],
+                'titlecard'  => 'Lista de coletas',
+                'titlemodal' => 'Agendar coleta',
+                'add'        => true,
+                //List for select
+                'freeDay_list'           => $freeDay_list,
+                'collector_list'         => $collector_list,
+                'collectAvailables_list' => $collectAvailables_list,
+                //Info of entitie
+                'table'               => $this->repository->getTable(),
+                'thead_for_datatable' => ['Data/Hora', 'Código', 'Status', 'Pagamento Taxa', 'Bairro', 'Endereço', 'Coletador'],
+                'collect_list'        => $collect_list
+            ]);
+        }
+        else return view('auth.login');
+    }
 
-        return view('collect.index', [
-            'namepage'   => 'Coletas',
-            'threeview'  => null,
-            'titlespage' => ['Coletas'],
-            'titlecard'  => 'Lista de coletas',
-            'titlemodal' => 'Agendar coleta',
-            'add'        => true,
-            'logged'     => $request->session()->get('logged'),
-            //List for select
-            'freeDay_list'           => $freeDay_list,
-            'collector_list'         => $collector_list,
-            'collectAvailables_list' => $collectAvailables_list,
-            //Info of entitie
-            'table'               => $this->repository->getTable(),
-            'thead_for_datatable' => ['Data/Hora', 'Código', 'Status', 'Pagamento Taxa', 'Bairro', 'Endereço', 'Coletador'],
-            'collect_list'        => $collect_list
-        ]);
+    public function schedule($id)
+    {
+        try
+        {
+            $collect = $this->repository->find($id);
+
+            $cancellationType_list  = $this->cancellationTypeRepository->pluck('name', 'id');
+            $patientType_list       = $this->patientTypeRepository->patientTypeWithResponsible_list();
+            $collectType_list       = $this->repository->collectType_list();
+            $statusCollects_list    = $this->repository->statusCollects_list();
+            $payment_list           = $this->repository->payment_list();
+            $userAuth_list          = $this->userRepository->where('type', '>', 2)->pluck('name', 'name');
+            $people_list            = $this->peopleRepository->all();
+            $typeResponsible_list   = $this->peopleRepository->typeResponsible_list();
+            $covenant_list          = $this->peopleRepository->covenant_list();
+            $quant                  = count($collect->people);
+            $price                  = "R$ " . (string) count($collect->people) * $collect->neighborhood->displacementRate;
+
+            return view('collect.edit', [
+                'namepage'      => 'Coletas',
+                'numberModal'   => '2',
+                'threeview'     => null,
+                'titlespage'    => ['Coletas'],
+                'titlecard'     => 'Agendamento de coleta',
+                'titlecard2'    => 'Adicionar paciente',
+                'titlemodal'    => 'Cadastrar paciente',
+                'goback'        => false,
+                'add'           => false,
+                //Lists for select
+                'cancellationType_list' => $cancellationType_list,
+                'patientType_list'      => $patientType_list,
+                'collectType_list'      => $collectType_list,
+                'statusCollects_list'   => $statusCollects_list,
+                'cancellationType'      => $statusCollects_list,
+                'payment_list'          => $payment_list,
+                'userAuth_list'         => $userAuth_list,
+                'people_list'           => $people_list,
+                'typeResponsible_list'  => $typeResponsible_list,
+                'covenant_list'         => $covenant_list,
+                'quant'                 => $quant,
+                'price'                 => $price,
+                //Info of entitie
+                'table' => $this->repository->getTable(),
+                'collect' => $collect
+            ]);
+        }
+        catch(Exception $e)
+        {
+            $response = [
+                'message' =>  $e->getMessage(),
+                'type'    => 'error'
+            ];
+            session()->flash('return', $response);
+            return redirect()->route('collect.index');
+        }
     }
 
     public function store(CollectCreateRequest $request)
@@ -167,64 +225,6 @@ class CollectsController extends Controller
             ];
             session()->flash('return', $response);
             return redirect()->route('collect.schedule', $collect->id);
-        }
-    }
-    
-    public function schedule(Request $request, $id)
-    {
-        try
-        {
-            $collect = $this->repository->find($id);
-
-            $cancellationType_list  = $this->cancellationTypeRepository->pluck('name', 'id');
-            $patientType_list       = $this->patientTypeRepository->patientTypeWithResponsible_list();
-            $collectType_list       = $this->repository->collectType_list();
-            $statusCollects_list    = $this->repository->statusCollects_list();
-            $payment_list           = $this->repository->payment_list();
-            $userAuth_list          = $this->userRepository->where('type', '>', 2)->pluck('name', 'name');
-            $people_list            = $this->peopleRepository->all();
-            $typeResponsible_list   = $this->peopleRepository->typeResponsible_list();
-            $covenant_list          = $this->peopleRepository->covenant_list();
-            $quant                  = count($collect->people);
-            $price                  = "R$ " . (string) count($collect->people) * $collect->neighborhood->displacementRate;
-
-            return view('collect.edit', [
-                'namepage'      => 'Coletas',
-                'numberModal'   => '2',
-                'threeview'     => null,
-                'titlespage'    => ['Coletas'],
-                'titlecard'     => 'Agendamento de coleta',
-                'titlecard2'    => 'Adicionar paciente',
-                'titlemodal'    => 'Cadastrar paciente',
-                'goback'        => false,
-                'add'           => false,
-                'logged'        => $request->session()->get('logged'),
-                //Lists for select
-                'cancellationType_list' => $cancellationType_list,
-                'patientType_list'      => $patientType_list,
-                'collectType_list'      => $collectType_list,
-                'statusCollects_list'   => $statusCollects_list,
-                'cancellationType'      => $statusCollects_list,
-                'payment_list'          => $payment_list,
-                'userAuth_list'         => $userAuth_list,
-                'people_list'           => $people_list,
-                'typeResponsible_list'  => $typeResponsible_list,
-                'covenant_list'         => $covenant_list,
-                'quant'                 => $quant,
-                'price'                 => $price,
-                //Info of entitie
-                'table' => $this->repository->getTable(),
-                'collect' => $collect
-            ]);
-        }
-        catch(Exception $e)
-        {
-            $response = [
-                'message' =>  $e->getMessage(),
-                'type'    => 'error'
-            ];
-            session()->flash('return', $response);
-            return redirect()->route('collect.index');
         }
     }
 

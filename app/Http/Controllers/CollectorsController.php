@@ -33,7 +33,7 @@ class CollectorsController extends Controller
         $this->neighborhoodRepository = $neighborhoodRepository;
     }
 
-    public function index(Request $request)
+    public function index()
     {
         $collectors_list  = $this->repository->all();
         $user_list        = $this->userRepository->where('type', 2)->pluck('name', 'id');
@@ -46,7 +46,6 @@ class CollectorsController extends Controller
             'titlecard'     => 'Lista de coletadores',
             'titlemodal'    => 'Cadastrar coletador',
             'add'           => true,
-            'logged'        => $request->session()->get('logged'),
             //List for select
             'user_list'     => $user_list,
             'schedules'     => $schedules,
@@ -192,7 +191,7 @@ class CollectorsController extends Controller
         return redirect()->route('collector.index', $collector->id);
     }
 
-    public function show(Request $request, $id)
+    public function show($id)
     {
         $collector = $this->repository->find($id);
         $neighborhoods = $this->neighborhoodRepository->neighborhoodsCities_list()->pluck('name', 'id');
@@ -205,13 +204,12 @@ class CollectorsController extends Controller
             'titlemodal'    => 'Relacionar bairros ao coletador ' . $collector->getAttribute('name'),
             'goback'        => true,
             'add'           => true,
-            'logged'        => $request->session()->get('logged'),
             'collector'     => $collector,
             'neighborhoods' => $neighborhoods
         ]);
     }
 
-    public function edit(Request $request, $id)
+    public function edit($id)
     {
         $collector = $this->repository->find($id);
         $user_list = $this->userRepository->where('type', 2)->pluck('name', 'id');
@@ -224,7 +222,6 @@ class CollectorsController extends Controller
             'titlecard'     => 'Lista de coletadores cadastrados',
             'goback'        => true,
             'add'           => false,
-            'logged'        => $request->session()->get('logged'),
             //Lists for select
             'user_list' => $user_list,
             'schedules' => $schedules,

@@ -2,7 +2,7 @@
     <div class="card">
         <div class="card-body">
             <h4 class="lead">Nº {{ $collect->id }} | Status: <b>{{ $collect->formatted_status }}</b> | Coletador: {{ $collect->collector->name }}
-                @if($collect->status < 4) <button type="button" onclick="location.href='{{ route('collect.confirmed', $collect->id) }}'"  class="btn btn-success float-right">Confirmar</button>@endif 
+                @if($collect->status < 4) <button type="button" onclick="location.href='{{ route('collect.confirmed', $collect->id) }}'" id="buttonConfirmed" class="btn btn-success float-right" disabled>Confirmar</button>@endif 
             </h4>
             <div class="row">
                 @include('templates.components.select', ['label' => 'Tipo',   'col' => '2', 'select' => 'collectType',  'attributes' => ['class' => 'form-control'], 'data' => $collectType_list,])
@@ -32,7 +32,7 @@
             </div>
             <hr>
             <div class="row">
-                @include('templates.components.label',  ['label' => 'Valor (' . $quant . ' pacientes)', 'col' => '2', 'input'  => '',                                                               'attributes' => ['class' => 'form-control'], 'text' => $price])
+                @include('templates.components.label',  ['label' => 'Valor (' . $quant . ' pacientes)', 'col' => '2', 'input'  => '',                                                               'attributes' => ['class' => 'form-control'], 'text' => $price, 'id' => 'labelValue'])
                 @include('templates.components.select', ['label' => 'Pagamento',                        'col' => '4', 'select' => 'payment',        'selected' => $collect->payment,                'attributes' => ['id' => 'selPayament', 'class' => 'form-control', 'onchange' => 'changeAuthUser()'], 'data' => $payment_list])
                 @include('templates.components.input',  ['label' => 'Troco',                            'col' => '2', 'input'  => 'changePayment',  'value' => $collect->referenceAddress ?? null,  'attributes' => ['id' => 'changePay', 'class' => 'form-control', 'data-inputmask' => "'mask': '99.99'", 'data-mask', 'im-insert' => 'true']])
                 @include('templates.components.select', ['label' => 'Autorização da cortesia',          'col' => '4', 'select' => 'AuthCourtesy',   'selected' => $collect->AuthCourtesy ?? null,   'attributes' => ['required' => 'true','id' => 'selAuthUser', 'class' => 'form-control', 'disabled' => 'true'], 'data' =>  ['' => '', 'Selecione' => $userAuth_list]])
@@ -54,7 +54,7 @@
             </div>
         </div>
         <div class="card-footer">
-            @include('templates.components.submit', ['input' => 'Salvar', 'attributes' => ['class' => 'btn btn-outline-primary']])
+            @include('templates.components.submit', ['input' => 'Salvar', 'attributes' => ['id' => 'submitSchedule', 'class' => 'btn btn-outline-primary', 'disabled']])
         </div>
     </div>
 {!! Form::close() !!}

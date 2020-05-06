@@ -23,7 +23,7 @@ class CancellationTypesController extends Controller
         $this->validator  = $validator;
     }
 
-    public function index(Request $request)
+    public function index()
     {
         $cancellationTypes  = $this->repository->all();  
 
@@ -34,7 +34,6 @@ class CancellationTypesController extends Controller
             'titlecard'     => 'Lista dos cancelamentos de coleta',
             'titlemodal'    => 'Cadastrar cancelamento de coleta',
             'add'           => true,
-            'logged'        => $request->session()->get('logged'),
             //List of entitie
             'table' => $this->repository->getTable(),
             'thead_for_datatable' => ['Nome', 'Status', 'Criado', 'Última atualização'],

@@ -17,7 +17,7 @@
                 <img src="../img/avatar.png" class="img-circle elevation-2" alt="User Image">
             </div>
             <div class="info">
-                <a href="#" class="d-block">{{ $logged }}</a>
+                <a href="#" class="d-block">{{ auth()->user()->name }}</a>
             </div>
         </div>
 
@@ -31,7 +31,7 @@
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a href="#" class="nav-link @if($namepage == 'Atividade do dia') active @endif">
+                    <a href="{{ route('activity.index') }}" class="nav-link @if($namepage == 'Atividade do dia') active @endif">
                         <i class="nav-icon fas fa-tasks"></i>
                         <p>Iniciar atividade</p>
                     </a>

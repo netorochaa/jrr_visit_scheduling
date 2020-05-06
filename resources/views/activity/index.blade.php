@@ -5,7 +5,7 @@
 
 @section('content')
   @include('templates.content.header')
-  {{-- @include('templates.content.content1col', ['contentbody' => 'collect.activity.list']) --}}
+  @include('templates.content.content1col', ['contentbody' => 'collect.start'])
   {{-- @include('templates.content.modallarge', ['titlemodal' => $titlemodal , 'contentmodal' => 'collect.register']) --}}
 @endsection
 

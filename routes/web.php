@@ -42,3 +42,6 @@ Route::get('/confirmed/{id}', ['as' => 'collect.confirmed', 'uses' => 'CollectsC
 Route::resource('collect.person', 'PeopleController');
 Route::post('/people/collect', ['as' => 'person.collect.attach', 'uses' => 'PeopleController@attachPeopleCollect']);
 Route::post('/people/{people_id}/collect/{collect_id}', ['as' => 'person.collect.detach', 'uses' => 'PeopleController@detachPeopleCollect']);
+
+//Activity
+Route::resource('activity', 'ActivitiesController');

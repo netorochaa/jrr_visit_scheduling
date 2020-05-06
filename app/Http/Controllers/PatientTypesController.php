@@ -24,7 +24,7 @@ class PatientTypesController extends Controller
         $this->validator  = $validator;
     }
 
-    public function index(Request $request)
+    public function index()
     {
         $patientTypes  = $this->repository->all();
 
@@ -35,7 +35,6 @@ class PatientTypesController extends Controller
             'titlecard'     => 'Lista dos tipos de pacientes',
             'titlemodal'    => 'Cadastrar tipo de paciente',
             'add'           => true,
-            'logged'        => $request->session()->get('logged'),
             //List of entitie
             'table' => $this->repository->getTable(),
             'thead_for_datatable' => ['Nome', 'Responsável', 'Status', 'Criado', 'Última atualização'],

@@ -4,6 +4,7 @@ namespace App\Entities;
 
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 
 class User extends Authenticatable
@@ -18,7 +19,7 @@ class User extends Authenticatable
 
     public function setPasswordAttribute($value)
     {
-        $this->attributes['password'] = env('PASSWORD_HASH') ? \bcrypt($value) : $value;
+        $this->attributes['password'] = env('PASSWORD_HASH') ? Hash::make($value) : $value;
     }
 
     public function getFormattedTypeAttribute()

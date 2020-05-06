@@ -55,7 +55,7 @@ class PeopleController extends Controller
         return redirect()->route('collect.schedule', $collect_id);
     }
 
-    public function edit(Request $request, $collect_id, $person_id)
+    public function edit($collect_id, $person_id)
     {
         // dd($request->all());
         $person                 = $this->repository->find($person_id);
@@ -73,7 +73,6 @@ class PeopleController extends Controller
             'titlecard'             => 'Editar paciente',
             'goback'                => true,
             'add'                   => false,
-            'logged'                => $request->session()->get('logged'),
             // list
             'patientType_list'      => $patientType_list,
             'covenant_list'         => $covenant_list,
@@ -141,6 +140,7 @@ class PeopleController extends Controller
 
     public function detachPeopleCollect($people_id, $collect_id)
     {
+        dd($collect_id);
         try
         {
             $person = $this->repository->find($people_id);
