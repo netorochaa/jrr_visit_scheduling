@@ -29,7 +29,7 @@ class HomeController extends Controller
         {
             $user = $this->findUser($request);
             $pass = $request->get('password');
-            // dd($request->all());
+
             if($user)
             {
                 // if(env('PASSWORD_HASH') && Hash::check($request->get('password'), $user->password))
@@ -59,15 +59,13 @@ class HomeController extends Controller
                 ];               
                 session()->flash('return', $response);
                 return view('auth.login', $response);
-            }            
+            }       
         }
-        else
-        {
-            return view('home', [
-                'namepage' => 'Home',
-                'threeview' => null
-            ]);
-        }
+        
+        return view('home', [
+            'namepage' => 'Home',
+            'threeview' => null
+        ]);
     }
 
     public function findUser($req)
@@ -79,5 +77,16 @@ class HomeController extends Controller
         } catch (Exception $th) {
             return false;
         }
+    }
+
+    public function logout()
+    {
+        try {
+            Auth::logout();    
+        } 
+        catch (Exception $e) 
+        {
+        }
+        return view('auth.login');
     }
 }

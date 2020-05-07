@@ -9,5 +9,10 @@
             <a href="#" class="nav-link">{{ $namepage }}</a>
         </li>
     </ul>
+    <ul class="navbar-nav ml-auto">
+        <li class="nav-item d-nome d-sm-inline-block">
+            <a href={{ route('auth.logout') }}>Sair</a>
+        </li>
+    </ul>
 </nav>
 <!-- /.navbar -->

@@ -3,11 +3,13 @@
 use Illuminate\Support\Facades\Route;
 
 // Auth routes
-Route::get('/login', ['uses' => 'Controller@login']);
-Route::post('/login', ['as' => 'auth.login', 'uses' => 'HomeController@index']);
+Route::get('/', ['uses' => 'Controller@login']);
+// Route::post('/login', ['as' => 'auth.login', 'uses' => 'HomeController@index']);
+Route::get('/logout', ['as' => 'auth.logout', 'uses' => 'HomeController@logout']);
 
 // Home route
 Route::get('/home', ['as' => 'home', 'uses' => 'HomeController@index']);
+Route::post('/home', ['as' => 'auth.login', 'uses' => 'HomeController@index']);
 
 // Users routes
 Route::resource('user', 'UsersController');
