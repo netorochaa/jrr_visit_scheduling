@@ -25,44 +25,49 @@ class HomeController extends Controller
 
     public function index(Request $request)
     {
-        $user = $this->findUser($request);
-        $pass = $request->get('password');
-        // dd($request->all());
-        if($user)
+        if(!Auth::check())
         {
-            // if(env('PASSWORD_HASH') && Hash::check($request->get('password'), $user->password))
-            if($pass == $user->password)
+            $user = $this->findUser($request);
+            $pass = $request->get('password');
+            // dd($request->all());
+            if($user)
             {
-                $credentials = $request->only('email', 'password');
-                // dd($credentials);
-                // Auth::attempt($credentials);
-                Auth::login($user);
-                Auth::user() ? Log::channel('mysql')->info('Usuário: ' . $user->name . ' logou!') : Log::channel('mysql')->error('Usuário: ' . $user->name . ' erro, não logou!');
+                // if(env('PASSWORD_HASH') && Hash::check($request->get('password'), $user->password))
+                if($pass == $user->password)
+                {
+                    $credentials = $request->only('email', 'password');
+                    // dd($credentials);
+                    // Auth::attempt($credentials);
+                    Auth::login($user);
+                    Auth::user() ? Log::channel('mysql')->info('Usuário: ' . $user->name . ' logou!') : Log::channel('mysql')->error('Usuário: ' . $user->name . ' erro, não logou!');
+                }
+                else
+                { 
+                    $response = [
+                        'message' =>  "Senha inválida",
+                        'type'    => 'error'
+                    ];
+                    session()->flash('return', $response);
+                    return view('auth.login', $response);
+                }
             }
             else
-            { 
+            {
                 $response = [
-                    'message' =>  "Senha inválida",
+                    'message' =>  "Usuário não cadastrado",
                     'type'    => 'error'
-                ];
+                ];               
                 session()->flash('return', $response);
                 return view('auth.login', $response);
-            }
+            }            
         }
         else
         {
-            $response = [
-                'message' =>  "Usuário não cadastrado",
-                'type'    => 'error'
-            ];               
-            session()->flash('return', $response);
-            return view('auth.login', $response);
-        }            
-        
-        return view('home', [
-            'namepage' => 'Home',
-            'threeview' => null
-        ]);
+            return view('home', [
+                'namepage' => 'Home',
+                'threeview' => null
+            ]);
+        }
     }
 
     public function findUser($req)

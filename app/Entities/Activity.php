@@ -13,7 +13,7 @@ class Activity extends Model implements Transformable
     use SoftDeletes;
 
     public $timestamps = true;
-    protected $fillable = ['dateStart', 'status', 'reasonCancellation', 'start', 'end', 'collector_id', 'user_id'];
+    protected $fillable = ['status', 'reasonCancellation', 'start', 'end', 'collector_id', 'user_id'];
 
     public function getFormattedStatusAttribute()
     {
@@ -25,11 +25,33 @@ class Activity extends Model implements Transformable
                 return "FINALIZADA";
                 break;
             case "3":
-                return "CANCELADA";
+                return "ENCERRADA COM PENDÊNCIAS";
                 break;
             default:
                 return $this->attributes['status'];
                 break;
         }
+    }
+
+    public function getFormattedStartAttribute(){
+        $date = explode(' ', $this->attributes['date']);
+        $date = explode('-', $date[0]);
+
+        $day = $date[2];
+        $month = $date[1];
+        $year = $date[0];
+
+        return $day . "/" . $month . "/" . $year;
+    }
+
+    public function getFormattedEndAttribute(){
+        $date = explode(' ', $this->attributes['date']);
+        $date = explode('-', $date[0]);
+
+        $day = $date[2];
+        $month = $date[1];
+        $year = $date[0];
+
+        return $day . "/" . $month . "/" . $year;
     }
 }

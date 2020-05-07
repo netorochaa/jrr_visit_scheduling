@@ -1,4 +1,3 @@
-
 <div class="card">
     {!! Form::open(['route' => 'collect.reserve', 'method' => 'post', 'role' => 'form', 'class' => 'form-horizontal']) !!}
     <div class="card-body">

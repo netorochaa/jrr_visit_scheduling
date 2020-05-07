@@ -47,17 +47,13 @@ class CreateCollectsTable extends Migration
 			$table->unsignedInteger('user_id')->nullable();
 			$table->foreign('user_id')->references('id')->on('users');
 
-            $table->datetime('reserved_at')->nullable();
+			$table->datetime('reserved_at')->nullable();
+			$table->datetime('closed_at')->nullable();
 			$table->timestamps();
 			$table->softDeletes();
 		});
 	}
 
-	/**
-	 * Reverse the migrations.
-	 *
-	 * @return void
-	 */
 	public function down()
 	{
 		Schema::disableForeignKeyConstraints();

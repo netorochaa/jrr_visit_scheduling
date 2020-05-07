@@ -45,3 +45,4 @@ Route::post('/people/{people_id}/collect/{collect_id}', ['as' => 'person.collect
 
 //Activity
 Route::resource('activity', 'ActivitiesController');
+Route::get('activity/{id}/close', ['as' => 'activity.close', 'uses' => 'ActivitiesController@close']);

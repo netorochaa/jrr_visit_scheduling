@@ -21,7 +21,9 @@ class Collect extends Model implements Transformable
 
     public $timestamps = true;
     protected $table = 'collects';
-    protected $fillable = ['id','date','hour','collectType','status','payment','changePayment','cep','address','numberAddress','complementAddress','referenceAddress','linkMaps','courtesy','unityCreated','observationCollect','attachment','cancellationType_id','collector_id', 'neighborhood_id','user_id'];
+    protected $fillable = ['id','date','hour','collectType','status','payment','changePayment','cep','address','numberAddress','complementAddress','referenceAddress',
+                            'linkMaps','courtesy','unityCreated','observationCollect','attachment','cancellationType_id','collector_id', 'neighborhood_id','user_id',
+                            'reserved_at','closed_at'];
 
     public function people()
     {
@@ -57,6 +59,36 @@ class Collect extends Model implements Transformable
         $year = $date[0];
 
         return $day . "/" . $month . "/" . $year;
+    }
+
+    public function getFormattedReservedAtAttribute(){
+        if($this->attributes['reserved_at'] != null)
+        {
+            $date = explode(' ', $this->attributes['reserved_at']);
+            $dateSplit = explode('-', $date[0]);
+
+            $day = $dateSplit[2];
+            $month = $dateSplit[1];
+            $year = $dateSplit[0];
+            $hour = $date[1];
+            
+            return $day . "/" . $month . "/" . $year . " " . $hour;
+        }
+    }
+
+    public function getFormattedClosedAtAttribute(){
+        if($this->attributes['closed_at'] != null)
+        {
+            $date = explode(' ', $this->attributes['closed_at']);
+            $dateSplit = explode('-', $date[0]);
+            // dd($this->attributes['closed_at']);
+            $day = $dateSplit[2];
+            $month = $dateSplit[1];
+            $year = $dateSplit[0];
+            $hour = $date[1];
+            
+            return $day . "/" . $month . "/" . $year . " " . $hour;
+        }
     }
     
     public function getFormattedStatusAttribute(){

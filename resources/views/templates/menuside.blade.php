@@ -31,9 +31,9 @@
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a href="{{ route('activity.index') }}" class="nav-link @if($namepage == 'Atividade do dia') active @endif">
+                    <a href="{{ route('activity.index') }}" class="nav-link @if($namepage == 'Rota do dia') active @endif">
                         <i class="nav-icon fas fa-tasks"></i>
-                        <p>Iniciar atividade</p>
+                        <p>Rota</p>
                     </a>
                 </li>
                 <li class="nav-item">

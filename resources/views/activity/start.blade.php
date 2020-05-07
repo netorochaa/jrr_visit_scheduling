@@ -1,12 +1,14 @@
 
 <div class="card">
-    {!! Form::open(['route' => 'activity.index', 'method' => 'post', 'role' => 'form', 'class' => 'form-horizontal']) !!}
+    {!! Form::open(['route' => 'activity.store', 'method' => 'post', 'role' => 'form', 'class' => 'form-horizontal']) !!}
     <div class="card-body">
         <div class="row">
-            <h4>{{ count($collect_list) }} COLETAS PARA HOJE - {{ $collector->name }} <small>{{ Auth::user()->name }}</small></h4>
-        </div>
+            <h3 class="lead"> <b>{{ count($collect_list) }}</b> Coletas para hoje <b>{{ $date }}</b> | {{ $collector->name }} - <SMALL>{{ Auth::user()->name }}</SMALL></h3>
+            @include('templates.components.hidden', ['hidden' => 'collector_id', 'value' => $collector->id])
+            @include('templates.components.hidden', ['hidden' => 'user_id', 'value' =>  Auth::user()->id])
+        </div>    
         <div class="row">
-            @include('templates.components.submit', ['input' => 'INICIAR ATIVIDADE', 'attributes' => ['class' => 'btn btn-outline-primary']])  
+            <input type="submit" value="CLIQUE AQUI PARA COMEÇAR" class="btn btn-primary">
         </div>
     </div>
     {!! Form::close() !!}
