@@ -25,51 +25,66 @@ class HomeController extends Controller
 
     public function index(Request $request)
     {
-        if(!Auth::check())
+        if(Auth::check())
         {
-            $user = $this->findUser($request);
-            $pass = $request->get('password');
+            session()->flush();
 
-            if($user)
+            return view('home', [
+                'namepage' => 'Home',
+                'threeview' => null
+            ]);
+        }
+        else
+        {
+            if(count($request->all()) > 0)
             {
-                // if(env('PASSWORD_HASH') && Hash::check($request->get('password'), $user->password))
-                if($pass == $user->password)
+                $user = $this->findUser($request);
+                $pass = $request->get('password');
+
+                if($user)
                 {
-                    $credentials = $request->only('email', 'password');
-                    // dd($credentials);
-                    // Auth::attempt($credentials);
-                    Auth::login($user);
-                    Auth::user() ? Log::channel('mysql')->info('Usuário: ' . $user->name . ' logou!') : Log::channel('mysql')->error('Usuário: ' . $user->name . ' erro, não logou!');
+                    // if(env('PASSWORD_HASH') && Hash::check($request->get('password'), $user->password))
+                    if($pass == $user->password)
+                    {
+                        $credentials = $request->only('email', 'password');
+                        // dd($credentials);
+                        // Auth::attempt($credentials);
+                        Auth::login($user);
+                        Auth::user() ? Log::channel('mysql')->info('Usuário: ' . $user->name . ' logou!') : Log::channel('mysql')->error('Usuário: ' . $user->name . ' erro, não logou!');
+
+                        return view('home', [
+                            'namepage' => 'Home',
+                            'threeview' => null
+                        ]);
+                    }
+                    else
+                    {
+                        $response = [
+                            'message' =>  "Senha inválida",
+                            'type'    => 'error'
+                        ];
+                    }
                 }
                 else
-                { 
+                {
                     $response = [
-                        'message' =>  "Senha inválida",
+                        'message' =>  "Usuário não cadastrado",
                         'type'    => 'error'
                     ];
-                    session()->flash('return', $response);
-                    return view('auth.login', $response);
                 }
             }
             else
-            {
-                $response = [
-                    'message' =>  "Usuário não cadastrado",
-                    'type'    => 'error'
-                ];               
-                session()->flash('return', $response);
-                return view('auth.login', $response);
-            }       
+                $response = [];
         }
-        
-        return view('home', [
-            'namepage' => 'Home',
-            'threeview' => null
-        ]);
+
+        session()->flash('return', $response);
+        return view('auth.login', $response);
+
+
     }
 
     public function findUser($req)
-    {        
+    {
         try {
             $user = $this->repository->findWhere(['email' => $req->get('email')])->first();
 
@@ -82,9 +97,9 @@ class HomeController extends Controller
     public function logout()
     {
         try {
-            Auth::logout();    
-        } 
-        catch (Exception $e) 
+            Auth::logout();
+        }
+        catch (Exception $e)
         {
         }
         return view('auth.login');

@@ -65,7 +65,7 @@ class PeopleController extends Controller
         $collect                = $this->collectRepository->find($collect_id);
         $peopleCollects         = $person->with('collects')->get();
         $personHasCollect       = $peopleCollects->find($person->id)->collects->find($collect->id)->pivot;
-      
+
         return view('collect.person.edit', [
             'namepage'              => 'Coletas',
             'threeview'             => null,
@@ -79,7 +79,7 @@ class PeopleController extends Controller
             'typeResponsible_list'  => $typeResponsible_list,
             // model
             'table'                 => $this->repository->getTable(),
-            'personHasCollect'      => $personHasCollect,            
+            'personHasCollect'      => $personHasCollect,
             'collect'               => $collect,
             'person'                => $person
         ]);
@@ -99,9 +99,9 @@ class PeopleController extends Controller
                 'message' => 'Paciente atualizado',
                 'type'   => 'info',
             ];
-        } 
-        catch (ValidatorException $e) 
-        { 
+        }
+        catch (ValidatorException $e)
+        {
             $response = [
                 'message' =>  $e->getMessageBag(),
                 'type'    => 'error'
@@ -110,7 +110,7 @@ class PeopleController extends Controller
         session()->flash('return', $response);
         return redirect()->route('collect.schedule', $collect_id);
     }
-    
+
     public function attachPeopleCollect(Request $request)
     {
         $registeredPatient = $request->all()['registeredPatient'];
@@ -140,7 +140,7 @@ class PeopleController extends Controller
 
     public function detachPeopleCollect($people_id, $collect_id)
     {
-        dd($collect_id);
+        // dd($collect_id);
         try
         {
             $person = $this->repository->find($people_id);

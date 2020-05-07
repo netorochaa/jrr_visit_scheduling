@@ -52,12 +52,6 @@
                     </a>
                     <ul class="nav nav-treeview">
                         <li class="nav-item">
-                            <a href="{{ route('user.index') }}" class="nav-link @if($namepage == 'Usuário') active @endif">
-                                <i class="far fa-circle nav-icon"></i>
-                                <p>Usuário</p>
-                            </a>
-                        </li>
-                        <li class="nav-item">
                             <a href="{{ route('freedays.index') }}" class="nav-link @if($namepage == 'Dias sem coletas') active @endif">
                                 <i class="far fa-circle nav-icon"></i>
                                 <p>Dias sem coletas</p>
@@ -67,6 +61,12 @@
                             <a href="{{ route('collector.index') }}" class="nav-link @if($namepage == 'Coletador') active @endif">
                                 <i class="far fa-circle nav-icon"></i>
                                 <p>Coletador</p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="{{ route('user.index') }}" class="nav-link @if($namepage == 'Usuário') active @endif">
+                                <i class="far fa-circle nav-icon"></i>
+                                <p>Usuário</p>
                             </a>
                         </li>
                         <li class="nav-item">

@@ -7,8 +7,8 @@
     </head>
     <body>
         @if (session('return'))
-                <input type="hidden" id="{{ session('return')['type'] }}" value="{{ session('return')['message'] }}" class="btn btn-info swalDefaultInfo"/>
-            @endif
+            <input type="hidden" id="{{ session('return')['type'] }}" value="{{ session('return')['message'] }}" class="btn btn-info swalDefaultInfo"/>
+        @endif
         <div class="conteudo-info">
             <img src="{{ asset('img/1.png') }}" alt="">
         </div>
@@ -23,11 +23,11 @@
             </p>
             <label>
                 {!! Form::text('email', null, ['placeholder' => 'E-mail da empresa']) !!}
-            </label>  
+            </label>
             <label>
                 {!! Form::password('password', ['placeholder' => 'Senha']) !!}
             </label>
-            
+
             {!! Form::submit('Entrar', []) !!}
             {!! Form::close() !!}
         </section>
