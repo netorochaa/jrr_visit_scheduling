@@ -56,10 +56,11 @@ class CollectsController extends Controller
             $collector_list         = $this->collectorRepository->with('neighborhoods')->get();
             $freeDay_list           = $this->freeDayRepository->where('dateStart', '>', $dateNow)->get();
             $collect_list           = $this->repository->all();
-            $collectAvailables_list = $collect_list;
-
-            for ($i=0; $i < count($freeDay_list); $i++) $collectAvailables_list = $collectAvailables_list->whereNotBetween('date', [$freeDay_list[$i]['dateStart'], $freeDay_list[$i]['dateEnd']]);
-
+            $collectAvailables_list = $collect_list->where('date', '>', $dateNow)->sortBy('date')->sortBy('collector_id');
+            // 
+            for ($i=0; $i < count($freeDay_list); $i++) 
+                $collectAvailables_list = $collectAvailables_list->whereNotBetween('date', [$freeDay_list[$i]['dateStart'], $freeDay_list[$i]['dateEnd']]);
+                
             return view('collect.index', [
                 'namepage'   => 'Coletas',
                 'threeview'  => null,
@@ -176,7 +177,6 @@ class CollectsController extends Controller
             $collect = $this->repository->find($id);
            
             // UPDATE
-
             $this->validator->with($request->all())->passesOrFail(ValidatorInterface::RULE_UPDATE);
             $collect = $this->repository->update($request->except('cancellationType_id'), $id);
 
@@ -185,37 +185,23 @@ class CollectsController extends Controller
                 'type'    => 'info'
             ];
             
+            // CANCELLATION COLLECT
             if($request->has('cancellationType_id'))
             {
-                // CANCELLATION
                 $dateNow                        = Util::dateNowForDB();
-                $collect['closed_at']   = $dateNow;
-                $collect['cancellationType_id'] = $request->get('cancellationType_id');
-                
-                // comparing dates to release or not collect
-                if(strtotime($collect['date']) > strtotime($dateNow))
-                {
-                    $collect['idCollect'] = $collect->id;
+                $collect['closed_at']           = $dateNow;
+                $collect['cancellationType_id'] = (integer) $request->get('cancellationType_id');
+                $collect['status']              = '7';
 
-                    //move data to tables of cancellation
-                    $cancellation = $this->sendCancellation($collect);
-
-                    //Remove collect and person
-                    if($cancellation)
-                    {
-                        foreach ($collect->people as $person)
-                            $person->collects()->detach($collect);
-                        
-                        $collect = $this->collectReset($collect);
-                        $this->repository->update($collect->toArray(), $collect->id);
-                    }
-                }
-                // not releasing collect
-                else
-                {
-                    $collect['status'] = '7';
-                    $this->repository->update($collect->toArray(), $collect->id);
-                }
+                // UPDATE FOR CANCELLATION COLLECT
+                $this->repository->update($collect->toArray(), $collect->id);
+                // Reset values for new releasing collect
+                $collect = $this->repository->collectReset($collect);
+                $arrayCollect = $collect->toArray();
+                // remove id of array
+                unset($arrayCollect['id']);
+                // insert new releasing, available for schedule
+                $this->repository->insert($arrayCollect);
 
                 $response = [
                     'message' => 'Coleta cancelada',
@@ -235,65 +221,6 @@ class CollectsController extends Controller
         }
         session()->flash('return', $response);
         return redirect()->route('collect.schedule', $collect->id);
-    }
-
-    
-    public function collectReset($collect)
-    {
-        $collect['collectType'] = '1';
-        $collect['status'] = '1';
-        $collect['payment'] = '1';
-        $collect['changePayment'] = '0.00';
-        $collect['cep'] = null;
-        $collect['address'] = null;
-        $collect['numberAddress'] = null;
-        $collect['complementAddress'] = null;
-        $collect['referenceAddress'] = null;
-        $collect['linkMaps'] = null;
-        $collect['AuthCourtesy'] = null;
-        $collect['unityCreated'] = null;
-        $collect['observationCollect'] = null;
-        $collect['attachment'] = null;
-        $collect['cancellationType_id'] = null;
-        $collect['neighborhood_id'] = null;
-        $collect['user_id'] = null;
-        $collect['reserved_at'] = null;
-        $collect['confirmed_at'] = null;
-        $collect['closed_at'] = null;
-        $collect['created_at'] = null;
-        $collect['updated_at'] = null;
-        $collect['deleted_at'] = null;
-
-        return $collect;
-    }
-
-
-    public function sendCancellation($collect)
-    {
-        try 
-        {
-            $array = $collect->toArray();
-            unset($array['id'], $array['created_at'], $array['updated_at']);
-
-            foreach ($collect->people as $person) 
-            {
-                $arrayPerson = [
-                    'people_id'     => $person->id,
-                    'collect_id'    => $collect->id,
-                    'starRating'    => $person->pivot->starRating,
-                    'obsRating'     => $person->pivot->obsRating,
-                    'covenant'      => $person->pivot->covenant,
-                    'exams'         => $person->pivot->exams
-                ];
-                DB::table('people_has_collect_canceled')->insert($arrayPerson);
-            }
-            DB::table('collects_canceled')->insert($array);
-            return true;
-        } 
-        catch (\Exception $e) 
-        {
-            return false;
-        }
     }
 
     public function reserve(Request $request)

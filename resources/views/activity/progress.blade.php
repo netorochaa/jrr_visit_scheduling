@@ -39,8 +39,10 @@
                         <small class="text-muted">{{ $person->pivot->exams }}</small></p>
                     @endforeach
                     <hr>
+                    {{-- CANCELLATION --}}
                     {!! Form::open(['route' => ['collect.update', $collect->id], 'method' => 'put', 'role' => 'form', 'class' => 'form-horizontal']) !!}
                         @include('templates.components.select', ['label' => '', 'col' => '6', 'select' => 'cancellationType_id', 'attributes' => ['required' => 'true', 'id' => '', 'class' => 'form-control', 'style' => 'float: left'], 'data' => ['' => '', 'Selecione' => $cancellationType_list]])
+                        @include('templates.components.hidden', ['hidden' => 'status', 'value' => '8'])
                         @include('templates.components.submit', ['input' => 'Cancelar coleta', 'attributes' => ['id' => '', 'class' => 'btn btn-danger']])
                     {!! Form::close() !!}
                 {{-- NÃO ESTANDO EM ANDAMENTO --}}

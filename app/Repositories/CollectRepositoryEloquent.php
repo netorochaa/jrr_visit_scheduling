@@ -56,6 +56,7 @@ class CollectRepositoryEloquent extends BaseRepository implements CollectReposit
             '5' => 'EM ANDAMENTO',
             '6' => 'CONCLUÍDA',
             '7' => 'CANCELADA',
+            '8' => 'CANCELADA EM ROTA',
           ];
 
           return $list;
@@ -81,5 +82,35 @@ class CollectRepositoryEloquent extends BaseRepository implements CollectReposit
           ];
 
           return $list;
+    }
+
+    
+    public function collectReset($collect)
+    {
+        $collect['collectType'] = '1';
+        $collect['status'] = '1';
+        $collect['payment'] = '1';
+        $collect['changePayment'] = '0.00';
+        $collect['cep'] = null;
+        $collect['address'] = null;
+        $collect['numberAddress'] = null;
+        $collect['complementAddress'] = null;
+        $collect['referenceAddress'] = null;
+        $collect['linkMaps'] = null;
+        $collect['AuthCourtesy'] = null;
+        $collect['unityCreated'] = null;
+        $collect['observationCollect'] = null;
+        $collect['attachment'] = null;
+        $collect['cancellationType_id'] = null;
+        $collect['neighborhood_id'] = null;
+        $collect['user_id'] = null;
+        $collect['reserved_at'] = null;
+        $collect['confirmed_at'] = null;
+        $collect['closed_at'] = null;
+        $collect['created_at'] = null;
+        $collect['updated_at'] = null;
+        $collect['deleted_at'] = null;
+
+        return $collect;
     }
 }

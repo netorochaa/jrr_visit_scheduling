@@ -129,6 +129,9 @@ class Collect extends Model implements Transformable
             case "7":
                 return "CANCELADA";
                 break;
+            case "8":
+                return "CANCELADA EM ROTA";
+                break;                
             default:
                 return $this->attributes['status'];
                 break;
