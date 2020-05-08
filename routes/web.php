@@ -2,30 +2,27 @@
 
 use Illuminate\Support\Facades\Route;
 
-// Auth routes
+// Auth
 Route::get('/', ['uses' => 'Controller@login']);
-// Route::post('/login', ['as' => 'auth.login', 'uses' => 'HomeController@index']);
 Route::get('/logout', ['as' => 'auth.logout', 'uses' => 'HomeController@logout']);
-
-// Home route
 Route::get('/home', ['as' => 'home', 'uses' => 'HomeController@index']);
 Route::post('/home', ['as' => 'auth.login', 'uses' => 'HomeController@index']);
 
-// Users routes
+// Users
 Route::resource('user', 'UsersController');
 
-// Collector routes
+// Collector
 Route::resource('collector', 'CollectorsController');
 Route::post('collector/{collector_id}/neighborhoods',                   ['as' => 'collector.neighborhoods.store', 'uses' => 'CollectorsController@storeCollectorNeighborhoods']);
 Route::post('collector/{collector_id}/neighborhoods/{neighborhood_id}', ['as' => 'collector.neighborhoods.detach', 'uses' => 'CollectorsController@detachCollectorNeighborhoods']);
 
-// City routes
+// City
 Route::resource('city', 'CitiesController');
 
-// Neighborhood routes
+// Neighborhood
 Route::resource('neighborhood', 'NeighborhoodsController');
 
-// Freedays routes
+// Freedays
 Route::resource('freedays', 'FreedaysController');
 
 // patientType
@@ -39,11 +36,12 @@ Route::resource('collect', 'CollectsController');
 Route::post('/reserve', ['as' => 'collect.reserve', 'uses' => 'CollectsController@reserve']);
 Route::get('/schedule/{id}', ['as' => 'collect.schedule', 'uses' => 'CollectsController@schedule']);
 Route::get('/confirmed/{id}', ['as' => 'collect.confirmed', 'uses' => 'CollectsController@confirmed']);
+Route::get('/cancellation/{id}', ['as' => 'collect.cancellation', 'uses' => 'CollectsController@cancellation']);
 
 // Person
 Route::resource('collect.person', 'PeopleController');
 Route::post('/people/collect', ['as' => 'person.collect.attach', 'uses' => 'PeopleController@attachPeopleCollect']);
-Route::post('/people/{people_id}/collect/{collect_id}', ['as' => 'person.collect.detach', 'uses' => 'PeopleController@detachPeopleCollect']);
+Route::get('/people/{people_id}/collect/{collect_id}', ['as' => 'person.collect.detach', 'uses' => 'PeopleController@detachPeopleCollect']);
 
 //Activity
 Route::resource('activity', 'ActivitiesController');

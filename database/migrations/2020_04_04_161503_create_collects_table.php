@@ -48,6 +48,7 @@ class CreateCollectsTable extends Migration
 			$table->foreign('user_id')->references('id')->on('users');
 
 			$table->datetime('reserved_at')->nullable();
+			$table->datetime('confirmed_at')->nullable();
 			$table->datetime('closed_at')->nullable();
 			$table->timestamps();
 			$table->softDeletes();

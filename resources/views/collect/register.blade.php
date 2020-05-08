@@ -13,7 +13,7 @@
                         @foreach ($collectAvailables_list->where('neighborhood_id', null) as $collect)
                             @foreach ($collector_list->find($collect->collector->id)->neighborhoods as $neighborhood)
                                 <option value="{{ $collect->id }},{{ $neighborhood->id }}">
-                                    {{ $collect->formatted_date }} - {{ $collect->hour }}, {{ $neighborhood->getNeighborhoodZone() }}, {{ $neighborhood->city->name }}
+                                    {{ $collect->formatted_date }} - {{ $collect->hour }}, {{ $neighborhood->getNeighborhoodZone() }}, {{ $neighborhood->city->name }} - {{ $collect->collector->name }}
                                 </option>
                             @endforeach
                         @endforeach

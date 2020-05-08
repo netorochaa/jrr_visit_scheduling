@@ -144,7 +144,6 @@ class PeopleController extends Controller
         try
         {
             $person = $this->repository->find($people_id);
-
             $person->collects()->detach($collect_id);
             // $person->collects()->sync([]);
 

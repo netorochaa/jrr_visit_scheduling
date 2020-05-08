@@ -38,6 +38,11 @@
                             @if($person->patientType->needResponsible == "on") | {{ $person->formatted_typeResponsible }}: {{ $person->nameResponsible }} @endif <br>
                         <small class="text-muted">{{ $person->pivot->exams }}</small></p>
                     @endforeach
+                    <hr>
+                    {!! Form::open(['route' => ['collect.update', $collect->id], 'method' => 'put', 'role' => 'form', 'class' => 'form-horizontal']) !!}
+                        @include('templates.components.select', ['label' => '', 'col' => '6', 'select' => 'cancellationType_id', 'attributes' => ['required' => 'true', 'id' => '', 'class' => 'form-control', 'style' => 'float: left'], 'data' => ['' => '', 'Selecione' => $cancellationType_list]])
+                        @include('templates.components.submit', ['input' => 'Cancelar coleta', 'attributes' => ['id' => '', 'class' => 'btn btn-danger']])
+                    {!! Form::close() !!}
                 {{-- NÃO ESTANDO EM ANDAMENTO --}}
                 @else
                     <h5 class="lead">{{ $collect->formatted_status }} em {{ $collect->formatted_closed_at }}</h5>
@@ -48,8 +53,7 @@
             <div class="timeline-footer">
                 {{-- <a class="btn btn-default btn-sm" style="color: black">Avaliar</a> --}}
                 @if($collect->status == '5')
-                    <a href="" class="btn btn-success btn-sm">Finalizar</a>
-                    <a href="" class="btn btn-danger btn-sm float-right">Cancelar coleta</a>
+                    <a href="" class="btn btn-success">Finalizar</a>
                 @else
                     <a href="{{ route('collect.schedule', $collect->id) }}" class="btn btn-secondary btn-sm">Detalhes</a>
                 @endif

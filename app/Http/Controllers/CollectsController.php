@@ -18,9 +18,12 @@ use App\Repositories\FreeDayRepository;
 use App\Repositories\PatientTypeRepository;
 use App\Validators\CollectValidator;
 use App\Entities\Collect;
+use App\Entities\Util;
 use DateTime;
+use Carbon;
 use Exception;
 use Auth;
+use DB;
 
 date_default_timezone_set('America/Recife');
 
@@ -45,11 +48,11 @@ class CollectsController extends Controller
     }
 
     // CRUD AND MARK COLLECT
-    public function index()
+    public function index(Request $request)
     {
         if(auth()->check())
         {
-            $dateNow = date("Y-m-d h:i");
+            $dateNow                = date("Y-m-d h:i");
             $collector_list         = $this->collectorRepository->with('neighborhoods')->get();
             $freeDay_list           = $this->freeDayRepository->where('dateStart', '>', $dateNow)->get();
             $collect_list           = $this->repository->all();
@@ -136,10 +139,9 @@ class CollectsController extends Controller
 
     public function store(CollectCreateRequest $request)
     {
-        try {
-
+        try 
+        {
             $this->validator->with($request->all())->passesOrFail(ValidatorInterface::RULE_CREATE);
-
             $collect = $this->repository->create($request->all());
 
             $response = [
@@ -153,7 +155,9 @@ class CollectsController extends Controller
             }
 
             return redirect()->back()->with('message', $response['message']);
-        } catch (ValidatorException $e) {
+        } 
+        catch (ValidatorException $e) 
+        {
             if ($request->wantsJson()) {
                 return response()->json([
                     'error'   => true,
@@ -167,34 +171,128 @@ class CollectsController extends Controller
 
     public function update(CollectUpdateRequest $request, $id)
     {
-        try {
+        try 
+        {
+            $collect = $this->repository->find($id);
+           
+            // UPDATE
 
             $this->validator->with($request->all())->passesOrFail(ValidatorInterface::RULE_UPDATE);
-
-            $collect = $this->repository->update($request->all(), $id);
+            $collect = $this->repository->update($request->except('cancellationType_id'), $id);
 
             $response = [
-                'message' => 'Collect updated.',
-                'data'    => $collect->toArray(),
+                'message' => 'Coleta atualizada',
+                'type'    => 'info'
             ];
+            
+            if($request->has('cancellationType_id'))
+            {
+                // CANCELLATION
+                $dateNow                        = Util::dateNowForDB();
+                $collect['closed_at']   = $dateNow;
+                $collect['cancellationType_id'] = $request->get('cancellationType_id');
+                
+                // comparing dates to release or not collect
+                if(strtotime($collect['date']) > strtotime($dateNow))
+                {
+                    $collect['idCollect'] = $collect->id;
 
-            if ($request->wantsJson()) {
+                    //move data to tables of cancellation
+                    $cancellation = $this->sendCancellation($collect);
 
-                return response()->json($response);
+                    //Remove collect and person
+                    if($cancellation)
+                    {
+                        foreach ($collect->people as $person)
+                            $person->collects()->detach($collect);
+                        
+                        $collect = $this->collectReset($collect);
+                        $this->repository->update($collect->toArray(), $collect->id);
+                    }
+                }
+                // not releasing collect
+                else
+                {
+                    $collect['status'] = '7';
+                    $this->repository->update($collect->toArray(), $collect->id);
+                }
+
+                $response = [
+                    'message' => 'Coleta cancelada',
+                    'type'    => 'info'
+                ];
+
+                session()->flash('return', $response);
+                return redirect()->route('collect.index');
             }
+        } 
+        catch (ValidatorException $e) 
+        {
+            $response = [
+                'message' => $e->getMessageBag(),
+                'type'    => 'error'
+            ];
+        }
+        session()->flash('return', $response);
+        return redirect()->route('collect.schedule', $collect->id);
+    }
 
-            return redirect()->back()->with('message', $response['message']);
-        } catch (ValidatorException $e) {
+    
+    public function collectReset($collect)
+    {
+        $collect['collectType'] = '1';
+        $collect['status'] = '1';
+        $collect['payment'] = '1';
+        $collect['changePayment'] = '0.00';
+        $collect['cep'] = null;
+        $collect['address'] = null;
+        $collect['numberAddress'] = null;
+        $collect['complementAddress'] = null;
+        $collect['referenceAddress'] = null;
+        $collect['linkMaps'] = null;
+        $collect['AuthCourtesy'] = null;
+        $collect['unityCreated'] = null;
+        $collect['observationCollect'] = null;
+        $collect['attachment'] = null;
+        $collect['cancellationType_id'] = null;
+        $collect['neighborhood_id'] = null;
+        $collect['user_id'] = null;
+        $collect['reserved_at'] = null;
+        $collect['confirmed_at'] = null;
+        $collect['closed_at'] = null;
+        $collect['created_at'] = null;
+        $collect['updated_at'] = null;
+        $collect['deleted_at'] = null;
 
-            if ($request->wantsJson()) {
+        return $collect;
+    }
 
-                return response()->json([
-                    'error'   => true,
-                    'message' => $e->getMessageBag()
-                ]);
+
+    public function sendCancellation($collect)
+    {
+        try 
+        {
+            $array = $collect->toArray();
+            unset($array['id'], $array['created_at'], $array['updated_at']);
+
+            foreach ($collect->people as $person) 
+            {
+                $arrayPerson = [
+                    'people_id'     => $person->id,
+                    'collect_id'    => $collect->id,
+                    'starRating'    => $person->pivot->starRating,
+                    'obsRating'     => $person->pivot->obsRating,
+                    'covenant'      => $person->pivot->covenant,
+                    'exams'         => $person->pivot->exams
+                ];
+                DB::table('people_has_collect_canceled')->insert($arrayPerson);
             }
-
-            return redirect()->back()->withErrors($e->getMessageBag())->withInput();
+            DB::table('collects_canceled')->insert($array);
+            return true;
+        } 
+        catch (\Exception $e) 
+        {
+            return false;
         }
     }
 
@@ -218,12 +316,18 @@ class CollectsController extends Controller
         }
         else
         {
-            Collect::where('id', $idCollect)->update(['user_id' => $idOrigin, 'neighborhood_id' => $idNeighborhood, 'status' => 3, 'reserved_at' => new DateTime()]);
-
-            $response = [
-                'message' => 'Data e horário reservados',
-                'type'    => 'info'
-            ];
+            try {
+                Collect::where('id', $idCollect)->update(['user_id' => $idOrigin, 'neighborhood_id' => $idNeighborhood, 'status' => 3, 'reserved_at' => new DateTime()]);
+                $response = [
+                    'message' => 'Data e horário reservados',
+                    'type'    => 'info'
+                ];
+            } catch (\Exception $e) {
+                $response = [
+                    'message' => $e->getMessage(),
+                    'type'    => 'erro'
+                ];
+            }
             session()->flash('return', $response);
             return redirect()->route('collect.schedule', $collect->id);
         }

@@ -27,8 +27,6 @@ class HomeController extends Controller
     {
         if(Auth::check())
         {
-            session()->flush();
-
             return view('home', [
                 'namepage' => 'Home',
                 'threeview' => null
@@ -46,6 +44,7 @@ class HomeController extends Controller
                     // if(env('PASSWORD_HASH') && Hash::check($request->get('password'), $user->password))
                     if($pass == $user->password)
                     {
+                        session()->flush();
                         $credentials = $request->only('email', 'password');
                         // dd($credentials);
                         // Auth::attempt($credentials);

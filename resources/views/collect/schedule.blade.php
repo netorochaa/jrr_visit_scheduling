@@ -34,7 +34,7 @@
             <div class="row">
                 @include('templates.components.label',  ['label' => 'Valor (' . $quant . ' pacientes)', 'col' => '2', 'input'  => '',                                                               'attributes' => ['class' => 'form-control'], 'text' => $price, 'id' => 'labelValue'])
                 @include('templates.components.select', ['label' => 'Pagamento',                        'col' => '4', 'select' => 'payment',        'selected' => $collect->payment,                'attributes' => ['id' => 'selPayament', 'class' => 'form-control', 'onchange' => 'changeAuthUser()'], 'data' => $payment_list])
-                @include('templates.components.input',  ['label' => 'Troco',                            'col' => '2', 'input'  => 'changePayment',  'value' => $collect->referenceAddress ?? null,  'attributes' => ['id' => 'changePay', 'class' => 'form-control', 'data-inputmask' => "'mask': '99.99'", 'data-mask', 'im-insert' => 'true']])
+                @include('templates.components.input',  ['label' => 'Troco',                            'col' => '2', 'input'  => 'changePayment',  'value' => $collect->changePayment ?? null,  'attributes' => ['id' => 'changePay', 'class' => 'form-control', 'data-inputmask' => "'mask': '99.99'", 'data-mask', 'im-insert' => 'true']])
                 @include('templates.components.select', ['label' => 'Autorização da cortesia',          'col' => '4', 'select' => 'AuthCourtesy',   'selected' => $collect->AuthCourtesy ?? null,   'attributes' => ['required' => 'true','id' => 'selAuthUser', 'class' => 'form-control', 'disabled' => 'true'], 'data' =>  ['' => '', 'Selecione' => $userAuth_list]])
             </div>
             <hr>
@@ -42,7 +42,7 @@
                 <div clas="col-sm-6">
                     @include('templates.components.checkbox', ['label' => 'Cancelar', 'col' => '12', 'input' => '', 'attributes' => ['id' => 'cancellationCheck', 'class' => 'form-check-input', 'onchange' => 'changeCancellation()']])
                 </div>
-                @include('templates.components.select', ['label' => '', 'col' => '8', 'select' => 'cancellationType_id', 'selected' => $collect->cancellationType_id ?? null, 'attributes' => ['id' => 'cancellationSelect', 'class' => 'form-control', 'disabled' => 'true'], 'data' => ['' => '', 'Selecione' => $cancellationType_list]])
+                @include('templates.components.select', ['label' => '', 'col' => '8', 'select' => 'cancellationType_id', 'selected' => $collect->cancellationType_id ?? null, 'attributes' => ['required' => 'true', 'id' => 'cancellationSelect', 'class' => 'form-control', 'disabled' => 'true'], 'data' => ['' => '', 'Selecione' => $cancellationType_list]])
             </div>
             <hr>
             <div class="row">

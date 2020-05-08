@@ -30,12 +30,14 @@
                         <p>Home</p>
                     </a>
                 </li>
-                <li class="nav-item">
-                    <a href="{{ route('activity.index') }}" class="nav-link @if($namepage == 'Rota do dia') active @endif">
-                        <i class="nav-icon fas fa-tasks"></i>
-                        <p>Rota</p>
-                    </a>
-                </li>
+                @if(Auth::user()->type == 2 || Auth::user()->type == 99)
+                    <li class="nav-item">
+                        <a href="{{ route('activity.index') }}" class="nav-link @if($namepage == 'Rota do dia') active @endif">
+                            <i class="nav-icon fas fa-tasks"></i>
+                            <p>Rota</p>
+                        </a>
+                    </li>
+                @endif
                 <li class="nav-item">
                     <a href="{{ route('collect.index') }}" class="nav-link @if($namepage == 'Coletas') active @endif">
                         <i class="nav-icon far fa-calendar-alt"></i>

@@ -13,7 +13,7 @@
     <tbody>
         @foreach ($collect->people as $person)
         <tr>
-            <td>{{ $person->name }}</td>
+            <td>{{ $person->id }} {{ $collect->id }}  {{ $person->name }}</td>
             <td>{{ $person->ra }}</td>
             <td>{{ $person->patientType->name }}</td>
             <td>{{ $person->formatted_TypeResponsible }} {{ $person->nameResponsible }}</td>
@@ -21,15 +21,10 @@
             <td>{{ $person->pivot->exams ?? "NÃO INFORMADO" }}</td>
             <td>
                 <div class="btn-group">
-                   {!! Form::open(['route' => ['person.collect.detach', $person->id, $collect->id]]) !!}
-                    <div class="btn-group">
-                        <button type="button" onclick="location.href='{{ route('collect.person.edit', [$collect->id, $person->id]) }}'" class="btn btn-info"  ><i class='fas fa-pen'></i></button>
-                        @include('templates.components.submit', ['input' => 'Deletar', 'attributes' => ['class' => 'btn btn-danger']])
-                    </div>
-                    {!! Form::close() !!}
-                    </td>
+                    <button type="button" onclick="location.href='{{ route('collect.person.edit', [$collect->id, $person->id]) }}'" class="btn btn-info"  ><i class='fas fa-pen'></i></button>
+                    <button type="button" onclick="location.href='{{ route('person.collect.detach', [$person->id, $collect->id]) }}'" class="btn btn-danger"  >Remover</button>
                 </div>
-              </td>
+            </td>
         </tr>
         @endforeach
     </tbody>
