@@ -20,7 +20,7 @@ class CreateNeighborhoodsTable extends Migration
 			$table->string('name', 45);
 			$table->string('displacementRate', 5)->default('0,00');
 			$table->char('region', 1);
-			$table->char('active', 3)->default('off');
+			$table->char('active', 3)->default('on');
 
 			//FK
 			$table->unsignedInteger('city_id');
