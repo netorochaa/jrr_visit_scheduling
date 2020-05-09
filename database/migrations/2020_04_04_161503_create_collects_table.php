@@ -8,11 +8,6 @@ use Illuminate\Database\Migrations\Migration;
  */
 class CreateCollectsTable extends Migration
 {
-	/**
-	 * Run the migrations.
-	 *
-	 * @return void
-	 */
 	public function up()
 	{
 		Schema::create('collects', function(Blueprint $table) {
@@ -46,6 +41,12 @@ class CreateCollectsTable extends Migration
 
 			$table->unsignedInteger('user_id')->nullable();
 			$table->foreign('user_id')->references('id')->on('users');
+
+			$table->unsignedInteger('user_id_confirmed')->nullable();
+			$table->foreign('user_id_confirmed')->references('id')->on('users');
+
+			$table->unsignedInteger('user_id_cancelled')->nullable();
+			$table->foreign('user_id_cancelled')->references('id')->on('users');
 
 			$table->datetime('reserved_at')->nullable();
 			$table->datetime('confirmed_at')->nullable();

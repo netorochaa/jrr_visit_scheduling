@@ -50,6 +50,16 @@ class Collect extends Model implements Transformable
         return $this->belongsTo(User::class, 'user_id');
     }
 
+    public function confirmed()
+    {
+        return $this->belongsTo(User::class, 'user_id_confirmed');
+    }
+
+    public function cancelled()
+    {
+        return $this->belongsTo(User::class, 'user_id_cancelled');
+    }
+
     public function getFormattedDateAttribute(){
         $date = explode(' ', $this->attributes['date']);
         $date = explode('-', $date[0]);

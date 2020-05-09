@@ -5,7 +5,7 @@
                 @if($collect->status < 4) <button type="button" onclick="location.href='{{ route('collect.confirmed', $collect->id) }}'" id="buttonConfirmed" class="btn btn-success float-right" disabled>Confirmar</button>@endif 
             </h4>
             <div class="row">
-                @include('templates.components.select', ['label' => 'Tipo',   'col' => '2', 'select' => 'collectType',  'attributes' => ['class' => 'form-control'], 'data' => $collectType_list,])
+                @include('templates.components.select', ['label' => 'Tipo',   'col' => '2', 'select' => 'collectType',  'attributes' => ['class' => 'form-control'], 'data' => $collectType_list])
                 @include('templates.components.input',  ['label' => 'Data',   'col' => '2', 'input'  => 'date',         'attributes' => ['required' => 'true', 'class' => 'form-control', 'disabled' => 'true']])
                 @include('templates.components.input',  ['label' => 'Hora',   'col' => '2', 'input'  => 'hour',         'attributes' => ['required' => 'true', 'class' => 'form-control', 'disabled' => 'true']])
                 @include('templates.components.input',  ['label' => 'Bairro', 'col' => '4', 'input'  => 'neighborhood', 'attributes' => ['required' => 'true', 'class' => 'form-control', 'disabled' => 'true'], 'value' => $collect->neighborhood->getNeighborhoodZone()])
@@ -23,12 +23,12 @@
             <hr>
             <div class="row">
                 @include('templates.components.input', ['label' => 'CEP',       'col' => '2', 'input'  => 'cep',            'value' => $collect->cep ?? null,           'attributes' => ['id' => 'cep', 'size' => '10', 'maxlength' => '9', 'class' => 'form-control', 'data-inputmask' => "'mask': '99999-999'", 'data-cep', 'im-insert' => 'true']])
-                @include('templates.components.input', ['label' => 'Endereço',  'col' => '8', 'input'  => 'address',        'value' => $collect->address ?? null,       'attributes' => ['id' => 'rua', 'required' => 'true', 'class' => 'form-control', 'placeholder' => 'rua, conjunto, avenida, favela...']])
+                @include('templates.components.input', ['label' => 'Endereço',  'col' => '8', 'input'  => 'address',        'value' => $collect->address ?? null,       'attributes' => ['id' => 'rua', 'class' => 'form-control', 'placeholder' => 'rua, conjunto, avenida, favela...']])
                 @include('templates.components.input', ['label' => 'Nº',        'col' => '2', 'input'  => 'numberAddress',  'value' => $collect->numberAddress ?? null, 'attributes' => ['class' => 'form-control']])
             </div>
             <div class="row">
-                @include('templates.components.input', ['label' => 'Complemento',         'col' => '6', 'input' => 'complementAddress', 'value' => $collect->complementAddress ?? null, 'attributes' => ['required' => 'true', 'class' => 'form-control', 'placeholder' => 'bloco, apartamento, casa...']])
-                @include('templates.components.input', ['label' => 'Ponto de referência', 'col' => '6', 'input' => 'referenceAddress',  'value' => $collect->referenceAddress ?? null,  'attributes' => ['required' => 'true', 'class' => 'form-control']])
+                @include('templates.components.input', ['label' => 'Complemento',         'col' => '6', 'input' => 'complementAddress', 'value' => $collect->complementAddress ?? null, 'attributes' => ['class' => 'form-control', 'placeholder' => 'bloco, apartamento, casa...']])
+                @include('templates.components.input', ['label' => 'Ponto de referência', 'col' => '6', 'input' => 'referenceAddress',  'value' => $collect->referenceAddress ?? null,  'attributes' => ['class' => 'form-control']])
             </div>
             <hr>
             <div class="row">
@@ -54,7 +54,7 @@
             </div>
         </div>
         <div class="card-footer">
-            @include('templates.components.submit', ['input' => 'Salvar', 'attributes' => ['id' => 'submitSchedule', 'class' => 'btn btn-outline-primary', 'disabled']])
+            @include('templates.components.submit', ['input' => 'Salvar', 'attributes' => ['id' => 'submitSchedule', 'class' => 'btn btn-outline-primary']])
         </div>
     </div>
 {!! Form::close() !!}

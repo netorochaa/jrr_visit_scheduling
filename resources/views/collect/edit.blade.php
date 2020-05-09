@@ -110,17 +110,14 @@
     }
 
     function activeButton(){
-      var submitSchedule = document.getElementById('submitSchedule');
+      // var submitSchedule = document.getElementById('submitSchedule');
       var buttonConfirmed = document.getElementById('buttonConfirmed');
       var labelValue = document.getElementById('labelValue');
 
-      if(labelValue.innerHTML != "R$ 0"){
-        submitSchedule.disabled = false;
+      if(labelValue.innerHTML != "R$ 0")
         buttonConfirmed.disabled = false;
-      }else{
-        submitSchedule.disabled = true;
+      else
         buttonConfirmed.disabled = true;
-      }
     }
 
     $(document).ready(function() {
@@ -152,7 +149,7 @@
                   $("#rua").val("...");
                   //Consulta o webservice viacep.com.br/
                   $.getJSON("https://viacep.com.br/ws/"+ cep +"/json/?callback=?", function(dados) {
-
+                    console.log(dados.logradouro);
                       if (!("erro" in dados)) {
                           //Atualiza os campos com os valores da consulta.
                           $("#rua").val(dados.logradouro);

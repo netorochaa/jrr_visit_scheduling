@@ -16,6 +16,18 @@ class Util
         return $day . "/" . $month . "/" . $year . " " . $hour;
     }
 
+    public static function setDateLocalBRToDb($value, $full){
+        $date = explode(' ', $value);
+        $dateSplit = explode('/', $date[0]);
+
+        $day    = $dateSplit[0];
+        $month  = $dateSplit[1];
+        $year   = $dateSplit[2];
+        $hour   = $full ? '00:00:00' : "";
+        
+        return $year . "-" . $month . "-" . $day . " " . $hour;
+    }
+
     public static function dateNowForDB()
     {
         return date("Y-m-d H:i");

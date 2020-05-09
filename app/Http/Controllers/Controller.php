@@ -18,6 +18,7 @@ class Controller extends BaseController
 
     public function login()
     {
+        Auth::logout();
         return view('auth.login');
 
     }

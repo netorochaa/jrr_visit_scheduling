@@ -17,7 +17,7 @@
                 <img src="../img/avatar.png" class="img-circle elevation-2" alt="User Image">
             </div>
             <div class="info">
-                <a href="{{ route('home') }}" class="d-block">{{ Auth::user()->name }}</a>
+                <a href="{{ route('user.edit', Auth::user()->id) }}" class="d-block">{{ Auth::user()->name }}</a>
             </div>
         </div>
 
@@ -25,7 +25,7 @@
         <nav class="mt-2">
             <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
                 <li class="nav-item">
-                    <a href="#" class="nav-link @if($namepage == 'Home') active @endif">
+                    <a href="{{ route('home') }}" class="nav-link @if($namepage == 'Home') active @endif">
                         <i class="nav-icon fas fa-th"></i>
                         <p>Home</p>
                     </a>
@@ -54,7 +54,7 @@
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a href="{{ route('collect.list.reserved') }}" class="nav-link @if($namepage == 'Colestas reservadas') active @endif">
+                            <a href="{{ route('collect.list.reserved') }}" class="nav-link @if($namepage == 'Coletas reservadas') active @endif">
                                 <i class="far fa-circle nav-icon"></i>
                                 <p>Reservadas</p>
                             </a>
