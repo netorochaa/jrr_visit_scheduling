@@ -52,26 +52,81 @@ class CollectsController extends Controller
     {
         if(auth()->check())
         {
-            $dateNow                = date("Y-m-d h:i");
-            $collector_list         = $this->collectorRepository->with('neighborhoods')->get();
-            $freeDay_list           = $this->freeDayRepository->where('dateStart', '>', $dateNow)->get();
-            $collect_list           = $this->repository->all();
-            $collectAvailables_list = $collect_list->where('date', '>', $dateNow)->sortBy('date')->sortBy('collector_id');
-            // 
-            for ($i=0; $i < count($freeDay_list); $i++) 
-                $collectAvailables_list = $collectAvailables_list->whereNotBetween('date', [$freeDay_list[$i]['dateStart'], $freeDay_list[$i]['dateEnd']]);
+            if(!$request->has('neighborhood'))
+            {
+                $neighborhood_list  = $this->neighborhoodRepository->where('active', 'on')->get();
+            }
+            else
+            {
+                $dateNow            = date("Y-m-d h:i");
+                $collector_list     = $this->collectorRepository->all();
+                $neighborhood_model = $this->neighborhoodRepository->find($request->get('neighborhood'));
+                // Separe collectors id
+                $array_collectors = [];
+                foreach($collector_list as $collector)
+                {
+                    foreach($collector->neighborhoods as $neighborhood)
+                        if($neighborhood->id == $neighborhood_model->id) array_push($array_collectors, $collector->id);
+                }
                 
+                $freeDay_list = $this->freeDayRepository->where('dateStart', '>', $dateNow)->get();
+                $collect_list = $this->repository->whereIn('collector_id', $array_collectors)->where('date', '>', $dateNow)->get(['id', 'date', 'hour', 'status']);
+                // ->sortBy('date')->sortBy('collector_id');
+                
+                // for ($i=0; $i < count($freeDay_list); $i++) 
+                //     $collect_list = $collect_list->whereNotBetween('date', [$freeDay_list[$i]['dateStart'], $freeDay_list[$i]['dateEnd']]);
+            }
             return view('collect.index', [
-                'namepage'   => 'Coletas',
-                'threeview'  => null,
+                'namepage'   => 'Agendar coleta',
+                'threeview'  => 'Coletas',
                 'titlespage' => ['Coletas'],
-                'titlecard'  => 'Lista de coletas',
-                'titlemodal' => 'Agendar coleta',
-                'add'        => true,
+                'titlecard'  => 'Agendar coleta',
                 //List for select
-                'freeDay_list'           => $freeDay_list,
-                'collector_list'         => $collector_list,
-                'collectAvailables_list' => $collectAvailables_list,
+                'collector_list'        => $collector_list ?? null,
+                'neighborhood_list'     => $neighborhood_list ?? null,
+                'collect_list'          => $collect_list ?? null,
+                'neighborhood_model'    => $neighborhood_model ?? null,
+                //Info of entitie
+                'table'               => $this->repository->getTable(),
+                'thead_for_datatable' => ['Data/Hora', 'Código', 'Status', 'Pagamento Taxa', 'Bairro', 'Endereço', 'Coletador'],
+            ]);
+        }
+        else return view('auth.login');
+    }
+
+    public function listReserved()
+    {
+        if(auth()->check())
+        {
+            $collect_list = $this->repository->where('neighborhood_id', '!=', null)
+                                                ->where('status', '>', 1)->get();
+
+            return view('collect.reserved', [
+                'namepage'   => 'Colestas reservadas',
+                'threeview'  => 'Coletas',
+                'titlespage' => ['Colestas reservadas'],
+                'titlecard'  => 'Lista de coletas reservadas',
+                //Info of entitie
+                'table'               => $this->repository->getTable(),
+                'thead_for_datatable' => ['Data/Hora', 'Código', 'Status', 'Pagamento Taxa', 'Bairro', 'Endereço', 'Coletador'],
+                'collect_list'        => $collect_list
+            ]);
+        }
+        else return view('auth.login');
+    }
+
+    public function listCancelled()
+    {
+        if(auth()->check())
+        {
+            $collect_list = $this->repository->where('neighborhood_id', '!=', null)
+                                                ->where('status', '>', 6)->get();
+
+            return view('collect.reserved', [
+                'namepage'   => 'Colestas canceladas',
+                'threeview'  => 'Coletas',
+                'titlespage' => ['Colestas canceladas'],
+                'titlecard'  => 'Lista de coletas canceladas',
                 //Info of entitie
                 'table'               => $this->repository->getTable(),
                 'thead_for_datatable' => ['Data/Hora', 'Código', 'Status', 'Pagamento Taxa', 'Bairro', 'Endereço', 'Coletador'],

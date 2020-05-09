@@ -9,9 +9,12 @@
 @endsection
 
 @section('content')
-  @include('templates.content.header')
-  @include('templates.content.content1col', ['contentbody' => 'collect.list'])
-  @include('templates.content.modallarge', ['titlemodal' => $titlemodal , 'contentmodal' => 'collect.register'])
+  @include('templates.content.header')  
+  @if($neighborhood_model)
+    @include('templates.content.content1col', ['contentbody' => 'collect.register'])
+  @else
+    @include('templates.content.content1col', ['contentbody' => 'collect.selectNeighborhood'])
+  @endif
 @endsection
 
 @section('footer-distinct')
@@ -25,30 +28,7 @@
       $('.select2bs4').select2({
         theme: 'bootstrap4'
       })
-      $('#table-{{ $table }}').DataTable({
-        "paging": true,
-        "lengthChange": true,
-        "searching": true,
-        "ordering": true,
-        "order": [[ 0, 'desc' ]],
-        "info": true,
-        "autoWidth": false,
-        "responsive": true,
-        "language": {
-          "decimal": "",
-          "emptyTable": "Sem dados disponíveis",
-          "loadingRecords": "A carregar dados...",
-          "processing": "A processar...",
-          "search": "<span class='text-muted'><small>Digite mais de um valor separando por espaço</span><br> Procurar:</small>",
-          "zeroRecords": "Não foram encontrados resultados",
-          "paginate": {
-            "first": "Primeiro",
-            "last": "Último",
-            "next": "Seguinte",
-            "previous": "Anterior"
-          }
-        }
-      });
+
       //Initialize daterangepicker Elements
       $('input[id="schedulingDate"]').daterangepicker({
         "minDate": moment(),
@@ -90,55 +70,52 @@
     });
 
     //Jquery to filter options in select
-    jQuery.fn.filterByText = function(textbox) {
-      return this.each(function() {
-        var select = this;
-        var options = [];
-        $(select).find('option').each(function() {
-          options.push({
-            value: $(this).val(),
-            text: $(this).text()
-          });
-        });
-        $(select).data('options', options);
+    // jQuery.fn.filterByText = function(textbox) {
+    //   return this.each(function() {
+    //     var select = this;
+    //     var options = [];
+    //     $(select).find('option').each(function() {
+    //       options.push({
+    //         value: $(this).val(),
+    //         text: $(this).text()
+    //       });
+    //     });
+    //     $(select).data('options', options);
 
-        $(textbox).bind('change keyup', function() {
-          var options = $(select).empty().data('options');
-          var search = $.trim($(this).val());
-          var regex = new RegExp(search, "gi");
+    //     $(textbox).bind('change keyup', function() {
+    //       var options = $(select).empty().data('options');
+    //       var search = $.trim($(this).val());
+    //       var regex = new RegExp(search, "gi");
 
-          $.each(options, function(i) {
-            var option = options[i];
-            if (option.text.match(regex) !== null) {
-              $(select).append(
-                $('<option>').text(option.text).val(option.value)
-              );
-            }
-          });
-        });
-      });
-    };
-    $(function() {
-      $('select').filterByText($('input[id=schedulingDate]'));
-    });
+    //       $.each(options, function(i) {
+    //         var option = options[i];
+    //         if (option.text.match(regex) !== null) {
+    //           $(select).append(
+    //             $('<option>').text(option.text).val(option.value)
+    //           );
+    //         }
+    //       });
+    //     });
+    //   });
+    // };
+    // $(function() {
+    //   $('select').filterByText($('input[id=schedulingDate]'));
+    // });
 
-    //Verified date to enable select
-    function verificateDate(){
-      var date = document.getElementById('schedulingDate');
-      var select = document.getElementById('infoCollectSel');
+    // //Verified date to enable select
+    // function verificateDate(){
+    //   var date = document.getElementById('schedulingDate');
+    //   var select = document.getElementById('infoCollectSel');
 
-      var dateSplit = date.value.split('/');
-      var day = dateSplit[0];
-      var month = dateSplit[1];
-      var year = dateSplit[2];;
+    //   var dateSplit = date.value.split('/');
+    //   var day = dateSplit[0];
+    //   var month = dateSplit[1];
+    //   var year = dateSplit[2];;
 
-      var dateMomment = moment(year + "-" + month + "-" + day);
-      var dateNow = moment().format("YYYY-MM-DD");
+    //   var dateMomment = moment(year + "-" + month + "-" + day);
+    //   var dateNow = moment().format("YYYY-MM-DD");
 
-      dateMomment.isAfter(dateNow) ? select.disabled = false : select.disabled = true;
-    }
-
-    
-
+    //   dateMomment.isAfter(dateNow) ? select.disabled = false : select.disabled = true;
+    // }
   </script>
 @endsection

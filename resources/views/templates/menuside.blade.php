@@ -38,14 +38,37 @@
                         </a>
                     </li>
                 @endif
-                <li class="nav-item">
-                    <a href="{{ route('collect.index') }}" class="nav-link @if($namepage == 'Coletas') active @endif">
-                        <i class="nav-icon far fa-calendar-alt"></i>
-                        <p>Coletas</p>
+                <li class="nav-item has-treeview @if($threeview == 'Coletas') menu-open @endif">
+                    <a href="#" class="nav-link  @if($threeview == 'Coletas') active @endif">
+                      <i class="nav-icon fas fa-calendar-alt"></i>
+                        <p>
+                            Coletas
+                            <i class="fas fa-angle-left right"></i>
+                        </p>
                     </a>
+                    <ul class="nav nav-treeview">
+                        <li class="nav-item">
+                            <a href="{{ route('collect.index') }}" class="nav-link @if($namepage == 'Agendar coleta') active @endif">
+                                <i class="far fa-circle nav-icon"></i>
+                                <p>Agendar</p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="{{ route('collect.list.reserved') }}" class="nav-link @if($namepage == 'Colestas reservadas') active @endif">
+                                <i class="far fa-circle nav-icon"></i>
+                                <p>Reservadas</p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="{{ route('collect.list.cancelled') }}" class="nav-link @if($namepage == 'Coletas canceladas') active @endif">
+                                <i class="far fa-circle nav-icon"></i>
+                                <p>Canceladas</p>
+                            </a>
+                        </li>
+                    </ul>
                 </li>
                 <li class="nav-item has-treeview @if($threeview == 'Cadastros') menu-open @endif">
-                    <a href="#" class="nav-link @if($threeview == 'Cadastros') active @endif">
+                    <a href="#" class="nav-link  @if($threeview == 'Cadastros') active @endif">
                       <i class="nav-icon fas fa-edit"></i>
                         <p>
                             Cadastros

@@ -33,6 +33,8 @@ Route::resource('cancellationtype', 'CancellationTypesController');
 
 // Collect
 Route::resource('collect', 'CollectsController');
+Route::get('/collect/reserved', ['as' => 'collect.list.reserved', 'uses' => 'CollectsController@listReserved']);
+Route::get('/collect/cancelled', ['as' => 'collect.list.cancelled', 'uses' => 'CollectsController@listCancelled']);
 Route::post('/reserve', ['as' => 'collect.reserve', 'uses' => 'CollectsController@reserve']);
 Route::get('/schedule/{id}', ['as' => 'collect.schedule', 'uses' => 'CollectsController@schedule']);
 Route::get('/confirmed/{id}', ['as' => 'collect.confirmed', 'uses' => 'CollectsController@confirmed']);

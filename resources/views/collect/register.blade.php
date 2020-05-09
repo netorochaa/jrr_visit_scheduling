@@ -1,6 +1,7 @@
 <div class="card">
     {!! Form::open(['route' => 'collect.reserve', 'method' => 'post', 'role' => 'form', 'class' => 'form-horizontal']) !!}
     <div class="card-body">
+        <h3 class="lead">{{ $neighborhood_model->name }}</h3>
         <div class="row">
             <div class="col-sm-2">
                 @include('templates.components.input', ['label' => 'Data', 'col' => '12', 'input' => 'date', 'attributes' => ['onchange' => 'verificateDate()', 'require' => 'true', 'class' => 'form-control', 'id' => 'schedulingDate']])
@@ -8,14 +9,18 @@
             <div class="col-sm-10">
                 <label>Digite o bairro</label>
                 <div clas="col-12 form-group" id="infoCollect">
-                    <select name="infoCollect" id="infoCollectSel" class="form-control select2bs4" style="width: 100%;" disabled>
+                    <select name="infoCollect" id="infoCollectSel" class="form-control select2bs4" style="width: 100%;">
                         <option value="" selected></option>
-                        @foreach ($collectAvailables_list->where('neighborhood_id', null) as $collect)
-                            @foreach ($collector_list->find($collect->collector->id)->neighborhoods as $neighborhood)
-                                <option value="{{ $collect->id }},{{ $neighborhood->id }}">
-                                    {{ $collect->formatted_date }} - {{ $collect->hour }}, {{ $neighborhood->getNeighborhoodZone() }}, {{ $neighborhood->city->name }} - {{ $collect->collector->name }}
-                                </option>
-                            @endforeach
+                        @foreach ($collector_list as $collector)
+                            @foreach ($collector->neighborhoods as $neighborhood)
+                                @if($neighborhood->id == $neighborhood_model->id)  
+                                    @foreach (explode(',', $collector->mondayToFriday) as $hour)
+                                        <option value="{{ $neighborhood->id }}">
+                                            {{ $hour }}, {{ $neighborhood->getNeighborhoodZone() }}, {{ $neighborhood->city->name }} - {{ $collector->name }}
+                                        </option>
+                                    @endforeach
+                                @endif
+                            @endforeach        
                         @endforeach
                     </select>
                 </div>
@@ -29,3 +34,5 @@
     </div>
     {!! Form::close() !!}
 </div>
+
+

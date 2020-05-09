@@ -8,7 +8,7 @@
         </tr>
     </thead>
     <tbody>
-        @foreach ($collect_list->where('neighborhood_id', '!=', null) as $collectMarked)
+        @foreach ($collect_list as $collectMarked)
         <tr>
             {{-- COLETA --}}
             <td> 
