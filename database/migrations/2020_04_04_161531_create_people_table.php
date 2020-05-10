@@ -35,7 +35,6 @@ class CreatePeopleTable extends Migration
 			$table->foreign('patientTypes_id')->references('id')->on('patientTypes');
 
 			$table->timestamps();
-			$table->softDeletes();
 		});
 	}
 

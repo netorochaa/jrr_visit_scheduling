@@ -67,12 +67,22 @@ class PatientTypesController extends Controller
 
     public function destroy($id)
     {
-        $deleted = $this->repository->delete($id);
-
-        $response = [
-            'message' => 'Tipo de paciente deletado',
-            'type'   => 'info',
-        ];
+        try 
+        {
+            $deleted = $this->repository->update(['active' => 'off', 'deleted_at' => Util::dateNowForDB()], $id);
+            $response = [
+                'message' => 'Tipo de paciente deletado',
+                'type'   => 'info',
+            ];
+        } 
+        catch (Exception $e) 
+        {
+            $response = [
+                'message' => $e->getMessage(),
+                'type'   => 'error',
+            ];
+        }
+        
         session()->flash('return', $response);
         return redirect()->route('patienttype.index');
     }

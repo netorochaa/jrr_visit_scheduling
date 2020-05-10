@@ -2,6 +2,8 @@
 
 namespace App\Entities;
 
+date_default_timezone_set('America/Recife');
+
 class Util
 {
     public static function setDate($value, $full){

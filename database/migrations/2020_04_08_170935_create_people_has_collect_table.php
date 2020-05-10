@@ -28,7 +28,7 @@ class CreatePeopleHasCollectTable extends Migration
             //FK
 			$table->foreign('collect_id')->references('id')->on('collects');
 
-            $table->timestamps();
+            $table->timestampsTz();
         });
     }
 

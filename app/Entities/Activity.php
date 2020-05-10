@@ -5,12 +5,10 @@ namespace App\Entities;
 use Illuminate\Database\Eloquent\Model;
 use Prettus\Repository\Contracts\Transformable;
 use Prettus\Repository\Traits\TransformableTrait;
-use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Activity extends Model implements Transformable
 {
     use TransformableTrait;
-    use SoftDeletes;
 
     public $timestamps = true;
     protected $fillable = ['status', 'reasonCancellation', 'start', 'end', 'collector_id', 'user_id'];

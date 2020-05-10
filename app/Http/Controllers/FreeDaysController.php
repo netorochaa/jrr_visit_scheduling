@@ -128,17 +128,25 @@ class FreeDaysController extends Controller
 
     public function destroy($id)
     {
-        $deleted = $this->repository->delete($id);
+        try 
+        {
+            $deleted = $this->repository->update(['active' => 'off', 'deleted_at' => Util::dateNowForDB()], $id);
 
-        if (request()->wantsJson()) {
-
-            return response()->json([
-                'message' => 'FreeDay deleted.',
-                'deleted' => $deleted,
-            ]);
+            $response = [
+                'message' => 'Dia sem coleta deletado',
+                'type'   => 'info',
+            ];
+        } 
+        catch (Exception $e) 
+        {
+            $response = [
+                'message' => $e->getMessage(),
+                'type'   => 'error',
+            ];
         }
-
-        return redirect()->back()->with('message', 'FreeDay deleted.');
+        
+        session()->flash('return', $response);
+        return redirect()->route('freedays.index');
     }
 
     // METHODS NOT IMPLEMENTED, BECAUSE JUST WILL BE UTILIZED DESTROY

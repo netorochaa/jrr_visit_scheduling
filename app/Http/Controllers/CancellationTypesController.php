@@ -11,6 +11,7 @@ use App\Http\Requests\CancellationTypeCreateRequest;
 use App\Http\Requests\CancellationTypeUpdateRequest;
 use App\Repositories\CancellationTypeRepository;
 use App\Validators\CancellationTypeValidator;
+use App\Entities\Util;
 
 class CancellationTypesController extends Controller
 {
@@ -66,12 +67,23 @@ class CancellationTypesController extends Controller
 
     public function destroy($id)
     {
-        $deleted = $this->repository->delete($id);
+        try 
+        {
+            $deleted = $this->repository->update(['active' => 'off', 'deleted_at' => Util::dateNowForDB()], $id);
 
-        $response = [
-            'message' => 'Cancelamento deletado',
-            'type'   => 'info',
-        ];
+            $response = [
+                'message' => 'Cancelamento deletado',
+                'type'   => 'info',
+            ];
+        } 
+        catch (Exception $e) 
+        {
+            $response = [
+                'message' => $e->getMessage(),
+                'type'   => 'error',
+            ];
+        }
+        
         session()->flash('return', $response);
         return redirect()->route('cancellationtype.index');
     }

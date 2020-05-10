@@ -52,7 +52,6 @@ class CreateCollectsTable extends Migration
 			$table->datetime('confirmed_at')->nullable();
 			$table->datetime('closed_at')->nullable();
 			$table->timestamps();
-			$table->softDeletes();
 		});
 	}
 

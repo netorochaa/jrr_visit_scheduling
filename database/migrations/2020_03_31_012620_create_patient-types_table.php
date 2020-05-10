@@ -22,7 +22,6 @@ class CreatePatientTypesTable extends Migration
 			$table->char('active', 3)->default('on');
 
 			$table->timestamps();
-			$table->softDeletes();
 		});
 	}
 
