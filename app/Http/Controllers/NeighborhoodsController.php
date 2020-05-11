@@ -13,6 +13,8 @@ use App\Repositories\NeighborhoodRepository;
 use App\Repositories\CityRepository;
 use App\Validators\NeighborhoodValidator;
 
+date_default_timezone_set('America/Recife');
+
 class NeighborhoodsController extends Controller
 {
     protected $repository, $cityRepository;
@@ -27,10 +29,10 @@ class NeighborhoodsController extends Controller
 
     public function index()
     {
-        $neighborhoods  = $this->repository->all();
-        $cities_list  = $this->cityRepository->all(); // for card city
+        $neighborhoods  = $this->repository->where('active', 'on')->get();
+        $cities_list  = $this->cityRepository->where('active', 'on')->get(); // for card city
         $regions_list = $this->repository->regions_list(); 
-        $cities_pluck_list  = $this->cityRepository->pluck('name', 'id'); // for select in neighborhood
+        $cities_pluck_list  = $this->cityRepository->where('active', 'on')->get()->pluck('name', 'id'); // for select in neighborhood
 
         return view('neighborhood.index', [
             'namepage'      => 'Bairro',
@@ -49,8 +51,8 @@ class NeighborhoodsController extends Controller
             //Info of entitie
             'table' => $this->repository->getTable(),
             'table2' => $this->cityRepository->getTable(),
-            'thead_for_datatable' => ['Nome', 'Taxa', 'Região', 'Status', 'Cidade', 'Criado', 'Última atualização'],
-            'thead_for_datatable2' => ['Nome', 'UF', 'Status'],
+            'thead_for_datatable' => ['Nome', 'Taxa', 'Região', 'Cidade', 'Criado', 'Última atualização'],
+            'thead_for_datatable2' => ['Nome', 'UF', 'Criado'],
             'neighborhoods' => $neighborhoods,
         ]);
     }
@@ -82,7 +84,7 @@ class NeighborhoodsController extends Controller
     {
         $neighborhood = $this->repository->find($id);
         $regions_list = $this->repository->regions_list();
-        $cities_pluck_list  = $this->cityRepository->pluck('name', 'id');
+        $cities_pluck_list  = $this->cityRepository->where('active', 'on')->get()->pluck('name', 'id');
 
         return view('neighborhood.edit', [
             'namepage'      => 'Bairro',
@@ -122,7 +124,28 @@ class NeighborhoodsController extends Controller
         return redirect()->route('neighborhood.index');
     }
 
+    public function destroy($id)
+    {
+        try 
+        {
+            $deleted = $this->repository->update(['active' => 'off'], $id);
+            $response = [
+                'message' => 'Bairro deletado',
+                'type'   => 'info',
+            ];
+        } 
+        catch (Exception $e) 
+        {
+            $response = [
+                'message' => $e->getMessage(),
+                'type'   => 'error',
+            ];
+        }
+        
+        session()->flash('return', $response);
+        return redirect()->route('neighborhood.index');
+    }
+
     //Method not used
-    public function destroy($id){}
     public function show($id){}
 }

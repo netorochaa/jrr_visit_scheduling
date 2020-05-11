@@ -61,5 +61,34 @@ class User extends Authenticatable
                 break;
         }
     }
+    
+    public function getFormattedCreatedAtAttribute(){
+        if($this->attributes['created_at'] != null)
+        {
+            $date = explode(' ', $this->attributes['created_at']);
+            $dateSplit = explode('-', $date[0]);
 
+            $day = $dateSplit[2];
+            $month = $dateSplit[1];
+            $year = $dateSplit[0];
+            $hour = $date[1];
+            
+            return $day . "/" . $month . "/" . $year . " " . $hour;
+        }
+    }
+
+    public function getFormattedUpdatedAtAttribute(){
+        if($this->attributes['updated_at'] != null)
+        {
+            $date = explode(' ', $this->attributes['updated_at']);
+            $dateSplit = explode('-', $date[0]);
+
+            $day = $dateSplit[2];
+            $month = $dateSplit[1];
+            $year = $dateSplit[0];
+            $hour = $date[1];
+            
+            return $day . "/" . $month . "/" . $year . " " . $hour;
+        }
+    }
 }

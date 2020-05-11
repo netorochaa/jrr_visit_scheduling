@@ -12,6 +12,8 @@ use App\Http\Requests\PatientTypeUpdateRequest;
 use App\Repositories\PatientTypeRepository;
 use App\Validators\PatientTypeValidator;
 
+date_default_timezone_set('America/Recife');
+
 class PatientTypesController extends Controller
 {
 
@@ -26,7 +28,7 @@ class PatientTypesController extends Controller
 
     public function index()
     {
-        $patientTypes  = $this->repository->all();
+        $patientTypes  = $this->repository->where('active', 'on')->get();
 
         return view('patienttype.index', [
             'namepage'      => 'Tipo de paciente',
@@ -37,7 +39,7 @@ class PatientTypesController extends Controller
             'add'           => true,
             //List of entitie
             'table' => $this->repository->getTable(),
-            'thead_for_datatable' => ['Nome', 'Responsável', 'Status', 'Criado', 'Última atualização'],
+            'thead_for_datatable' => ['Nome', 'Responsável', 'Criado'],
             'patientTypes' => $patientTypes
         ]);
     }
@@ -69,7 +71,7 @@ class PatientTypesController extends Controller
     {
         try 
         {
-            $deleted = $this->repository->update(['active' => 'off', 'deleted_at' => Util::dateNowForDB()], $id);
+            $deleted = $this->repository->update(['active' => 'off'], $id);
             $response = [
                 'message' => 'Tipo de paciente deletado',
                 'type'   => 'info',

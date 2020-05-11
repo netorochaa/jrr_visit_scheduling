@@ -13,6 +13,8 @@ use App\Repositories\CancellationTypeRepository;
 use App\Validators\CancellationTypeValidator;
 use App\Entities\Util;
 
+date_default_timezone_set('America/Recife');
+
 class CancellationTypesController extends Controller
 {
     protected $repository;
@@ -26,7 +28,7 @@ class CancellationTypesController extends Controller
 
     public function index()
     {
-        $cancellationTypes  = $this->repository->all();  
+        $cancellationTypes  = $this->repository->where('active', 'on')->get();  
 
         return view('cancellationtype.index', [
             'namepage'      => 'Cancelamento de coleta',
@@ -37,7 +39,7 @@ class CancellationTypesController extends Controller
             'add'           => true,
             //List of entitie
             'table' => $this->repository->getTable(),
-            'thead_for_datatable' => ['Nome', 'Status', 'Criado', 'Última atualização'],
+            'thead_for_datatable' => ['Nome', 'Criado'],
             'cancellationTypes' => $cancellationTypes
         ]);
     }
@@ -69,7 +71,7 @@ class CancellationTypesController extends Controller
     {
         try 
         {
-            $deleted = $this->repository->update(['active' => 'off', 'deleted_at' => Util::dateNowForDB()], $id);
+            $deleted = $this->repository->update(['active' => 'off'], $id);
 
             $response = [
                 'message' => 'Cancelamento deletado',

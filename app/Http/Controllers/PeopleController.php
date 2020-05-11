@@ -14,6 +14,8 @@ use App\Repositories\PatientTypeRepository;
 use App\Repositories\CollectRepository;
 use App\Validators\PersonValidator;
 
+date_default_timezone_set('America/Recife');
+
 class PeopleController extends Controller
 {
     protected $repository, $patientTypeRepository;

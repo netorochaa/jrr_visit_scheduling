@@ -123,7 +123,7 @@ class CollectsController extends Controller
         $neighborhood_id = $request->get('neighborhood_id');
         $dateOfCollect   = Util::setDateLocalBRToDb($request->get('datecollect'), false); 
         $dateNow         = date("Y-m-d h:i");
-        $collector_list  = $this->collectorRepository->all();
+        $collector_list  = $this->collectorRepository->where('active', 'on')->get();
 
         $array_collectors = [];
         foreach($collector_list as $collector)
@@ -157,12 +157,12 @@ class CollectsController extends Controller
         {
             $collect = $this->repository->find($id);
 
-            $cancellationType_list  = $this->cancellationTypeRepository->pluck('name', 'id');
+            $cancellationType_list  = $this->cancellationTypeRepository->where('active', 'on')->pluck('name', 'id');
             $patientType_list       = $this->patientTypeRepository->patientTypeWithResponsible_list();
             $collectType_list       = $this->repository->collectType_list();
             $statusCollects_list    = $this->repository->statusCollects_list();
             $payment_list           = $this->repository->payment_list();
-            $userAuth_list          = $this->userRepository->where('type', '>', 2)->pluck('name', 'name');
+            $userAuth_list          = $this->userRepository->where('active', 'on')->where('type', '>', 2)->pluck('name', 'name');
             $people_list            = $this->peopleRepository->all();
             $typeResponsible_list   = $this->peopleRepository->typeResponsible_list();
             $covenant_list          = $this->peopleRepository->covenant_list();

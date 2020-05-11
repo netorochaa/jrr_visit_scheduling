@@ -13,6 +13,7 @@ use App\Repositories\UserRepository;
 use App\Repositories\CollectorRepository;
 use App\Validators\UserValidator;
 
+date_default_timezone_set('America/Recife');
 
 class UsersController extends Controller
 {
@@ -28,7 +29,7 @@ class UsersController extends Controller
 
     public function index()
     {
-        $users_list  = $this->repository->all();
+        $users_list  = $this->repository->where('active', 'on')->get();
         $typeUsers_list = $this->repository->typeUser_list();
 
         return view('user.index', [
@@ -42,7 +43,7 @@ class UsersController extends Controller
             'typeUsers_list' => $typeUsers_list,
             //Info of entitie
             'table' => $this->repository->getTable(),
-            'thead_for_datatable' => ['Nome', 'E-mail', 'Tipo', 'Status', 'Criado', 'Última atualização'],
+            'thead_for_datatable' => ['Nome', 'E-mail/Login', 'Tipo', 'Criado', 'Última atualização'],
             'users_list' => $users_list
         ]);
     }
@@ -112,7 +113,28 @@ class UsersController extends Controller
         return redirect()->route('user.index');
     }
 
+    public function destroy($id)
+    {
+        try 
+        {
+            $user = $this->repository->find($id);
+            $user->update(['active' => 'off']);
+            $response = [
+                'message' => 'Usuário deletado',
+                'type'   => 'info',
+            ];
+        } 
+        catch (ValidatorException $e) 
+        { 
+            $response = [
+                'message' =>  $e->getMessageBag(),
+                'type'    => 'error'
+            ];
+        }
+        session()->flash('return', $response);
+        return redirect()->route('user.index');
+    }
+
     //Methods not used
     public function show($id){}  
-    public function destroy($id){}
 }

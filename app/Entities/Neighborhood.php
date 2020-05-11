@@ -65,4 +65,34 @@ class Neighborhood extends Model implements Transformable
         $this->attributes['region'] == 1 ? $zone = "ZONA NORTE" : $zone = "ZONA SUL";
         return $this->attributes['name'] . " [" . $zone . "]";
     }
+
+    public function getFormattedCreatedAtAttribute(){
+        if($this->attributes['created_at'] != null)
+        {
+            $date = explode(' ', $this->attributes['created_at']);
+            $dateSplit = explode('-', $date[0]);
+
+            $day = $dateSplit[2];
+            $month = $dateSplit[1];
+            $year = $dateSplit[0];
+            $hour = $date[1];
+            
+            return $day . "/" . $month . "/" . $year . " " . $hour;
+        }
+    }
+
+    public function getFormattedUpdatedAtAttribute(){
+        if($this->attributes['updated_at'] != null)
+        {
+            $date = explode(' ', $this->attributes['updated_at']);
+            $dateSplit = explode('-', $date[0]);
+
+            $day = $dateSplit[2];
+            $month = $dateSplit[1];
+            $year = $dateSplit[0];
+            $hour = $date[1];
+            
+            return $day . "/" . $month . "/" . $year . " " . $hour;
+        }
+    }
 }

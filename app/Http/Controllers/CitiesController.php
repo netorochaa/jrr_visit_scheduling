@@ -10,17 +10,21 @@ use Prettus\Validator\Exceptions\ValidatorException;
 use App\Http\Requests\CityCreateRequest;
 use App\Http\Requests\CityUpdateRequest;
 use App\Repositories\CityRepository;
+use App\Repositories\NeighborhoodRepository;
 use App\Validators\CityValidator;
+
+date_default_timezone_set('America/Recife');
 
 class CitiesController extends Controller
 {
     protected $repository;
     protected $validator;
 
-    public function __construct(CityRepository $repository, CityValidator $validator)
+    public function __construct(CityRepository $repository, CityValidator $validator, NeighborhoodRepository $neighborhoodRepository)
     {
         $this->repository = $repository;
         $this->validator  = $validator;
+        $this->neighborhoodRepository = $neighborhoodRepository;
     }
 
     public function store(CityCreateRequest $request)
@@ -85,8 +89,32 @@ class CitiesController extends Controller
         return redirect()->route('neighborhood.index');
     }
 
+    public function destroy($id)
+    {
+        try {
+            $deleted = $this->repository->update(['active' => 'off'], $id);
+            $neighborhoods = $this->neighborhoodRepository->where('city_id', $id)->get();
+
+            if($deleted)
+                foreach($neighborhoods as $neighborhood) $neighborhood->update(['active' => 'off']);
+
+            $response = [
+                'message' => 'Cidade deletada',
+                'type'   => 'info',
+            ];
+        } 
+        catch (ValidatorException $e) 
+        { 
+            $response = [
+                'message' =>  $e->getMessageBag(),
+                'type'    => 'error'
+            ];
+        }
+        session()->flash('return', $response);
+        return redirect()->route('neighborhood.index');
+    }
+
     //Method not used
-    public function destroy($id){}
     public function index(){}
     public function show($id){}
 

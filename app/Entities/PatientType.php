@@ -14,21 +14,6 @@ class PatientType extends Model implements Transformable
     protected $table = 'patientTypes';
     protected $fillable = ['name', 'needResponsible', 'active'];
 
-    public function getFormattedActiveAttribute()
-    {
-        switch ($this->attributes['active']) {
-            case "on":
-                return "ATIVO";
-                break;
-            case "off":
-                return "INATIVO";
-                break;
-            default:
-                return $this->attributes['active'];
-                break;
-        }
-    }
-
     public function getFormattedNeedResponsibleAttribute()
     {
         switch ($this->attributes['needResponsible']) {
@@ -41,6 +26,21 @@ class PatientType extends Model implements Transformable
             default:
                 return $this->attributes['needResponsible'];
                 break;
+        }
+    }
+
+    public function getFormattedCreatedAtAttribute(){
+        if($this->attributes['created_at'] != null)
+        {
+            $date = explode(' ', $this->attributes['created_at']);
+            $dateSplit = explode('-', $date[0]);
+
+            $day = $dateSplit[2];
+            $month = $dateSplit[1];
+            $year = $dateSplit[0];
+            $hour = $date[1];
+            
+            return $day . "/" . $month . "/" . $year . " " . $hour;
         }
     }
 }

@@ -12,19 +12,18 @@
         <tr>
             <td>{{ $neighborhood->name }}</td>
             <td>{{ $neighborhood->displacementRate }}</td>
-            <td>{{ $neighborhood->formatted_region }}</td>
-            <td>{{ $neighborhood->formatted_active }}</td>
+            <td>{{ $neighborhood->formatted_region }}</td>            
             <td>{{ $neighborhood->city->name }}</td>
-            <td>{{ $neighborhood->created_at }}</td>
-            <td>{{ $neighborhood->updated_at }}</td>
+            <td>{{ $neighborhood->formatted_createdAt }}</td>
+            <td>{{ $neighborhood->formatted_updatedAt }}</td>
             <td>
                 <div class="btn-group">
-                  {{-- {!! Form::open(['route' => ['neighborhood.destroy', $neighborhood->id], 'method' => 'DELETE']) !!}
-                    <div class="btn-group"> --}}
+                  {!! Form::open(['route' => ['neighborhood.destroy', $neighborhood->id], 'method' => 'DELETE']) !!}
+                    <div class="btn-group">
                         <button type="button" onclick="location.href='{{ route('neighborhood.edit', $neighborhood->id) }}'" class="btn btn-info"  ><i class='fas fa-pen'></i></button>
-                        {{-- @include('templates.components.submit', ['input' => 'Deletar', 'attributes' => ['class' => 'btn btn-danger']])
+                        @include('templates.components.submit', ['input' => 'Deletar', 'attributes' => ['class' => 'btn btn-danger']])
                     </div>
-                    {!! Form::close() !!} --}}
+                    {!! Form::close() !!}
                     </td>
                 </div>
               </td>

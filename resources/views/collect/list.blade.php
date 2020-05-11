@@ -55,17 +55,17 @@
             {{-- STATUS --}}
             <td>
                 @if ($collectMarked->status == 3)
-                    <span class="bg-yellow rounded">
+                    <span class="badge badge-warning rounded">
                 @elseif($collectMarked->status == 4)    
-                    <span class="bg-green rounded">
+                    <span class="badge badge-success rounded">
                 @elseif($collectMarked->status == 5)
-                    <span class="bg-white rounded">
+                    <span class="badge badge-white rounded">
                 @elseif($collectMarked->status == 6)    
-                    <span class="bg-secondary rounded">
+                    <span class="badge badge-secondary rounded">
                 @elseif($collectMarked->status > 6)    
-                    <span class="bg-red rounded">
+                    <span class="badge badge-danger rounded">
                 @endif
-                <small>{{ $collectMarked->formatted_status }}</span></small>
+                {{ $collectMarked->formatted_status }}</span>
                 @if($collectMarked->status == 4)    
                     <br><small>Via: {{ $collectMarked->confirmed->name ?? null }}</small>
                 @elseif($collectMarked->status > 6)    
@@ -77,12 +77,7 @@
             </td>
             <td>
                 <div class="btn-group">
-                   {{-- {!! Form::open(['route' => ['collect.destroy', $collectMarked->id], 'method' => 'DELETE']) !!}
-                    <div class="btn-group"> --}}
-                        <button type="button" onclick="location.href='{{ route('collect.schedule', $collectMarked->id) }}'" class="btn btn-info"  ><i class='fas fa-pen'></i></button>
-                        {{-- @include('templates.components.submit', ['input' => 'Deletar', 'attributes' => ['class' => 'btn btn-danger']])
-                    </div>
-                    {!! Form::close() !!} --}}
+                    <button type="button" onclick="location.href='{{ route('collect.schedule', $collectMarked->id) }}'" class="btn btn-info"  ><i class='fas fa-pen'></i></button>        
                 </div>
               </td>
         </tr>

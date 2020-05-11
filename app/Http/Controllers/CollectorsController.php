@@ -51,7 +51,7 @@ class CollectorsController extends Controller
             'schedules'     => $schedules,
             //Info of entitie
             'table'               => $this->repository->getTable(),
-            'thead_for_datatable' => ['Nome', 'Segunda/Sexta', 'Sábados', 'Domingos', 'Endereço inicial', 'Colaborador', 'Bairros', 'Status'],
+            'thead_for_datatable' => ['Nome', 'Segunda/Sexta', 'Sábados', 'Domingos', 'Colaborador', 'Bairros', 'Status'],
             'collectors_list'     => $collectors_list
         ]);
     }
@@ -275,6 +275,25 @@ class CollectorsController extends Controller
         return redirect()->route('collector.collector_neighborhood.index');
     }
 
-    //Methods not used
-    public function destroy($id){}
+    public function destroy($id)
+    {
+        try
+        {
+            $collector = $this->repository->update(['active' => 'off'], $id);
+
+            $response = [
+                'message' => 'Coletador deletado',
+                'type'   => 'info',
+            ];
+        }
+        catch (ValidatorException $e)
+        {
+            $response = [
+                'message' =>  $e->getMessageBag(),
+                'type'    => 'error'
+            ];
+        }
+        session()->flash('return', $response);
+        return redirect()->route('collector.index');
+    }
 }

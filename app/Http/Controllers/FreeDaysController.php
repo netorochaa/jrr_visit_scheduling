@@ -14,6 +14,8 @@ use App\Repositories\CollectorRepository;
 use App\Repositories\CityRepository;
 use App\Validators\FreeDayValidator;
 
+date_default_timezone_set('America/Recife');
+
 class FreeDaysController extends Controller
 {
   

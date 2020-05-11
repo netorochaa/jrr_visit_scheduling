@@ -22,9 +22,6 @@ class CityValidator extends LaravelValidator
             'name' => 'required|unique:cities,name',
             'UF' => 'required',
         ],
-        ValidatorInterface::RULE_UPDATE => [
-            'name' => 'required|unique:cities,name',
-            'UF' => 'required'
-        ],
+        ValidatorInterface::RULE_UPDATE => [],
     ];
 }

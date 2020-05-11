@@ -11,14 +11,11 @@
         @foreach ($cancellationTypes as $cancellationType)
         <tr>
             <td>{{ $cancellationType->name }}</td>
-            <td>{{ $cancellationType->formatted_active }}</td>
-            <td>{{ $cancellationType->created_at }}</td>
-            <td>{{ $cancellationType->updated_at }}</td>
+            <td>{{ $cancellationType->formatted_createdAt }}</td>
             <td>
                 <div class="btn-group">
                   {!! Form::open(['route' => ['cancellationtype.destroy', $cancellationType->id], 'method' => 'DELETE']) !!}
                     <div class="btn-group">
-                        {{-- <button type="button" onclick="location.href='{{ route('patientType.edit', $patientType->id) }}'" class="btn btn-info"  ><i class='fas fa-pen'></i></button> --}}
                         @include('templates.components.submit', ['input' => 'Deletar', 'attributes' => ['class' => 'btn btn-danger']])
                     </div>
                     {!! Form::close() !!}

@@ -18,11 +18,6 @@
                     @include('templates.components.select', ['label' => 'Cidade', 'col' => '12', 'select' => 'city_id', 'data' => $cities_pluck_list, 'attributes' => ['require' => 'true', 'class' => 'form-control']])
                 </div>
             </div>
-            <div class="row">
-                <div class="col-sm-6">
-                    @include('templates.components.checkbox', ['label' => 'Ativo', 'col' => '4', 'input' => 'active', 'checked' => 'true'])
-                </div>
-            </div>
         </div>
         <div class="card-footer">
             @include('templates.components.submit', ['input' => 'Salvar', 'attributes' => ['class' => 'btn btn-outline-primary']])

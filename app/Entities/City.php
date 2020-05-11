@@ -38,5 +38,19 @@ class City extends Model implements Transformable
     {
         return $this->belongsToMany(FreeDay::class, 'city_has_freedays', 'city_id', 'freedays_id');
     }
-    
+
+    public function getFormattedCreatedAtAttribute(){
+        if($this->attributes['created_at'] != null)
+        {
+            $date = explode(' ', $this->attributes['created_at']);
+            $dateSplit = explode('-', $date[0]);
+
+            $day = $dateSplit[2];
+            $month = $dateSplit[1];
+            $year = $dateSplit[0];
+            $hour = $date[1];
+            
+            return $day . "/" . $month . "/" . $year . " " . $hour;
+        }
+    }
 }
