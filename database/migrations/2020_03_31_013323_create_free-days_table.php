@@ -21,9 +21,9 @@ class CreateFreeDaysTable extends Migration
 			$table->string('name', 50);
 			$table->datetime('dateStart');
 			$table->datetime('dateEnd');
-			$table->char('active', 3)->default('off');
 
 			$table->timestamps();
+			$table->softDeletes();
 		});
 	}
 

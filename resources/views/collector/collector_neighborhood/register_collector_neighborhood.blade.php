@@ -1,9 +1,9 @@
 
 <div class="card">
     @if ($user ?? null)
-        {!! Form::model($collector, ['route' => ['collector.neighborhoods.store', $collector->id], 'method' => 'put', 'role' => 'form', 'class' => 'form-horizontal']) !!}
+        {!! Form::model($collector, ['route' => ['collector.neighborhoods.attach', $collector->id], 'method' => 'put', 'role' => 'form', 'class' => 'form-horizontal']) !!}
     @else
-        {!! Form::open(['route' => ['collector.neighborhoods.store', $collector->id], 'method' => 'post', 'role' => 'form', 'class' => 'form-horizontal']) !!}
+        {!! Form::open(['route' => ['collector.neighborhoods.attach', $collector->id], 'method' => 'post', 'role' => 'form', 'class' => 'form-horizontal']) !!}
     @endiF    
     <div class="card-body">
         <div class="row">

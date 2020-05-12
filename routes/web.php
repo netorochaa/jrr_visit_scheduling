@@ -13,7 +13,7 @@ Route::resource('user', 'UsersController');
 
 // Collector
 Route::resource('collector', 'CollectorsController');
-Route::post('collector/{collector_id}/neighborhoods',                   ['as' => 'collector.neighborhoods.store', 'uses' => 'CollectorsController@storeCollectorNeighborhoods']);
+Route::post('collector/{collector_id}/neighborhoods',                   ['as' => 'collector.neighborhoods.attach', 'uses' => 'CollectorsController@attachCollectorNeighborhoods']);
 Route::post('collector/{collector_id}/neighborhoods/{neighborhood_id}', ['as' => 'collector.neighborhoods.detach', 'uses' => 'CollectorsController@detachCollectorNeighborhoods']);
 
 // City
@@ -38,7 +38,7 @@ Route::get('/cancelled', ['as' => 'collect.list.cancelled', 'uses' => 'CollectsC
 Route::post('/reserve', ['as' => 'collect.reserve', 'uses' => 'CollectsController@reserve']);
 Route::get('/schedule/{id}', ['as' => 'collect.schedule', 'uses' => 'CollectsController@schedule']);
 Route::get('/confirmed/{id}', ['as' => 'collect.confirmed', 'uses' => 'CollectsController@confirmed']);
-Route::get('/cancellation/{id}', ['as' => 'collect.cancellation', 'uses' => 'CollectsController@cancellation']);
+Route::get('/close/{id}', ['as' => 'collect.close', 'uses' => 'CollectsController@close']);
 Route::get('/available', ['as' => 'collect.available', 'uses' => 'CollectsController@available']);
 
 // Person

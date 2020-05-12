@@ -38,7 +38,7 @@ class HomeController extends Controller
             {
                 $user = $this->findUser($request);
                 $pass = $request->get('password');
-
+                
                 if($user)
                 {
                     // if(env('PASSWORD_HASH') && Hash::check($request->get('password'), $user->password))
@@ -85,8 +85,7 @@ class HomeController extends Controller
     public function findUser($req)
     {
         try {
-            $user = $this->repository->findWhere(['email' => $req->get('email')])->first();
-
+            $user = $this->repository->findWhere(['email' => $req->get('email'), 'active' => 'on'])->first();
             return $user;
         } catch (Exception $th) {
             return false;

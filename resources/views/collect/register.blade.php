@@ -13,7 +13,7 @@
         </div>
     </div>
     <div class="card-footer">
-        @include('templates.components.submit', ['input' => 'Continuar', 'attributes' => ['class' => 'btn btn-outline-primary']])
+        @include('templates.components.submit', ['input' => 'Continuar', 'attributes' => ['id' => 'submitSelectNeighborhood', 'class' => 'btn btn-outline-primary', 'disabled' => 'true']])
         {{-- Ao cancelar deve-se deixar vago o horário --}}
     </div>
     {!! Form::close() !!}

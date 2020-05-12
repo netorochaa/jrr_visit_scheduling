@@ -6,7 +6,6 @@ use Illuminate\Http\Request;
 
 use App\Http\Requests;
 use App\Entities\Util;
-use App\Entities\Activity;
 use App\Entities\Collect;
 use Prettus\Validator\Contracts\ValidatorInterface;
 use Prettus\Validator\Exceptions\ValidatorException;
@@ -55,6 +54,12 @@ class ActivitiesController extends Controller
                                                                 ['collector_id', $collector->id], 
                                                                 ['status', '>', 3]
                                                             ])->orderBy('date')->get();
+                // IF ALL COLLECTS DONE
+                if($activity->end == null)
+                {
+                    if(count($collect_list->where('status', 4)) == 0) 
+                        $this->repository->update(['status' => 2, 'end' => Util::dateNowForDB()], $activity->id);
+                }
                 return view('activity.index', [
                     'namepage'      => 'Rota do dia',
                     'threeview'     => null,
@@ -125,7 +130,7 @@ class ActivitiesController extends Controller
         $activity = $this->repository->find($id);
         try 
         {
-            Activity::where('id', $activity->id)->update(['status' => '3', 'end' => $dateNow, 'reasonCancellation' => $request->get('reasonCancellation')]);
+            $this->repository->update(['status' => '3', 'end' => $dateNow, 'reasonCancellation' => $request->get('reasonCancellation')], $activity->id);
 
             $response = [
                 'message' => 'Rota ' . $activity->id . ' encerrada',

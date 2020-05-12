@@ -87,13 +87,19 @@
                   option += '<option value="'+obj.id+","+neighborhood+'">' + obj.hour + " - " + obj.name + '</option>';
               })
               $("#describe-feedback").html(dados.length + " horários para agendamento nesta data");
+              $('#infoCollectSel').prop('disabled', false);
+              $('#submitSelectNeighborhood').attr('disabled', false);
+              
             }else{
               $("#describe-feedback").html("Não há horários disponíveis para esta data!");
+              $('#infoCollectSel').prop('disabled', true);
+              $('#submitSelectNeighborhood').attr('disabled', true);
             }
             $('#infoCollectSel').html(option).show(); 
           }); 
         }else{
           $("#describe-feedback").html("Você não pode marcar coletas para esta data!");
+          $('#submitSelectNeighborhood').attr('disabled', true);
         }
       });
     });
@@ -110,7 +116,6 @@
 
       var dateMomment = moment(year + "-" + month + "-" + day);
       var dateNow = moment().format("YYYY-MM-DD");
-      console.log(dateMomment);
 
       if(dateMomment.isAfter(dateNow)){
        select.disabled = false;

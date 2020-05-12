@@ -33,9 +33,9 @@ class FreeDaysController extends Controller
     public function index()
     {
         $freedays           = $this->repository->all();
-        $collectors         = $this->collectorRepository->all();
-        $collectors_list    = $this->collectorRepository->pluck('name', 'id');
-        $cities_list        = $this->cityRepository->pluck('name', 'id');
+        // $collectors         = $this->collectorRepository->all();
+        // $collectors_list    = $this->collectorRepository->pluck('name', 'id');
+        // $cities_list        = $this->cityRepository->pluck('name', 'id');
         $type_list          = $this->repository->type_list();
 
         return view('freedays.index', [
@@ -46,8 +46,8 @@ class FreeDaysController extends Controller
             'titlemodal'    => 'Cadastrar dias sem coletas',
             'add'           => true,
             //Lists for select
-            'collectors_list' => $collectors_list,
-            'cities_list' => $cities_list,
+            // 'collectors_list' => $collectors_list,
+            // 'cities_list' => $cities_list,
             'type_list' => $type_list,
             //List of entitie
             'table' => $this->repository->getTable(),
@@ -90,7 +90,7 @@ class FreeDaysController extends Controller
             // $collectors = $request->has('collector_id') ? $request->all()['collector_id'] : null;
             // $cities     = $request->has('city_id') ? $request->all()['city_id'] : null;
             // $collectors == null && $cities == null ? $freeDay = null : $freeDay = $this->repository->create($request->except(['city_id', 'collector_id', 'dateRange']));
-            $freeDay = $this->repository->create($request->except(['city_id', 'collector_id', 'dateRange']));
+            $freeDay = $this->repository->create($request->except(['dateRange']));
             
             // if($freeDay == null){
             //     $response = [
@@ -132,7 +132,7 @@ class FreeDaysController extends Controller
     {
         try 
         {
-            $deleted = $this->repository->update(['active' => 'off', 'deleted_at' => Util::dateNowForDB()], $id);
+            $deleted = $this->repository->destroy($id);
 
             $response = [
                 'message' => 'Dia sem coleta deletado',

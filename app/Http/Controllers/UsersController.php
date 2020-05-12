@@ -29,7 +29,7 @@ class UsersController extends Controller
 
     public function index()
     {
-        $users_list  = $this->repository->where('active', 'on')->get();
+        $users_list  = $this->repository->where([['active', 'on'], ['id', '>', 1]])->get();
         $typeUsers_list = $this->repository->typeUser_list();
 
         return view('user.index', [

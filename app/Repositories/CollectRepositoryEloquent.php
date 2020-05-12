@@ -108,8 +108,7 @@ class CollectRepositoryEloquent extends BaseRepository implements CollectReposit
         $collect['confirmed_at'] = null;
         $collect['closed_at'] = null;
         $collect['created_at'] = null;
-        $collect['updated_at'] = null;
-        $collect['deleted_at'] = null;
+        $collect['updated_at'] = null;        
 
         return $collect;
     }

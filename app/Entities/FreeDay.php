@@ -3,16 +3,18 @@
 namespace App\Entities;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Prettus\Repository\Contracts\Transformable;
 use Prettus\Repository\Traits\TransformableTrait;
 
 class FreeDay extends Model implements Transformable
 {
     use TransformableTrait;
+    use SoftDeletes;
 
     public $timestamps = true;
     protected $table = 'freeDays';
-    protected $fillable = ['name', 'type', 'dateStart', 'dateEnd', 'active', 'freedays_id', 'city_id'];
+    protected $fillable = ['name', 'type', 'dateStart', 'dateEnd'];
 
 
     public function cities()

@@ -19,11 +19,11 @@ class CreateCollectorsTable extends Migration
 			$table->increments('id');
 			$table->string('name', 50);
 
-			$table->string('mondayToFriday', 140);
+			$table->string('mondayToFriday', 140)->nullable();
 			$table->string('saturday', 140)->nullable();
 			$table->string('sunday', 140)->nullable();
 			$table->string('startingAddress', 140)->nullable();
-            $table->char('active', 3)->default('off');
+            $table->char('active', 3)->default('on');
 
 			//FK
 			$table->unsignedInteger('user_id')->unique();

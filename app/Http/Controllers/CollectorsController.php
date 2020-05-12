@@ -6,6 +6,7 @@ use DateTime;
 use DateInterval;
 use DatePeriod;
 use DB;
+use App\Entities\Util;
 
 use App\Http\Requests;
 use Prettus\Validator\Contracts\ValidatorInterface;
@@ -15,6 +16,7 @@ use App\Http\Requests\CollectorUpdateRequest;
 use App\Repositories\CollectorRepository;
 use App\Repositories\UserRepository;
 use App\Repositories\NeighborhoodRepository;
+use App\Repositories\CollectRepository;
 use App\Validators\CollectorValidator;
 
 date_default_timezone_set('America/Recife');
@@ -25,12 +27,14 @@ class CollectorsController extends Controller
     protected $repository, $userRepository, $neighborhoodRepository;
     protected $validator;
 
-    public function __construct(CollectorRepository $repository, CollectorValidator $validator, UserRepository $userRepository, NeighborhoodRepository $neighborhoodRepository)
+    public function __construct(CollectorRepository $repository, CollectorValidator $validator, UserRepository $userRepository, NeighborhoodRepository $neighborhoodRepository,
+                                CollectRepository $collectRepository)
     {
         $this->repository = $repository;
         $this->validator  = $validator;
         $this->userRepository = $userRepository;
         $this->neighborhoodRepository = $neighborhoodRepository;
+        $this->collectRepository = $collectRepository;
     }
 
     public function index()
@@ -63,30 +67,30 @@ class CollectorsController extends Controller
             $arrayMondayToFriday = null;
             $arraySaturday = null;
             $arraySunday = null;
-
+            // dd($request->all());
+            //Send data to array
             if($request->has('mondayToFriday'))
             { 
-                $arrayMondayToFriday = $request->all()['mondayToFriday'];
-                $request->merge(['mondayToFriday' => implode(',', $request->all()['mondayToFriday'])]); 
+                $arrayMondayToFriday = $request->get('mondayToFriday');
+                $request->merge(['mondayToFriday' => implode(',', $request->get('mondayToFriday'))]); 
             }
             if($request->has('saturday'))
             { 
-                $arraySaturday = $request->all()['saturday'];
-                $request->merge(['saturday' => implode(',', $request->all()['saturday'])]); 
+                $arraySaturday = $request->get('saturday');
+                $request->merge(['saturday' => implode(',', $request->get('saturday'))]); 
             }
             if($request->has('sunday'))
             { 
-                $arraySunday = $request->all()['sunday'];
-                $request->merge(['sunday' => implode(',', $request->all()['sunday'])]); 
+                $arraySunday = $request->get('sunday');
+                $request->merge(['sunday' => implode(',', $request->get('sunday'))]); 
             }
-
-            $inicio = new DateTime();
-            $inicio->modify('+1 day');
-            $fim = new DateTime();
-            $fim->modify('+2 month');
 
             $this->validator->with($request->all())->passesOrFail(ValidatorInterface::RULE_CREATE);
             $collector = $this->repository->create($request->all());
+
+            $inicio = new DateTime(Util::setDateLocalBRToDb($request->get('dateStart'), true));
+            $fim = new DateTime();
+            $fim->modify('+2 month');
 
             $interval = new DateInterval('P1D');
             $periodo = new DatePeriod($inicio, $interval ,$fim);
@@ -97,7 +101,7 @@ class CollectorsController extends Controller
                 $day = $data->format("l");
                 $date = $data->format("Y-m-d");
 
-                if( $day == "Monday" ||
+                if($day == "Monday" ||
                     $day == "Tuesday" ||
                     $day == "Wednesday" ||
                     $day == "Thursday" ||
@@ -108,7 +112,7 @@ class CollectorsController extends Controller
                         for($i = 0; $i < count($arrayMondayToFriday); $i++)
                         {
                             DB::table('collects')->insert(
-                                ['date' => $date . " " . $arrayMondayToFriday[$i], 'hour' => $arrayMondayToFriday[$i], 'collector_id' => $collector->id]
+                                ['date' => $date . " " . $arrayMondayToFriday[$i], 'hour' => $arrayMondayToFriday[$i], 'collector_id' => $collector->id, 'created_at' => Util::dateNowForDB()]
                             );
                         }
                     }
@@ -120,7 +124,7 @@ class CollectorsController extends Controller
                         for($i = 0; $i < count($arraySaturday); $i++)
                         {
                             DB::table('collects')->insert(
-                                ['date' => $date . " " . $arraySaturday[$i], 'hour' => $arraySaturday[$i], 'collector_id' => $collector->id]
+                                ['date' => $date . " " . $arraySaturday[$i], 'hour' => $arraySaturday[$i], 'collector_id' => $collector->id, 'created_at' => Util::dateNowForDB()]
                             );
                         }
                     }
@@ -132,7 +136,7 @@ class CollectorsController extends Controller
                         for($i = 0; $i < count($arraySunday); $i++)
                         {
                             DB::table('collects')->insert(
-                                ['date' => $date . " " . $arraySunday[$i], 'hour' => $arraySunday[$i], 'collector_id' => $collector->id]
+                                ['date' => $date . " " . $arraySunday[$i], 'hour' => $arraySunday[$i], 'collector_id' => $collector->id, 'created_at' => Util::dateNowForDB()]
                             );
                         }
                     }
@@ -154,7 +158,7 @@ class CollectorsController extends Controller
         return redirect()->route('collector.index');
     }
 
-    public function storeCollectorNeighborhoods(Request $request, $collect_id)
+    public function attachCollectorNeighborhoods(Request $request, $collect_id)
     {
         try
         {
@@ -235,14 +239,92 @@ class CollectorsController extends Controller
     {
         try
         {
-            if($request->has('mondayToFriday')) $request->merge(['mondayToFriday' => implode(',', $request->all()['mondayToFriday'])]);
-            if($request->has('saturday')) $request->merge(['saturday' => implode(',', $request->all()['saturday'])]);
-            if($request->has('sunday')) $request->merge(['sunday' => implode(',', $request->all()['sunday'])]);
+            $arrayMondayToFriday = null;
+            $arraySaturday = null;
+            $arraySunday = null;
+            // dd($request->all());
+            //Send data to array
+            if($request->has('mondayToFriday'))
+            { 
+                $arrayMondayToFriday = $request->get('mondayToFriday');
+                $request->merge(['mondayToFriday' => implode(',', $request->get('mondayToFriday'))]); 
+            }
+            if($request->has('saturday'))
+            { 
+                $arraySaturday = $request->get('saturday');
+                $request->merge(['saturday' => implode(',', $request->get('saturday'))]); 
+            }
+            if($request->has('sunday'))
+            { 
+                $arraySunday = $request->get('sunday');
+                $request->merge(['sunday' => implode(',', $request->get('sunday'))]); 
+            }
 
+            //UPDATE COLLECTOR
             $this->validator->with($request->all())->passesOrFail(ValidatorInterface::RULE_UPDATE);
             $collector = $this->repository->update($request->all(), $id);
 
-            //Adicionar data de virgência e criar script para atualizar horário das coletas
+            //REMOVE OLD DATES AVAILABLES
+            $collects = $this->collectRepository->where('collector_id', $id)->get();
+            foreach($collects as $collect){
+                if($collect->status < 2) $this->collectRepository->destroy($collect->id);
+            }
+
+            // PREPARE NEWS DATES
+            $inicio = new DateTime(Util::setDateLocalBRToDb($request->get('dateStart'), true));
+            $fim = new DateTime();
+            $fim->modify('+2 month');
+
+            $interval = new DateInterval('P1D');
+            $periodo = new DatePeriod($inicio, $interval ,$fim);
+
+            //CRIAR MÉTODO E MOVER PARA ENTIDADE OU REPOSITORIO
+            foreach($periodo as $data)
+            {
+                $day = $data->format("l");
+                $date = $data->format("Y-m-d");
+
+                if($day == "Monday" ||
+                    $day == "Tuesday" ||
+                    $day == "Wednesday" ||
+                    $day == "Thursday" ||
+                    $day == "Friday")
+                {
+                    if($arrayMondayToFriday)
+                    {
+                        for($i = 0; $i < count($arrayMondayToFriday); $i++)
+                        {
+                            DB::table('collects')->insert(
+                                ['date' => $date . " " . $arrayMondayToFriday[$i], 'hour' => $arrayMondayToFriday[$i], 'collector_id' => $collector->id, 'created_at' => Util::dateNowForDB()]
+                            );
+                        }
+                    }
+                }
+                else if ($day == "Saturday")
+                {
+                    if($arraySaturday)
+                    {
+                        for($i = 0; $i < count($arraySaturday); $i++)
+                        {
+                            DB::table('collects')->insert(
+                                ['date' => $date . " " . $arraySaturday[$i], 'hour' => $arraySaturday[$i], 'collector_id' => $collector->id, 'created_at' => Util::dateNowForDB()]
+                            );
+                        }
+                    }
+                }
+                else if ($day == "Sunday")
+                {
+                    if($arraySunday)
+                    {
+                        for($i = 0; $i < count($arraySunday); $i++)
+                        {
+                            DB::table('collects')->insert(
+                                ['date' => $date . " " . $arraySunday[$i], 'hour' => $arraySunday[$i], 'collector_id' => $collector->id, 'created_at' => Util::dateNowForDB()]
+                            );
+                        }
+                    }
+                }
+            }
 
             $response = [
                 'message' => 'Coletador atualizado',
@@ -262,24 +344,41 @@ class CollectorsController extends Controller
 
     public function detachCollectorNeighborhoods($collector_id, $neighborhood_id)
     {
-        $collector = $this->repository->find($collector_id);
-        $neighborhood = $collector->neighborhoods()->where('neighborhood_id', $neighborhood_id)->get();
+        try
+        {
+            $collector = $this->repository->find($collector_id);
+            $neighborhood = $collector->neighborhoods()->where('neighborhood_id', $neighborhood_id)->get();
 
-        $detach = $collector->neighborhoods()->detach($neighborhood);
+            $detach = $collector->neighborhoods()->detach($neighborhood);
 
-        $response = [
-            'message' => 'Coletador atualizado',
-            'type'   => 'info',
-        ];
+            $response = [
+                'message' => 'Coletador atualizado',
+                'type'   => 'info',
+            ];
+        }
+        catch (ValidatorException $e)
+        {
+            $response = [
+                'message' =>  $e->getMessageBag(),
+                'type'    => 'error'
+            ];
+        }
         session()->flash('return', $response);
-        return redirect()->route('collector.collector_neighborhood.index');
+        return redirect()->route('collector.index');
     }
 
     public function destroy($id)
     {
         try
         {
-            $collector = $this->repository->update(['active' => 'off'], $id);
+            $deleted = $this->repository->update(['active' => 'off'], $id);
+            $collects = $this->collectRepository->where('collector_id', $id)->get();
+
+            if($deleted){
+                foreach($collects as $collect){
+                    if($collect->status < 2) $this->collectRepository->destroy($collect->id);
+                }
+            }
 
             $response = [
                 'message' => 'Coletador deletado',

@@ -14,10 +14,10 @@
         <h3>Horários</h3>
 
         <div class="row">
-            @include('templates.components.input',  ['label' => 'Data de início/alteração', 'col' => '6', 'input' => 'dateStart', 'attributes' => ['require' => 'true', 'class' => 'form-control', 'autocomplete' => 'off']])
+            @include('templates.components.input',  ['label' => 'Data de início/alteração', 'col' => '6', 'input' => 'dateStart', 'attributes' => ['id' => 'dateStart','require' => 'true', 'class' => 'form-control', 'autocomplete' => 'off']])
             @if($collector ?? null)
                 <div class="col-sm-6">
-                    <p class="lead text-muted">É importante haver planejamento no momento de editar horários do coletadores. Procure realizar alterações para datas que não hajam coletas agendadas, pois poderá afetar a rota do coletador. COLETAS AGENDADAS NÃO TERÃO HORÁRIOS MODIFICADOS.</p>
+                    <p class="lead text-muted">É importante haver planejamento no momento de editar horários do coletadores. Procure realizar alterações para datas que não hajam coletas confirmadas, pois poderá afetar a rota do coletador. COLETAS AGENDADAS NÃO TERÃO HORÁRIOS MODIFICADOS.</p>
                 </div>        
             @endif
             @include('templates.components.select', ['label' => 'Segundas/sextas', 'listExists' => $collector->mondayToFriday ?? null, 'col' => '12', 'selected' => $collector->mondayToFriday ?? null, 'select' => 'mondayToFriday[]', 'data' => $schedules, 'attributes' => ['class' => 'form-control select2bs4', 'multiple' => 'multiple', 'style' => 'width: 100%;']])

@@ -7,9 +7,11 @@
             @include('templates.components.hidden', ['hidden' => 'collector_id', 'value' => $collector->id])
             @include('templates.components.hidden', ['hidden' => 'user_id', 'value' =>  Auth::user()->id])
         </div>    
-        <div class="row">
-            <input type="submit" value="CLIQUE AQUI PARA COMEÇAR" class="btn btn-primary">
-        </div>
+        @if (count($collect_list) > 0)
+            <div class="row">
+                <input type="submit" value="CLIQUE AQUI PARA COMEÇAR" class="btn btn-primary">
+            </div>
+        @endif
     </div>
     {!! Form::close() !!}
 </div>

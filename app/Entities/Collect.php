@@ -21,7 +21,7 @@ class Collect extends Model implements Transformable
     protected $table = 'collects';
     protected $fillable = ['id','date','hour','collectType','status','payment','changePayment','cep','address','numberAddress','complementAddress','referenceAddress',
                             'linkMaps','courtesy','unityCreated','observationCollect','attachment','cancellationType_id','collector_id', 'neighborhood_id','user_id',
-                            'reserved_at', 'confirmed_at', 'closed_at'];
+                            'user_id_confirmed','user_id_cancelled','reserved_at', 'confirmed_at', 'closed_at'];
 
     public function people()
     {

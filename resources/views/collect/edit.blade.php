@@ -49,6 +49,7 @@
       else if(selectPayment.selectedIndex != "0")
       {
         inputChangePay.disabled = true;
+        selectAuthUser.disabled = true;
       }
       else
       {

@@ -16,11 +16,10 @@ use App\Repositories\UserRepository;
 use App\Repositories\PersonRepository;
 use App\Repositories\FreeDayRepository;
 use App\Repositories\PatientTypeRepository;
+use App\Repositories\ActivityRepository;
 use App\Validators\CollectValidator;
-use App\Entities\Collect;
 use App\Entities\Util;
 use DateTime;
-use Carbon;
 use Exception;
 use Auth;
 use DB;
@@ -34,7 +33,8 @@ class CollectsController extends Controller
 
     public function __construct(CollectRepository $repository, CollectValidator $validator, NeighborhoodRepository $neighborhoodRepository,
                                 CollectorRepository $collectorRepository, CancellationTypeRepository $cancellationTypeRepository, UserRepository $userRepository,
-                                PersonRepository $peopleRepository, FreeDayRepository $freeDayRepository, PatientTypeRepository $patientTypeRepository)
+                                PersonRepository $peopleRepository, FreeDayRepository $freeDayRepository, PatientTypeRepository $patientTypeRepository,
+                                ActivityRepository $activityRepository)
     {
         $this->repository                 = $repository;
         $this->validator                  = $validator;
@@ -45,6 +45,7 @@ class CollectsController extends Controller
         $this->peopleRepository           = $peopleRepository;
         $this->freeDayRepository          = $freeDayRepository;
         $this->patientTypeRepository      = $patientTypeRepository;
+        $this->activityRepository         = $activityRepository;
     }
 
     // CRUD AND MARK COLLECT
@@ -75,6 +76,8 @@ class CollectsController extends Controller
         }
         else return view('auth.login');
     }
+
+    // LIST PAGES
 
     public function listReserved()
     {
@@ -118,6 +121,9 @@ class CollectsController extends Controller
         else return view('auth.login');
     }
 
+    // END LIST PAGES
+
+    // API TO GET AVAILABLES
     public function available(Request $request)
     {
         $neighborhood_id = $request->get('neighborhood_id');
@@ -140,17 +146,14 @@ class CollectsController extends Controller
                             ->whereIn('collector_id', $array_collectors)
                             ->where('status', '1')
                             ->orderBy('date')->orderBy('collector_id')
-                            ->get();
-
-        // Collect::with('collector')
-                                
+                            ->get();         
 
         for ($i=0; $i < count($freeDay_list); $i++) 
             $collect_list = $collect_list->whereNotBetween('date', [$freeDay_list[$i]['dateStart'], $freeDay_list[$i]['dateEnd']]);
 
         return $collect_list->toJson();
     }
-
+    
     public function schedule($id)
     {
         try
@@ -162,7 +165,7 @@ class CollectsController extends Controller
             $collectType_list       = $this->repository->collectType_list();
             $statusCollects_list    = $this->repository->statusCollects_list();
             $payment_list           = $this->repository->payment_list();
-            $userAuth_list          = $this->userRepository->where('active', 'on')->where('type', '>', 2)->pluck('name', 'name');
+            $userAuth_list          = $this->userRepository->where([['id', '>', 1], ['active', 'on'], ['type', '>', 2]])->pluck('name', 'name');
             $people_list            = $this->peopleRepository->all();
             $typeResponsible_list   = $this->peopleRepository->typeResponsible_list();
             $covenant_list          = $this->peopleRepository->covenant_list();
@@ -246,7 +249,7 @@ class CollectsController extends Controller
         {
             $collect = $this->repository->find($id);
            
-            // UPDATE
+            // UPDATE DATA
             $this->validator->with($request->all())->passesOrFail(ValidatorInterface::RULE_UPDATE);
             $collect = $this->repository->update($request->except('cancellationType_id'), $id);
 
@@ -258,12 +261,12 @@ class CollectsController extends Controller
             // CANCELLATION COLLECT
             if($request->has('cancellationType_id'))
             {
-                $dateNow                        = Util::dateNowForDB();
-                $collect['closed_at']           = $dateNow;
+                $collect['closed_at']           = Util::dateNowForDB();;
                 $collect['cancellationType_id'] = (integer) $request->get('cancellationType_id');
+                // 7 = CANCELADA POR ATENDENTE
                 $collect['status']              = '7';
 
-                // UPDATE FOR CANCELLATION COLLECT
+                // UPDATE DATA WITH TYPE CANCELLATION COLLECT
                 $this->repository->update($collect->toArray(), $collect->id);
                 // Reset values for new releasing collect
                 $collect = $this->repository->collectReset($collect);
@@ -279,7 +282,7 @@ class CollectsController extends Controller
                 ];
 
                 session()->flash('return', $response);
-                return redirect()->route('collect.index');
+                return redirect()->route('collect.index') ;
             }
         } 
         catch (ValidatorException $e) 
@@ -314,7 +317,7 @@ class CollectsController extends Controller
         else
         {
             try {
-                Collect::where('id', $idCollect)->update(['user_id' => $idOrigin, 'neighborhood_id' => $idNeighborhood, 'status' => 3, 'reserved_at' => new DateTime()]);
+                $this->repository->update(['user_id' => $idOrigin, 'neighborhood_id' => $idNeighborhood, 'status' => 3, 'reserved_at' => new DateTime()], $idCollect);
                 $response = [
                     'message' => 'Data e horário reservados',
                     'type'    => 'info'
@@ -332,7 +335,8 @@ class CollectsController extends Controller
 
     public function confirmed($id)
     {
-        $collect = $this->repository->find($id);        
+        $collect = $this->repository->find($id);
+        $idUser = Auth::user()->id;
         if($collect->status > 3)
         {
             $response = [
@@ -346,7 +350,8 @@ class CollectsController extends Controller
         {
             try 
             {
-                Collect::where('id', $collect->id)->update(['status' => 4]);
+                // 4 = CONFIRMADA
+                $this->repository->update(['status' => 4, 'user_id_confirmed' => $idUser, 'confirmed_at' =>  Util::dateNowForDB()], $collect->id);
                 $response = [
                     'message' => 'Coleta ' . $collect->id . ' confirmada',
                     'type'    => 'info'
@@ -362,6 +367,42 @@ class CollectsController extends Controller
             session()->flash('return', $response);
             return redirect()->route('collect.index');
         }
+    }
+
+    public function close(Request $request, $id)
+    {
+        $collect = $this->repository->find($id);     
+        // dd($request->all());
+        try 
+        {
+           // CANCELLATION COLLECT
+           if($request->get('cancellationType_id'))
+           {
+                $collect['closed_at'] = Util::dateNowForDB();
+                // 8 = CANCELADO EM ROTA
+                // UPDATE DATA WITH TYPE CANCELLATION COLLECT
+                $this->repository->update(['status' => 8, 'cancellationType_id' => (integer)$request->get('cancellationType_id'), 'user_id_cancelled' => Auth::user()->id, 'closed_at' => Util::dateNowForDB()], $collect->id);
+           }
+           else
+           {
+                // 6 = CONCLUÍDA
+                $this->repository->update(['status' => 6, 'closed_at' => Util::dateNowForDB()], $collect->id);
+           }
+
+           $response = [
+            'message' => 'Coleta ' . $collect->id . ' finalizada',
+            'type'    => 'info'
+        ];
+        } 
+        catch (Exception $e) 
+        {
+            $response = [
+                'message' => $e->getMessage(),
+                'type'    => 'error'
+            ];
+        }
+        session()->flash('return', $response);
+        return redirect()->route('activity.index');
     }
 
     /**
