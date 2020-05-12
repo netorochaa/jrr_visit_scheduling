@@ -5,7 +5,9 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use App\Repositories\UserRepository;
+use App\Repositories\CollectRepository;
 use App\Validators\UserValidator;
+use App\Entities\Util;
 use Auth;
 use Exception;
 use Log;
@@ -14,24 +16,27 @@ date_default_timezone_set('America/Recife');
 
 class HomeController extends Controller
 {
-    private $repository;
+    private $repository, $collectRepository;
     private $validator;
 
-    public function __construct(UserRepository $repository, UserValidator $validator)
+    public function __construct(UserRepository $repository, UserValidator $validator, CollectRepository $collectRepository)
     {
         $this->repository = $repository;
         $this->validator  = $validator;
+        $this->collectRepository = $collectRepository;
     }
 
     public function index(Request $request)
     {
         if(Auth::check())
         {
+            $collects = $this->collectRepository->whereMonth('date', '=', date('m'))->get();
             return view('home', [
-                'namepage' => 'Home',
-                'threeview' => null,
-                'titlespage' => ['Dashboard'],
-                'titlecard' => 'Bem vindo (a)',
+                'namepage'      => 'Home',
+                'threeview'     => null,
+                'titlespage'    => ['Dashboard'],
+                'titlecard'     => 'Bem vindo(a) ' . Auth::user()->name,
+                'collects'      => $collects
             ]);
         }
         else
@@ -40,7 +45,7 @@ class HomeController extends Controller
             {
                 $user = $this->findUser($request);
                 $pass = $request->get('password');
-                
+
                 if($user)
                 {
                     // if(env('PASSWORD_HASH') && Hash::check($request->get('password'), $user->password))
@@ -53,11 +58,13 @@ class HomeController extends Controller
                         Auth::login($user);
                         Auth::user() ? Log::channel('mysql')->info('Usuário: ' . $user->name . ' logou!') : Log::channel('mysql')->error('Usuário: ' . $user->name . ' erro, não logou!');
 
+                        $collects = $this->collectRepository->whereMonth('date', '=', date('m'))->get();
                         return view('home', [
-                            'namepage' => 'Home',
-                            'threeview' => null,
-                            'titlespage' => ['Dashboard'],
-                            'titlecard' => 'Bem vindo (a)',
+                            'namepage'      => 'Home',
+                            'threeview'     => null,
+                            'titlespage'    => ['Dashboard'],
+                            'titlecard'     => 'Bem vindo(a) ' . Auth::user()->name,
+                            'collects'      => $collects
                         ]);
                     }
                     else
