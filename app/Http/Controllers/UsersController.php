@@ -29,110 +29,150 @@ class UsersController extends Controller
 
     public function index()
     {
-        $users_list  = $this->repository->where([['active', 'on'], ['id', '>', 1]])->get();
-        $typeUsers_list = $this->repository->typeUser_list();
+        if(!\Auth::check())
+        {
+            session()->flash('return');
+            return view('auth.login');
+        }
+        else
+        {
+            $users_list  = $this->repository->where([['active', 'on'], ['id', '>', 1]])->get();
+            $typeUsers_list = $this->repository->typeUser_list();
 
-        return view('user.index', [
-            'namepage'      => 'Usuário',
-            'threeview'     => 'Cadastros',
-            'titlespage'    => ['Cadastro de usuários'],
-            'titlecard'     => 'Lista de usuários',
-            'titlemodal'    => 'Cadastrar usuário',
-            'add'           => true,
-            //Lists for select
-            'typeUsers_list' => $typeUsers_list,
-            //Info of entitie
-            'table' => $this->repository->getTable(),
-            'thead_for_datatable' => ['Nome', 'E-mail/Login', 'Tipo', 'Criado', 'Última atualização'],
-            'users_list' => $users_list
-        ]);
+            return view('user.index', [
+                'namepage'      => 'Usuário',
+                'threeview'     => 'Cadastros',
+                'titlespage'    => ['Cadastro de usuários'],
+                'titlecard'     => 'Lista de usuários',
+                'titlemodal'    => 'Cadastrar usuário',
+                'add'           => true,
+                //Lists for select
+                'typeUsers_list' => $typeUsers_list,
+                //Info of entitie
+                'table' => $this->repository->getTable(),
+                'thead_for_datatable' => ['Nome', 'E-mail/Login', 'Tipo', 'Criado', 'Última atualização'],
+                'users_list' => $users_list
+            ]);
+        }
     }
 
     public function store(UserCreateRequest $request)
     {
-        try 
+        if(!\Auth::check())
         {
-            $this->validator->with($request->all())->passesOrFail(ValidatorInterface::RULE_CREATE);
-            $user = $this->repository->create($request->all());
+            session()->flash('return');
+            return view('auth.login');
+        }
+        else
+        {
+            try 
+            {
+                $this->validator->with($request->all())->passesOrFail(ValidatorInterface::RULE_CREATE);
+                $user = $this->repository->create($request->all());
 
-            $response = [
-                'message' => 'Usuário criado.',
-                'type'   => 'info',
-            ];
+                $response = [
+                    'message' => 'Usuário criado.',
+                    'type'   => 'info',
+                ];
+            }
+            catch (ValidatorException $e) 
+            {
+                $response = [
+                    'message' =>  $e->getMessageBag(),
+                    'type'    => 'error'
+                ];
+            }
+            session()->flash('return', $response);
+            return redirect()->route('user.index');
         }
-        catch (ValidatorException $e) 
-        {
-            $response = [
-                'message' =>  $e->getMessageBag(),
-                'type'    => 'error'
-            ];
-        }
-        session()->flash('return', $response);
-        return redirect()->route('user.index');
     }
 
     public function edit($id)
     {
-        $user = $this->repository->find($id);
-        $typeUsers_list = $this->repository->typeUser_list();
+        if(!\Auth::check())
+        {
+            session()->flash('return');
+            return view('auth.login');
+        }
+        else
+        {
+            $user = $this->repository->find($id);
+            $typeUsers_list = $this->repository->typeUser_list();
 
-        return view('user.edit', [
-            'namepage'       => 'Usuário',
-            'threeview'      => 'Cadastros',
-            'titlespage'     => ['Cadastro de usuários'],
-            'titlecard'      => 'Editar usuário',
-            'typeUsers_list' => $typeUsers_list,
-            'table'          => $this->repository->getTable(),
-            'goback'         => true,
-            'add'            => false,
-            'user'           => $user
-        ]);
+            return view('user.edit', [
+                'namepage'       => 'Usuário',
+                'threeview'      => 'Cadastros',
+                'titlespage'     => ['Cadastro de usuários'],
+                'titlecard'      => 'Editar usuário',
+                'typeUsers_list' => $typeUsers_list,
+                'table'          => $this->repository->getTable(),
+                'goback'         => true,
+                'add'            => false,
+                'user'           => $user
+            ]);
+        }
     }
 
     public function update(UserUpdateRequest $request, $id)
     {
-        try 
+        if(!\Auth::check())
         {
-            $request->all()['password'] != null ? $userRequest = $request->all() : $userRequest = $request->except('password');
-            $this->validator->with($userRequest)->passesOrFail(ValidatorInterface::RULE_UPDATE);
-            $user = $this->repository->update($userRequest, $id);
-
-            $response = [
-                'message' => 'Usuário atualizado',
-                'type'   => 'info',
-            ];
-        } 
-        catch (ValidatorException $e) 
-        { 
-            $response = [
-                'message' =>  $e->getMessageBag(),
-                'type'    => 'error'
-            ];
+            session()->flash('return');
+            return view('auth.login');
         }
-        session()->flash('return', $response);
-        return redirect()->route('user.index');
+        else
+        {
+            try 
+            {
+                $request->all()['password'] != null ? $userRequest = $request->all() : $userRequest = $request->except('password');
+                $this->validator->with($userRequest)->passesOrFail(ValidatorInterface::RULE_UPDATE);
+                $user = $this->repository->update($userRequest, $id);
+
+                $response = [
+                    'message' => 'Usuário atualizado',
+                    'type'   => 'info',
+                ];
+            } 
+            catch (ValidatorException $e) 
+            { 
+                $response = [
+                    'message' =>  $e->getMessageBag(),
+                    'type'    => 'error'
+                ];
+            }
+            session()->flash('return', $response);
+            return redirect()->route('user.index');
+        }
     }
 
     public function destroy($id)
     {
-        try 
+        if(!\Auth::check())
         {
-            $user = $this->repository->find($id);
-            $user->update(['active' => 'off']);
-            $response = [
-                'message' => 'Usuário deletado',
-                'type'   => 'info',
-            ];
-        } 
-        catch (ValidatorException $e) 
-        { 
-            $response = [
-                'message' =>  $e->getMessageBag(),
-                'type'    => 'error'
-            ];
+            session()->flash('return');
+            return view('auth.login');
         }
-        session()->flash('return', $response);
-        return redirect()->route('user.index');
+        else
+        {
+            try 
+            {
+                $user = $this->repository->find($id);
+                $user->update(['active' => 'off']);
+                $response = [
+                    'message' => 'Usuário deletado',
+                    'type'   => 'info',
+                ];
+            } 
+            catch (ValidatorException $e) 
+            { 
+                $response = [
+                    'message' =>  $e->getMessageBag(),
+                    'type'    => 'error'
+                ];
+            }
+            session()->flash('return', $response);
+            return redirect()->route('user.index');
+        }
     }
 
     //Methods not used

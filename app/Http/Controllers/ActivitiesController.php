@@ -45,15 +45,13 @@ class ActivitiesController extends Controller
                 $cancellationType_list = $this->cancellationTypeRepository->pluck('name', 'id');
                 $collector  = $this->collectorRepository->where('user_id', Auth::user()->id)->first();
                 $activity   = $this->repository->whereDate('start', $dateNow)
-                                                ->where([
-                                                    ['user_id', Auth::user()->id],
+                                                ->where([['user_id', Auth::user()->id],
                                                     ['collector_id', $collector->id]])
                                                 ->first();
                 $collect_list   = $this->collectRepository->whereDate('date', $dateNow)
-                                                            ->where([
-                                                                ['collector_id', $collector->id], 
-                                                                ['status', '>', 3]
-                                                            ])->orderBy('date')->get();
+                                                            ->where([['collector_id', $collector->id], 
+                                                                    ['status', '>', 3]])
+                                                            ->orderBy('date')->get();
                 // IF ALL COLLECTS DONE
                 if($activity->end == null)
                 {
@@ -88,64 +86,74 @@ class ActivitiesController extends Controller
 
     public function store(ActivityCreateRequest $request)
     {
-        try
+        if(!\Auth::check())
         {
-            $dateNow = date("Y-m-d H:i");
-            $dateNowShort = date("Y-m-d");
-
-            $data = [
-                'status'    => '1', // progress
-                'start' => $dateNow,
-                'collector_id' => $request->get('collector_id'),
-                'user_id' => $request->get('user_id')
-            ];
-
-            $this->validator->with($data)->passesOrFail(ValidatorInterface::RULE_CREATE);
-            $activity = $this->repository->create($data);
-            
-            $ok = Collect::whereDate('date', $dateNowShort)->where([
-                ['collector_id', $request->get('collector_id')], 
-                ['status', '>', 3]
-               ])->update(['status' => '5']);
-            
-            $response = [
-                'message' => 'Rota iniciada!',
-                'type'   => 'info',
-            ];
+            session()->flash('return');
+            return view('auth.login');
         }
-        catch (ValidatorException $e)
+        else
         {
-            $response = [
-                'message' =>  $e->getMessageBag(),
-                'type'    => 'error'
-            ];
+            try
+            {
+                $dateNow = date("Y-m-d H:i");
+                $dateNowShort = date("Y-m-d");
+                $data = [
+                    'status'    => '1', // progress
+                    'start' => $dateNow,
+                    'collector_id' => $request->get('collector_id'),
+                    'user_id' => $request->get('user_id')
+                ];
+                $this->validator->with($data)->passesOrFail(ValidatorInterface::RULE_CREATE);
+                $activity = $this->repository->create($data);
+                $ok = Collect::whereDate('date', $dateNowShort)->where([['collector_id', $request->get('collector_id')], 
+                                                                        ['status', '>', 3]])
+                                                                ->update(['status' => '5']);
+                $response = [
+                    'message' => 'Rota iniciada!',
+                    'type'   => 'info',
+                ];
+            }
+            catch (ValidatorException $e)
+            {
+                $response = [
+                    'message' =>  $e->getMessageBag(),
+                    'type'    => 'error'
+                ];
+            }
+            session()->flash('return', $response);
+            return redirect()->route('activity.index');
         }
-        session()->flash('return', $response);
-        return redirect()->route('activity.index');
     }
 
     public function close(Request $request, $id)
     {
-        $dateNow = date("Y-m-d H:i");
-        $activity = $this->repository->find($id);
-        try 
+        if(!\Auth::check())
         {
-            $this->repository->update(['status' => '3', 'end' => $dateNow, 'reasonCancellation' => $request->get('reasonCancellation')], $activity->id);
-
-            $response = [
-                'message' => 'Rota ' . $activity->id . ' encerrada',
-                'type'    => 'info'
-            ];
-        } 
-        catch (\Exception $e) 
-        {
-            $response = [
-                'message' => $e->getMessage(),
-                'type'    => 'erro'
-            ];
+            session()->flash('return');
+            return view('auth.login');
         }
-        session()->flash('return', $response);
-        return redirect()->route('home');
+        else
+        {
+            $dateNow = date("Y-m-d H:i");
+            $activity = $this->repository->find($id);
+            try 
+            {
+                $this->repository->update(['status' => '3', 'end' => $dateNow, 'reasonCancellation' => $request->get('reasonCancellation')], $activity->id);
+                $response = [
+                    'message' => 'Rota ' . $activity->id . ' encerrada',
+                    'type'    => 'info'
+                ];
+            } 
+            catch (\Exception $e) 
+            {
+                $response = [
+                    'message' => $e->getMessage(),
+                    'type'    => 'erro'
+                ];
+            }
+            session()->flash('return', $response);
+            return redirect()->route('home');
+        }
     }
 
     //Methods not used

@@ -28,66 +28,86 @@ class CancellationTypesController extends Controller
 
     public function index()
     {
-        $cancellationTypes  = $this->repository->where('active', 'on')->get();  
-
-        return view('cancellationtype.index', [
-            'namepage'      => 'Cancelamento de coleta',
-            'threeview'     => 'Cadastros',
-            'titlespage'    => ['Cadastro de cancelamento de coleta'],
-            'titlecard'     => 'Lista dos cancelamentos de coleta',
-            'titlemodal'    => 'Cadastrar cancelamento de coleta',
-            'add'           => true,
-            //List of entitie
-            'table' => $this->repository->getTable(),
-            'thead_for_datatable' => ['Nome', 'Criado'],
-            'cancellationTypes' => $cancellationTypes
-        ]);
+        if(!\Auth::check())
+        {
+            session()->flash('return');
+            return view('auth.login');
+        }
+        else
+        {
+            $cancellationTypes  = $this->repository->where('active', 'on')->get();  
+            return view('cancellationtype.index', [
+                'namepage'      => 'Cancelamento de coleta',
+                'threeview'     => 'Cadastros',
+                'titlespage'    => ['Cadastro de cancelamento de coleta'],
+                'titlecard'     => 'Lista dos cancelamentos de coleta',
+                'titlemodal'    => 'Cadastrar cancelamento de coleta',
+                'add'           => true,
+                //List of entitie
+                'table' => $this->repository->getTable(),
+                'thead_for_datatable' => ['Nome', 'Criado'],
+                'cancellationTypes' => $cancellationTypes
+            ]);
+        }
     }
 
     public function store(CancellationTypeCreateRequest $request)
     {
-        try
+        if(!\Auth::check())
         {
-            $this->validator->with($request->all())->passesOrFail(ValidatorInterface::RULE_CREATE);
-            $cancellationType = $this->repository->create($request->all());
-
-            $response = [
-                'message' => 'Cancelamento cadastrado',
-                'type'   => 'info',
-            ];
+            session()->flash('return');
+            return view('auth.login');
         }
-        catch (ValidatorException $e)
+        else
         {
-            $response = [
-                'message' =>  $e->getMessageBag(),
-                'type'    => 'error'
-            ];
+            try
+            {
+                $this->validator->with($request->all())->passesOrFail(ValidatorInterface::RULE_CREATE);
+                $cancellationType = $this->repository->create($request->all());
+                $response = [
+                    'message' => 'Cancelamento cadastrado',
+                    'type'   => 'info',
+                ];
+            }
+            catch (ValidatorException $e)
+            {
+                $response = [
+                    'message' =>  $e->getMessageBag(),
+                    'type'    => 'error'
+                ];
+            }
+            session()->flash('return', $response);
+            return redirect()->route('cancellationtype.index');
         }
-        session()->flash('return', $response);
-        return redirect()->route('cancellationtype.index');
     }
 
     public function destroy($id)
     {
-        try 
+        if(!\Auth::check())
         {
-            $deleted = $this->repository->update(['active' => 'off'], $id);
-
-            $response = [
-                'message' => 'Cancelamento deletado',
-                'type'   => 'info',
-            ];
-        } 
-        catch (Exception $e) 
-        {
-            $response = [
-                'message' => $e->getMessage(),
-                'type'   => 'error',
-            ];
+            session()->flash('return');
+            return view('auth.login');
         }
-        
-        session()->flash('return', $response);
-        return redirect()->route('cancellationtype.index');
+        else
+        {
+            try 
+            {
+                $deleted = $this->repository->update(['active' => 'off'], $id);
+                $response = [
+                    'message' => 'Cancelamento deletado',
+                    'type'   => 'info',
+                ];
+            } 
+            catch (Exception $e) 
+            {
+                $response = [
+                    'message' => $e->getMessage(),
+                    'type'   => 'error',
+                ];
+            }
+            session()->flash('return', $response);
+            return redirect()->route('cancellationtype.index');
+        }
     }
 
     //Method not used

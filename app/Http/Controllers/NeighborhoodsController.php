@@ -29,121 +29,160 @@ class NeighborhoodsController extends Controller
 
     public function index()
     {
-        $neighborhoods  = $this->repository->where('active', 'on')->get();
-        $cities_list  = $this->cityRepository->where('active', 'on')->get(); // for card city
-        $regions_list = $this->repository->regions_list(); 
-        $cities_pluck_list  = $this->cityRepository->where('active', 'on')->get()->pluck('name', 'id'); // for select in neighborhood
+        if(!\Auth::check())
+        {
+            session()->flash('return');
+            return view('auth.login');
+        }
+        else
+        {
+            $neighborhoods  = $this->repository->where('active', 'on')->get();
+            $cities_list  = $this->cityRepository->where('active', 'on')->get(); // for card city
+            $regions_list = $this->repository->regions_list(); 
+            $cities_pluck_list  = $this->cityRepository->where('active', 'on')->get()->pluck('name', 'id'); // for select in neighborhood
 
-        return view('neighborhood.index', [
-            'namepage'      => 'Bairro',
-            'numberModal'   => '2',
-            'threeview'     => 'Cadastros',
-            'titlespage'    => ['Cadastro de bairros'],
-            'titlecard'     => 'Lista de bairros',
-            'titlemodal'    => 'Cadastrar bairro',
-            'titlecard2'    => 'Lista de cidades',
-            'titlemodal2'   => 'Cadastrar cidade',
-            'add'           => true,
-            //Lists of selects
-            'regions_list' => $regions_list,
-            'cities_list' => $cities_list,
-            'cities_pluck_list' => $cities_pluck_list,
-            //Info of entitie
-            'table' => $this->repository->getTable(),
-            'table2' => $this->cityRepository->getTable(),
-            'thead_for_datatable' => ['Nome', 'Taxa', 'Região', 'Cidade', 'Criado', 'Última atualização'],
-            'thead_for_datatable2' => ['Nome', 'UF', 'Criado'],
-            'neighborhoods' => $neighborhoods,
-        ]);
+            return view('neighborhood.index', [
+                'namepage'      => 'Bairro',
+                'numberModal'   => '2',
+                'threeview'     => 'Cadastros',
+                'titlespage'    => ['Cadastro de bairros'],
+                'titlecard'     => 'Lista de bairros',
+                'titlemodal'    => 'Cadastrar bairro',
+                'titlecard2'    => 'Lista de cidades',
+                'titlemodal2'   => 'Cadastrar cidade',
+                'add'           => true,
+                //Lists of selects
+                'regions_list' => $regions_list,
+                'cities_list' => $cities_list,
+                'cities_pluck_list' => $cities_pluck_list,
+                //Info of entitie
+                'table' => $this->repository->getTable(),
+                'table2' => $this->cityRepository->getTable(),
+                'thead_for_datatable' => ['Nome', 'Taxa', 'Região', 'Cidade', 'Criado', 'Última atualização'],
+                'thead_for_datatable2' => ['Nome', 'UF', 'Criado'],
+                'neighborhoods' =>
+                 $neighborhoods,
+            ]);
+        }
     }
 
     public function store(NeighborhoodCreateRequest $request)
     {
-        try 
+        if(!\Auth::check())
         {
-            $this->validator->with($request->all())->passesOrFail(ValidatorInterface::RULE_CREATE);
-            $neighborhood = $this->repository->create($request->all());
-
-            $response = [
-                'message' => 'Bairro criado',
-                'type'   => 'info',
-            ];
-        } 
-        catch (ValidatorException $e) 
-        {
-            $response = [
-                'message' =>  $e->getMessageBag(),
-                'type'    => 'error'
-            ];
+            session()->flash('return');
+            return view('auth.login');
         }
-        session()->flash('return', $response);
-        return redirect()->route('neighborhood.index');
+        else
+        {
+            try 
+            {
+                $this->validator->with($request->all())->passesOrFail(ValidatorInterface::RULE_CREATE);
+                $neighborhood = $this->repository->create($request->all());
+                $response = [
+                    'message' => 'Bairro criado',
+                    'type'   => 'info',
+                ];
+            } 
+            catch (ValidatorException $e) 
+            {
+                $response = [
+                    'message' =>  $e->getMessageBag(),
+                    'type'    => 'error'
+                ];
+            }
+            session()->flash('return', $response);
+            return redirect()->route('neighborhood.index');
+        }
     }
     
     public function edit($id)
     {
-        $neighborhood = $this->repository->find($id);
-        $regions_list = $this->repository->regions_list();
-        $cities_pluck_list  = $this->cityRepository->where('active', 'on')->get()->pluck('name', 'id');
+        if(!\Auth::check())
+        {
+            session()->flash('return');
+            return view('auth.login');
+        }
+        else
+        {
+            $neighborhood = $this->repository->find($id);
+            $regions_list = $this->repository->regions_list();
+            $cities_pluck_list  = $this->cityRepository->where('active', 'on')->get()->pluck('name', 'id');
 
-        return view('neighborhood.edit', [
-            'namepage'      => 'Bairro',
-            'threeview'     => 'Cadastros',
-            'titlespage'    => ['Cadastro de bairros'],
-            'titlecard'     => 'Bairros cadastrados',
-            'titlemodal'    => 'Cadastrar bairro',
-            'add'           => false,
-            'goback'        => true,
-            //Lists of selects
-            'regions_list'      => $regions_list,
-            'cities_pluck_list' => $cities_pluck_list,
-            //Info of entitie
-            'table'        => $this->repository->getTable(),
-            'neighborhood' => $neighborhood
-        ]);
+            return view('neighborhood.edit', [
+                'namepage'      => 'Bairro',
+                'threeview'     => 'Cadastros',
+                'titlespage'    => ['Cadastro de bairros'],
+                'titlecard'     => 'Bairros cadastrados',
+                'titlemodal'    => 'Cadastrar bairro',
+                'add'           => false,
+                'goback'        => true,
+                //Lists of selects
+                'regions_list'      => $regions_list,
+                'cities_pluck_list' => $cities_pluck_list,
+                //Info of entitie
+                'table'        => $this->repository->getTable(),
+                'neighborhood' => $neighborhood
+            ]);
+        }
     }
 
     public function update(NeighborhoodUpdateRequest $request, $id)
     {
-        try {
-
-            $this->validator->with($request->all())->passesOrFail(ValidatorInterface::RULE_UPDATE);
-            $neighborhood = $this->repository->update($request->all(), $id);
-
-            $response = [
-                'message' => 'Bairro atualizado',
-                'type'   => 'info',
-            ];
-        } catch (ValidatorException $e) {
-            $response = [
-                'message' =>  $e->getMessageBag(),
-                'type'    => 'error'
-            ];
+        if(!\Auth::check())
+        {
+            session()->flash('return');
+            return view('auth.login');
         }
-        session()->flash('return', $response);
-        return redirect()->route('neighborhood.index');
+        else
+        {
+            try {
+
+                $this->validator->with($request->all())->passesOrFail(ValidatorInterface::RULE_UPDATE);
+                $neighborhood = $this->repository->update($request->all(), $id);
+
+                $response = [
+                    'message' => 'Bairro atualizado',
+                    'type'   => 'info',
+                ];
+            } catch (ValidatorException $e) {
+                $response = [
+                    'message' =>  $e->getMessageBag(),
+                    'type'    => 'error'
+                ];
+            }
+            session()->flash('return', $response);
+            return redirect()->route('neighborhood.index');
+        }
     }
 
     public function destroy($id)
     {
-        try 
+        if(!\Auth::check())
         {
-            $deleted = $this->repository->update(['active' => 'off'], $id);
-            $response = [
-                'message' => 'Bairro deletado',
-                'type'   => 'info',
-            ];
-        } 
-        catch (Exception $e) 
-        {
-            $response = [
-                'message' => $e->getMessage(),
-                'type'   => 'error',
-            ];
+            session()->flash('return');
+            return view('auth.login');
         }
-        
-        session()->flash('return', $response);
-        return redirect()->route('neighborhood.index');
+        else
+        {
+            try 
+            {
+                $deleted = $this->repository->update(['active' => 'off'], $id);
+                $response = [
+                    'message' => 'Bairro deletado',
+                    'type'   => 'info',
+                ];
+            } 
+            catch (Exception $e) 
+            {
+                $response = [
+                    'message' => $e->getMessage(),
+                    'type'   => 'error',
+                ];
+            }
+            session()->flash('return', $response);
+            return redirect()->route('neighborhood.index');
+        }
     }
 
     //Method not used

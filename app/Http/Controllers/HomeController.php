@@ -29,7 +29,9 @@ class HomeController extends Controller
         {
             return view('home', [
                 'namepage' => 'Home',
-                'threeview' => null
+                'threeview' => null,
+                'titlespage' => ['Dashboard'],
+                'titlecard' => 'Bem vindo (a)',
             ]);
         }
         else
@@ -53,7 +55,9 @@ class HomeController extends Controller
 
                         return view('home', [
                             'namepage' => 'Home',
-                            'threeview' => null
+                            'threeview' => null,
+                            'titlespage' => ['Dashboard'],
+                            'titlecard' => 'Bem vindo (a)',
                         ]);
                     }
                     else
@@ -75,11 +79,8 @@ class HomeController extends Controller
             else
                 $response = [];
         }
-
         session()->flash('return', $response);
         return view('auth.login', $response);
-
-
     }
 
     public function findUser($req)

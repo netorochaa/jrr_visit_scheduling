@@ -25,7 +25,7 @@ class Util
         $day    = $dateSplit[0];
         $month  = $dateSplit[1];
         $year   = $dateSplit[2];
-        $hour   = $full ? '00:00:00' : "";
+        if($date[1] != null) $hour = $full ? $date[1] : ""; else $hour = $full ? '00:00:00' : "";
         
         return $year . "-" . $month . "-" . $day . " " . $hour;
     }

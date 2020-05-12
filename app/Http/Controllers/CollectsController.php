@@ -156,144 +156,128 @@ class CollectsController extends Controller
     
     public function schedule($id)
     {
-        try
+        if(!\Auth::check())
         {
-            $collect = $this->repository->find($id);
-
-            $cancellationType_list  = $this->cancellationTypeRepository->where('active', 'on')->pluck('name', 'id');
-            $patientType_list       = $this->patientTypeRepository->patientTypeWithResponsible_list();
-            $collectType_list       = $this->repository->collectType_list();
-            $statusCollects_list    = $this->repository->statusCollects_list();
-            $payment_list           = $this->repository->payment_list();
-            $userAuth_list          = $this->userRepository->where([['id', '>', 1], ['active', 'on'], ['type', '>', 2]])->pluck('name', 'name');
-            $people_list            = $this->peopleRepository->all();
-            $typeResponsible_list   = $this->peopleRepository->typeResponsible_list();
-            $covenant_list          = $this->peopleRepository->covenant_list();
-            $quant                  = count($collect->people);
-            $price                  = "R$ " . (string) count($collect->people) * $collect->neighborhood->displacementRate;
-
-            return view('collect.edit', [
-                'namepage'      => 'Coletas',
-                'numberModal'   => '2',
-                'threeview'     => null,
-                'titlespage'    => ['Coletas'],
-                'titlecard'     => 'Agendamento de coleta',
-                'titlecard2'    => 'Adicionar paciente',
-                'titlemodal'    => 'Cadastrar paciente',
-                'goback'        => false,
-                'add'           => false,
-                //Lists for select
-                'cancellationType_list' => $cancellationType_list,
-                'patientType_list'      => $patientType_list,
-                'collectType_list'      => $collectType_list,
-                'statusCollects_list'   => $statusCollects_list,
-                'cancellationType'      => $statusCollects_list,
-                'payment_list'          => $payment_list,
-                'userAuth_list'         => $userAuth_list,
-                'people_list'           => $people_list,
-                'typeResponsible_list'  => $typeResponsible_list,
-                'covenant_list'         => $covenant_list,
-                'quant'                 => $quant,
-                'price'                 => $price,
-                //Info of entitie
-                'table' => $this->repository->getTable(),
-                'collect' => $collect
-            ]);
+            session()->flash('return');
+            return view('auth.login');
         }
-        catch(Exception $e)
+        else
         {
-            $response = [
-                'message' =>  $e->getMessage(),
-                'type'    => 'error'
-            ];
-            session()->flash('return', $response);
-            return redirect()->route('collect.index');
-        }
-    }
+            try
+            {
+                $collect = $this->repository->find($id);
 
-    public function store(CollectCreateRequest $request)
-    {
-        try 
-        {
-            $this->validator->with($request->all())->passesOrFail(ValidatorInterface::RULE_CREATE);
-            $collect = $this->repository->create($request->all());
+                $cancellationType_list  = $this->cancellationTypeRepository->where('active', 'on')->pluck('name', 'id');
+                $patientType_list       = $this->patientTypeRepository->patientTypeWithResponsible_list();
+                $collectType_list       = $this->repository->collectType_list();
+                $statusCollects_list    = $this->repository->statusCollects_list();
+                $payment_list           = $this->repository->payment_list();
+                $userAuth_list          = $this->userRepository->where([['id', '>', 1], ['active', 'on'], ['type', '>', 2]])->pluck('name', 'name');
+                $people_list            = $this->peopleRepository->all();
+                $typeResponsible_list   = $this->peopleRepository->typeResponsible_list();
+                $covenant_list          = $this->peopleRepository->covenant_list();
+                $quant                  = count($collect->people);
+                $price                  = "R$ " . (string) count($collect->people) * $collect->neighborhood->displacementRate;
 
-            $response = [
-                'message' => 'Collect created.',
-                'data'    => $collect->toArray(),
-            ];
-
-            if ($request->wantsJson()) {
-
-                return response()->json($response);
-            }
-
-            return redirect()->back()->with('message', $response['message']);
-        } 
-        catch (ValidatorException $e) 
-        {
-            if ($request->wantsJson()) {
-                return response()->json([
-                    'error'   => true,
-                    'message' => $e->getMessageBag()
+                return view('collect.edit', [
+                    'namepage'      => 'Agendar coleta',
+                    'numberModal'   => '2',
+                    'threeview'     => 'Coletas',
+                    'titlespage'    => ['Coletas'],
+                    'titlecard'     => 'Agendamento de coleta',
+                    'titlecard2'    => 'Adicionar paciente',
+                    'titlemodal'    => 'Cadastrar paciente',
+                    'goback'        => false,
+                    'add'           => false,
+                    //Lists for select
+                    'cancellationType_list' => $cancellationType_list,
+                    'patientType_list'      => $patientType_list,
+                    'collectType_list'      => $collectType_list,
+                    'statusCollects_list'   => $statusCollects_list,
+                    'cancellationType'      => $statusCollects_list,
+                    'payment_list'          => $payment_list,
+                    'userAuth_list'         => $userAuth_list,
+                    'people_list'           => $people_list,
+                    'typeResponsible_list'  => $typeResponsible_list,
+                    'covenant_list'         => $covenant_list,
+                    'quant'                 => $quant,
+                    'price'                 => $price,
+                    //Info of entitie
+                    'table' => $this->repository->getTable(),
+                    'collect' => $collect
                 ]);
             }
-
-            return redirect()->back()->withErrors($e->getMessageBag())->withInput();
+            catch(Exception $e)
+            {
+                $response = [
+                    'message' =>  $e->getMessage(),
+                    'type'    => 'error'
+                ];
+                session()->flash('return', $response);
+                return redirect()->route('collect.index');
+            }
         }
     }
 
     public function update(CollectUpdateRequest $request, $id)
     {
-        try 
+        if(!\Auth::check())
         {
-            $collect = $this->repository->find($id);
-           
-            // UPDATE DATA
-            $this->validator->with($request->all())->passesOrFail(ValidatorInterface::RULE_UPDATE);
-            $collect = $this->repository->update($request->except('cancellationType_id'), $id);
-
-            $response = [
-                'message' => 'Coleta atualizada',
-                'type'    => 'info'
-            ];
-            
-            // CANCELLATION COLLECT
-            if($request->has('cancellationType_id'))
+            session()->flash('return');
+            return view('auth.login');
+        }
+        else
+        {
+            try 
             {
-                $collect['closed_at']           = Util::dateNowForDB();;
-                $collect['cancellationType_id'] = (integer) $request->get('cancellationType_id');
-                // 7 = CANCELADA POR ATENDENTE
-                $collect['status']              = '7';
-
-                // UPDATE DATA WITH TYPE CANCELLATION COLLECT
-                $this->repository->update($collect->toArray(), $collect->id);
-                // Reset values for new releasing collect
-                $collect = $this->repository->collectReset($collect);
-                $arrayCollect = $collect->toArray();
-                // remove id of array
-                unset($arrayCollect['id']);
-                // insert new releasing, available for schedule
-                $this->repository->insert($arrayCollect);
+                $collect = $this->repository->find($id);
+            
+                // UPDATE DATA
+                $this->validator->with($request->all())->passesOrFail(ValidatorInterface::RULE_UPDATE);
+                $collect = $this->repository->update($request->except('cancellationType_id'), $id);
 
                 $response = [
-                    'message' => 'Coleta cancelada',
+                    'message' => 'Coleta atualizada',
                     'type'    => 'info'
                 ];
+                
+                // CANCELLATION COLLECT
+                if($request->has('cancellationType_id'))
+                {
+                    $collect['closed_at']           = Util::dateNowForDB();;
+                    $collect['cancellationType_id'] = (integer) $request->get('cancellationType_id');
+                    // 7 = CANCELADA POR ATENDENTE
+                    $collect['status']              = '7';
 
-                session()->flash('return', $response);
-                return redirect()->route('collect.index') ;
+                    // UPDATE DATA WITH TYPE CANCELLATION COLLECT
+                    $this->repository->update($collect->toArray(), $collect->id);
+                    // Reset values for new releasing collect
+                    $collect = $this->repository->collectReset($collect);
+                    $arrayCollect = $collect->toArray();
+                    // remove id of array
+                    unset($arrayCollect['id']);
+                    // insert new releasing, available for schedule
+                    $this->repository->insert($arrayCollect);
+
+                    $response = [
+                        'message' => 'Coleta cancelada',
+                        'type'    => 'info'
+                    ];
+
+                    session()->flash('return', $response);
+                    return redirect()->route('collect.index') ;
+                }
+            } 
+            catch (ValidatorException $e) 
+            {
+                $response = [
+                    'message' => $e->getMessageBag(),
+                    'type'    => 'error'
+                ];
             }
-        } 
-        catch (ValidatorException $e) 
-        {
-            $response = [
-                'message' => $e->getMessageBag(),
-                'type'    => 'error'
-            ];
+            session()->flash('return', $response);
+            return redirect()->route('collect.schedule', $collect->id);
         }
-        session()->flash('return', $response);
-        return redirect()->route('collect.schedule', $collect->id);
     }
 
     public function reserve(Request $request)
