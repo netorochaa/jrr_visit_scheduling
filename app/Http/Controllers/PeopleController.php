@@ -13,6 +13,8 @@ use App\Repositories\PersonRepository;
 use App\Repositories\PatientTypeRepository;
 use App\Repositories\CollectRepository;
 use App\Validators\PersonValidator;
+use DateTime;
+use App\Entities\Util;
 
 date_default_timezone_set('America/Recife');
 
@@ -34,6 +36,7 @@ class PeopleController extends Controller
     {
         //Ver a possibilidade de atrelar endereço da coleta com endereço do paciente, para assim os endereço entrar automaticamente na coleta
         // dd($request->all());
+        
         try
         {
             $this->validator->with($request->all())->passesOrFail(ValidatorInterface::RULE_CREATE);
@@ -54,7 +57,7 @@ class PeopleController extends Controller
             ];
         }
         session()->flash('return', $response);
-        return redirect()->route('collect.schedule', $collect_id);
+        return $site ? redirect()->route('collect.public') : redirect()->route('collect.schedule', $collect_id);
     }
 
     public function edit($collect_id, $person_id)

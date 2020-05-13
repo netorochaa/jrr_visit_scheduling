@@ -72,14 +72,15 @@ class CollectRepositoryEloquent extends BaseRepository implements CollectReposit
           return $list;
     }
 
-    public function payment_list()
+    public function payment_list($site)
     {
         $list = [
             '1' => 'EM ESPÉCIE',
             '2' => 'DÉBITO',
-            '3' => 'CRÉDITO',
-            '4' => 'CORTESIA'
+            '3' => 'CRÉDITO'
           ];
+
+          if(!$site) array_push($list, ['4' => 'CORTESIA']);
 
           return $list;
     }

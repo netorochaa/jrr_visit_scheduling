@@ -76,10 +76,7 @@ class ActivitiesController extends Controller
                     'table'         => $this->repository->getTable(),
                     'activity'      => $activity
                 ]);
-            }else return view('home', [
-                                        'namepage' => 'Home',
-                                        'threeview' => null
-                                      ]);
+            }else return redirect()->route('home');
         }
         else return view('auth.login');
     }

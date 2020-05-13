@@ -6,17 +6,19 @@
     @endif
     <div class="card-body">
         <div class="row">
-            @include('templates.components.input',  ['label' => 'Nome',         'col' => '4', 'input'  => 'name',             'attributes' => ['required' => 'true', 'class' => 'form-control']])
-            @include('templates.components.input',  ['label' => 'Nascimento',   'col' => '4', 'input'  => 'birth',            'attributes' => ['required' => 'true', 'class' => 'form-control', 'data-inputmask' => "'mask': '99/99/9999'", 'data-date', 'im-insert' => 'true']])
-            @include('templates.components.select', ['label' => 'Tipo',         'col' => '4', 'select' => 'patientTypes_id',  'attributes' => ['id' => 'selectPatientTypes', 'onchange' => 'changeResponsible(this)', 'class' => 'form-control', 'style' => 'width: 100%;'], 'data' => $patientType_list->pluck('nameFull', 'id')])
+            @include('templates.components.input',  ['label' => 'Nome',         'col' => '4', 'input'  => 'name',   'attributes' => ['required' => 'true', 'class' => 'form-control']])
+            @include('templates.components.input',  ['label' => 'Nascimento',   'col' => '4', 'input'  => 'birth',  'attributes' => ['required' => 'true', 'class' => 'form-control', 'data-inputmask' => "'mask': '99/99/9999'", 'data-date', 'im-insert' => 'true']])
+            @include('templates.components.input',  ['label' => 'E-mail',       'col' => '4', 'input'  => 'email',  'attributes' => ['class'    => 'form-control']])
             {{-- LINE --}}
+        @if($collect->status != 2) 
             @include('templates.components.input',  ['label' => 'RA',       'col' => '4', 'input'  => 'ra',     'attributes' => ['class' => 'form-control', 'data-inputmask' => "'mask': '9999999999'", 'data-ra', 'im-insert' => 'true']])
+        @endif
             @include('templates.components.input',  ['label' => 'CPF',      'col' => '4', 'input'  => 'CPF',    'attributes' => ['required' => 'true', 'class' => 'form-control', 'data-inputmask' => "'mask': '99999999999'", 'data-cpf', 'im-insert' => 'true']])
             @include('templates.components.input',  ['label' => 'Contato',  'col' => '4', 'input'  => 'fone',   'attributes' => ['required' => 'true', 'class' => 'form-control', 'data-inputmask' => "'mask': '(99) 99999-9999'", 'data-fone', 'im-insert' => 'true']])
             {{-- LINE --}}
             @include('templates.components.input',  ['label' => 'Outro contato', 'col' => '4', 'input'  => 'otherFone', 'attributes' => ['class'    => 'form-control', 'data-inputmask' => "'mask': '(99) 99999-9999'", 'data-fone', 'im-insert' => 'true']])
             @include('templates.components.input',  ['label' => 'RG',            'col' => '4', 'input'  => 'RG',        'attributes' => ['class'    => 'form-control']])
-            @include('templates.components.input',  ['label' => 'E-mail',        'col' => '4', 'input'  => 'email',     'attributes' => ['class'    => 'form-control']])
+            @include('templates.components.select', ['label' => 'Tipo',         'col' => '4', 'select' => 'patientTypes_id',  'attributes' => ['id' => 'selectPatientTypes', 'onchange' => 'changeResponsible(this)', 'class' => 'form-control', 'style' => 'width: 100%;'], 'data' => $patientType_list->pluck('nameFull', 'id')])
         </div>
         <hr>
         <h4 class="lead">Responsável</h4>

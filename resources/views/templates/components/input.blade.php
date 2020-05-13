@@ -1,4 +1,4 @@
-<div class="col-{{ $col ?? null }}">
+<div class="col-sm-{{ $col ?? null }}">
 	@if ($label != null) 
 		<label>{{ $label }}</label>
 	@endif

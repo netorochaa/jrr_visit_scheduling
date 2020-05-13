@@ -1,4 +1,4 @@
-@extends('templates.master')
+@extends('templates.public')
 
 @section('head-distinct')
   {{-- Select2 --}}
@@ -9,11 +9,11 @@
 @endsection
 
 @section('content')
-  @include('templates.content.header')  
+  @include('templates.content.header')
   @if($neighborhood_model)
-    @include('templates.content.content1col', ['contentbody' => 'collect.register'])
+    @include('templates.content.content1col', ['contentbody' => 'collect.public.public_register'])
   @else
-    @include('templates.content.content1col', ['contentbody' => 'collect.selectNeighborhood'])
+    @include('templates.content.content1col', ['contentbody' => 'collect.public.public_selectNeighborhood'])
   @endif
 @endsection
 
@@ -31,7 +31,7 @@
 
       //Initialize daterangepicker Elements
       $('input[id="schedulingDate"]').daterangepicker({
-        "minDate": moment(),
+        "minDate": moment().add('2', 'days'),
         "singleDatePicker": true,
         locale: {
           "format": "DD/MM/YYYY",
@@ -80,7 +80,7 @@
         
           $("#describe-feedback").html("Carregando...");
           
-          $.getJSON("available?neighborhood_id=" + neighborhood + "&datecollect=" + date, function(dados) {
+          $.getJSON("../available?neighborhood_id=" + neighborhood + "&datecollect=" + date, function(dados) {
             if(dados.length > 0){
               var option = '<option>Selecione</option>';
               $.each(dados, function(i, obj){

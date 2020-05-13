@@ -41,6 +41,10 @@ Route::get('/confirmed/{id}', ['as' => 'collect.confirmed', 'uses' => 'CollectsC
 Route::get('/close/{id}', ['as' => 'collect.close', 'uses' => 'CollectsController@close']);
 Route::get('/available', ['as' => 'collect.available', 'uses' => 'CollectsController@available']);
 
+// Collect public
+Route::get('/public/collect', ['as' => 'collect.public', 'uses' => 'CollectsController@publicCollect']);
+Route::get('/public/schedule/{id}', ['as' => 'collect.public.public_schedule', 'uses' => 'CollectsController@publicSchedule']);
+
 // Person
 Route::resource('collect.person', 'PeopleController');
 Route::post('/people/collect', ['as' => 'person.collect.attach', 'uses' => 'PeopleController@attachPeopleCollect']);

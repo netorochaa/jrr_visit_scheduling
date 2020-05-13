@@ -16,6 +16,15 @@ class DatabaseSeeder extends Seeder
      */
     public function run()
     {
+        $this->createUser();
+        $this->createCancellationType();
+        $this->createPatientType();
+        $this->createCity();
+        $this->createNeighborhood();
+    }
+
+    public function createUser()
+    {
         User::create([
             'email' => 'jose.neto@roseannedore.com.br',
             'password' => env('PASSWORD_HASH') ? bcrypt('123') : '123',
@@ -23,10 +32,14 @@ class DatabaseSeeder extends Seeder
             'type' => '99',
             'active' => 'on'
         ]);
-        $this->createCancellationType();
-        $this->createPatientType();
-        $this->createCity();
-        $this->createNeighborhood();
+
+        User::create([
+            'email' => 'contato@roseannedore.com.br',
+            'password' => env('PASSWORD_HASH') ? bcrypt('123') : '123',
+            'name' => 'Site',
+            'type' => '1',
+            'active' => 'off'
+        ]);
     }
 
     private function createCancellationType()

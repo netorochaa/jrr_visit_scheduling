@@ -170,7 +170,7 @@ class CollectsController extends Controller
                 $cancellationType_list  = $this->cancellationTypeRepository->where('active', 'on')->pluck('name', 'id');
                 $patientType_list       = $this->patientTypeRepository->patientTypeWithResponsible_list();
                 $collectType_list       = $this->repository->collectType_list();
-                $statusCollects_list    = $this->repository->statusCollects_list();
+                // $statusCollects_list    = $this->repository->statusCollects_list();
                 $payment_list           = $this->repository->payment_list();
                 $userAuth_list          = $this->userRepository->where([['id', '>', 1], ['active', 'on'], ['type', '>', 2]])->pluck('name', 'name');
                 $people_list            = $this->peopleRepository->all();
@@ -193,8 +193,7 @@ class CollectsController extends Controller
                     'cancellationType_list' => $cancellationType_list,
                     'patientType_list'      => $patientType_list,
                     'collectType_list'      => $collectType_list,
-                    'statusCollects_list'   => $statusCollects_list,
-                    'cancellationType'      => $statusCollects_list,
+                    // 'statusCollects_list'   => $statusCollects_list,
                     'payment_list'          => $payment_list,
                     'userAuth_list'         => $userAuth_list,
                     'people_list'           => $people_list,
@@ -282,10 +281,13 @@ class CollectsController extends Controller
 
     public function reserve(Request $request)
     {
-        $ids = explode(",", $request->all()['infoCollect']);
-        $idCollect = $ids[0];
-        $idNeighborhood = $ids[1];
-        $idOrigin = Auth::user()->id;
+        // dd($request->all());
+        // ORIGIN OF RESERVE, SITE OR RECEPCIONIST
+        $site           = $request->has('site') ? true : false;
+        $idCollect      = $request->get('infoCollect');
+        $idNeighborhood = $request->get('neighborhood_id');
+        $idOrigin       = $site ? 2 : Auth::user()->id;
+        $status         = $site ? 2 : 3;
 
         $collect = $this->repository->find($idCollect);
 
@@ -296,14 +298,22 @@ class CollectsController extends Controller
                 'type'    => 'error'
             ];
             session()->flash('return', $response);
-            return redirect()->route('collect.index');
+            return $site ? redirect()->route('collect.public') : redirect()->route('collect.index');
         }
         else
         {
             try {
-                $this->repository->update(['user_id' => $idOrigin, 'neighborhood_id' => $idNeighborhood, 'status' => 3, 'reserved_at' => new DateTime()], $idCollect);
+                $this->repository->update(['user_id' => $idOrigin, 'neighborhood_id' => $idNeighborhood, 'status' => $status, 'reserved_at' => new DateTime()], $idCollect);
+                
+                //START SESSION
+                if($site) 
+                {
+                    $request->session()->put('collect', $collect);
+                    $request->session()->put('timer', date('Y-m-d H:i'));
+                }
+                
                 $response = [
-                    'message' => 'Data e horário reservados',
+                    'message' => $site ? 'Data e horário reservados por 10 minutos, preencha os demais dados para confirmar reserva.' : 'Data e horário reservados',
                     'type'    => 'info'
                 ];
             } catch (\Exception $e) {
@@ -313,7 +323,7 @@ class CollectsController extends Controller
                 ];
             }
             session()->flash('return', $response);
-            return redirect()->route('collect.schedule', $collect->id);
+            return $site ? redirect()->route('collect.public.public_schedule', $collect->id) : redirect()->route('collect.schedule', $collect->id);
         }
     }
 
@@ -355,7 +365,7 @@ class CollectsController extends Controller
 
     public function close(Request $request, $id)
     {
-        $collect = $this->repository->find($id);     
+        $collect = $this->repository->find($id);
         // dd($request->all());
         try 
         {
@@ -365,7 +375,7 @@ class CollectsController extends Controller
                 $collect['closed_at'] = Util::dateNowForDB();
                 // 8 = CANCELADO EM ROTA
                 // UPDATE DATA WITH TYPE CANCELLATION COLLECT
-                $this->repository->update(['status' => 8, 'cancellationType_id' => (integer)$request->get('cancellationType_id'), 'user_id_cancelled' => Auth::user()->id, 'closed_at' => Util::dateNowForDB()], $collect->id);
+                $this->repository->update(['status' => 8, 'cancellationType_id' => (integer)$request->get('cancellationType_id'), 'user_id_cancelled' => $idUser, 'closed_at' => Util::dateNowForDB()], $collect->id);
            }
            else
            {
@@ -387,6 +397,73 @@ class CollectsController extends Controller
         }
         session()->flash('return', $response);
         return redirect()->route('activity.index');
+    }
+
+    // SCHEDULE PUBLIC
+    public function publicCollect(Request $request)
+    {
+        // $request->session()->flush();
+        // dd($request->session()->all());
+        if(!$request->has('neighborhood'))
+        {
+            $neighborhood_list  = $this->neighborhoodRepository->where('active', 'on')->get();
+        }
+        else
+        {
+            $neighborhood_model = $this->neighborhoodRepository->find($request->get('neighborhood'));
+        }
+        return view('collect.public.public_index', [
+            'titlespage' => ['Coleta Domiciliar'],
+            'titlecard'  => 'Agendar coleta',
+            'neighborhood_list'     => $neighborhood_list ?? null,
+            'neighborhood_model'    => $neighborhood_model ?? null,
+        ]);
+    }
+
+    public function publicSchedule($id)
+    {
+        try
+        {
+            $collect = $this->repository->find($id);
+
+            $cancellationType_list  = $this->cancellationTypeRepository->where('active', 'on')->pluck('name', 'id');
+            $patientType_list       = $this->patientTypeRepository->patientTypeWithResponsible_list();
+            $collectType_list       = $this->repository->collectType_list();
+            // $statusCollects_list    = $this->repository->statusCollects_list();
+            $payment_list           = $this->repository->payment_list(true);
+            $typeResponsible_list   = $this->peopleRepository->typeResponsible_list();
+            $covenant_list          = $this->peopleRepository->covenant_list();
+            $quant                  = count($collect->people);
+            $price                  = "R$ " . (string) count($collect->people) * $collect->neighborhood->displacementRate;
+
+            return view('collect.public.public_edit', [
+                'titlespage'    => ['Coleta Domiciliar'],
+                'titlecard'     => 'Dados de coleta',
+                'titlemodal'    => 'Cadastrar paciente',
+                //Lists for select
+                'cancellationType_list' => $cancellationType_list,
+                'patientType_list'      => $patientType_list,
+                'collectType_list'      => $collectType_list,
+                // 'statusCollects_list'   => $statusCollects_list,
+                'payment_list'          => $payment_list,
+                'typeResponsible_list'  => $typeResponsible_list,
+                'covenant_list'         => $covenant_list,
+                'quant'                 => $quant,
+                'price'                 => $price,
+                //Info of entitie
+                'table' => $this->repository->getTable(),
+                'collect' => $collect
+            ]);
+        }
+        catch(Exception $e)
+        {
+            $response = [
+                'message' =>  $e->getMessage(),
+                'type'    => 'error'
+            ];
+            session()->flash('return', $response);
+            return redirect()->route('collect.index');
+        }
     }
 
     /**
