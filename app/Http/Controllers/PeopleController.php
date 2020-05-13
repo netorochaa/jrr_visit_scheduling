@@ -36,7 +36,7 @@ class PeopleController extends Controller
     {
         //Ver a possibilidade de atrelar endereço da coleta com endereço do paciente, para assim os endereço entrar automaticamente na coleta
         // dd($request->all());
-        
+
         try
         {
             $this->validator->with($request->all())->passesOrFail(ValidatorInterface::RULE_CREATE);
@@ -57,7 +57,7 @@ class PeopleController extends Controller
             ];
         }
         session()->flash('return', $response);
-        return $site ? redirect()->route('collect.public') : redirect()->route('collect.schedule', $collect_id);
+        return redirect()->route('collect.schedule', $collect_id);
     }
 
     public function edit($collect_id, $person_id)

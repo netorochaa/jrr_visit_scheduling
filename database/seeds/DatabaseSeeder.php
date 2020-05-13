@@ -44,7 +44,7 @@ class DatabaseSeeder extends Seeder
 
     private function createCancellationType()
     {
-        CancellationType::create(['name' => 'DESISTÊNCIA [SITE]']);
+        CancellationType::create(['name' => 'DESISTÊNCIA [SITE]', 'active' => 'off']);
         CancellationType::create(['name' => 'REMARCADA']);
         CancellationType::create(['name' => 'DESISTÊNCIA']);
         CancellationType::create(['name' => 'GUIA NÃO AUTORIZADA']);
@@ -184,31 +184,31 @@ class DatabaseSeeder extends Seeder
         Neighborhood::create(['name' => 'SALINAS RIBAMAR',      'displacementRate' => '15.00', 'region' => '2', 'city_id' => 4]);
 
         // GUARABIRA
-        Neighborhood::create(['name' => 'AREIA BRANCA',         'displacementRate' => '15.00', 'region' => '1', 'city_id' => 5, 'active' => 'off']);
-        Neighborhood::create(['name' => 'ASSIS CHATEAUBRIAND',  'displacementRate' => '15.00', 'region' => '1', 'city_id' => 5, 'active' => 'off']);
-        Neighborhood::create(['name' => 'BAIRRO DAS NAÇÕES',    'displacementRate' => '15.00', 'region' => '1', 'city_id' => 5, 'active' => 'off']);
-        Neighborhood::create(['name' => 'BAIRRO NOVO',          'displacementRate' => '15.00', 'region' => '1', 'city_id' => 5, 'active' => 'off']);
-        Neighborhood::create(['name' => 'BELA VISTA',           'displacementRate' => '15.00', 'region' => '1', 'city_id' => 5, 'active' => 'off']);
-        Neighborhood::create(['name' => 'BOM JESUS',            'displacementRate' => '15.00', 'region' => '1', 'city_id' => 5, 'active' => 'off']);
-        Neighborhood::create(['name' => 'CACHOEIRA',            'displacementRate' => '15.00', 'region' => '1', 'city_id' => 5, 'active' => 'off']);
-        Neighborhood::create(['name' => 'CENTRO',               'displacementRate' => '15.00', 'region' => '1', 'city_id' => 5, 'active' => 'off']);
-        Neighborhood::create(['name' => 'CLÓVIS BEZERRA',       'displacementRate' => '15.00', 'region' => '1', 'city_id' => 5, 'active' => 'off']);
-        Neighborhood::create(['name' => 'CORDEIRO',             'displacementRate' => '15.00', 'region' => '1', 'city_id' => 5, 'active' => 'off']);
-        Neighborhood::create(['name' => 'DISTRITO INDUSTRIAL',  'displacementRate' => '15.00', 'region' => '1', 'city_id' => 5, 'active' => 'off']);
-        Neighborhood::create(['name' => 'ESPLANADA',            'displacementRate' => '15.00', 'region' => '1', 'city_id' => 5, 'active' => 'off']);
-        Neighborhood::create(['name' => 'FAIXA DA PISTA',       'displacementRate' => '15.00', 'region' => '1', 'city_id' => 5, 'active' => 'off']);
-        Neighborhood::create(['name' => 'JÃO CASSIMIRO',        'displacementRate' => '15.00', 'region' => '1', 'city_id' => 5, 'active' => 'off']);
-        Neighborhood::create(['name' => 'JUÁ',                  'displacementRate' => '15.00', 'region' => '1', 'city_id' => 5, 'active' => 'off']);
-        Neighborhood::create(['name' => 'NORDESTE',             'displacementRate' => '15.00', 'region' => '1', 'city_id' => 5, 'active' => 'off']);
-        Neighborhood::create(['name' => 'NORDESTE II',          'displacementRate' => '15.00', 'region' => '1', 'city_id' => 5, 'active' => 'off']);
-        Neighborhood::create(['name' => 'MULTIRÃO',             'displacementRate' => '15.00', 'region' => '1', 'city_id' => 5, 'active' => 'off']);
-        Neighborhood::create(['name' => 'PRIMAVERA',            'displacementRate' => '15.00', 'region' => '1', 'city_id' => 5, 'active' => 'off']);
-        Neighborhood::create(['name' => 'PALMEIRA',             'displacementRate' => '15.00', 'region' => '1', 'city_id' => 5, 'active' => 'off']);
-        Neighborhood::create(['name' => 'POVOADO',              'displacementRate' => '15.00', 'region' => '1', 'city_id' => 5, 'active' => 'off']);
-        Neighborhood::create(['name' => 'RODAGEM',              'displacementRate' => '15.00', 'region' => '1', 'city_id' => 5, 'active' => 'off']);
-        Neighborhood::create(['name' => 'ROSÁRIOS',             'displacementRate' => '15.00', 'region' => '1', 'city_id' => 5, 'active' => 'off']);
-        Neighborhood::create(['name' => 'SANTA TEREZINA',       'displacementRate' => '15.00', 'region' => '1', 'city_id' => 5, 'active' => 'off']);
-        Neighborhood::create(['name' => 'SÃO JOSÉ',             'displacementRate' => '15.00', 'region' => '1', 'city_id' => 5, 'active' => 'off']);
-        Neighborhood::create(['name' => 'ZONA RURAL',           'displacementRate' => '15.00', 'region' => '1', 'city_id' => 5, 'active' => 'off']);
+        Neighborhood::create(['name' => 'AREIA BRANCA',         'displacementRate' => '15.00', 'region' => '1', 'city_id' => 5]);
+        Neighborhood::create(['name' => 'ASSIS CHATEAUBRIAND',  'displacementRate' => '15.00', 'region' => '1', 'city_id' => 5]);
+        Neighborhood::create(['name' => 'BAIRRO DAS NAÇÕES',    'displacementRate' => '15.00', 'region' => '1', 'city_id' => 5]);
+        Neighborhood::create(['name' => 'BAIRRO NOVO',          'displacementRate' => '15.00', 'region' => '1', 'city_id' => 5]);
+        Neighborhood::create(['name' => 'BELA VISTA',           'displacementRate' => '15.00', 'region' => '1', 'city_id' => 5]);
+        Neighborhood::create(['name' => 'BOM JESUS',            'displacementRate' => '15.00', 'region' => '1', 'city_id' => 5]);
+        Neighborhood::create(['name' => 'CACHOEIRA',            'displacementRate' => '15.00', 'region' => '1', 'city_id' => 5]);
+        Neighborhood::create(['name' => 'CENTRO',               'displacementRate' => '15.00', 'region' => '1', 'city_id' => 5]);
+        Neighborhood::create(['name' => 'CLÓVIS BEZERRA',       'displacementRate' => '15.00', 'region' => '1', 'city_id' => 5]);
+        Neighborhood::create(['name' => 'CORDEIRO',             'displacementRate' => '15.00', 'region' => '1', 'city_id' => 5]);
+        Neighborhood::create(['name' => 'DISTRITO INDUSTRIAL',  'displacementRate' => '15.00', 'region' => '1', 'city_id' => 5]);
+        Neighborhood::create(['name' => 'ESPLANADA',            'displacementRate' => '15.00', 'region' => '1', 'city_id' => 5]);
+        Neighborhood::create(['name' => 'FAIXA DA PISTA',       'displacementRate' => '15.00', 'region' => '1', 'city_id' => 5]);
+        Neighborhood::create(['name' => 'JÃO CASSIMIRO',        'displacementRate' => '15.00', 'region' => '1', 'city_id' => 5]);
+        Neighborhood::create(['name' => 'JUÁ',                  'displacementRate' => '15.00', 'region' => '1', 'city_id' => 5]);
+        Neighborhood::create(['name' => 'NORDESTE',             'displacementRate' => '15.00', 'region' => '1', 'city_id' => 5]);
+        Neighborhood::create(['name' => 'NORDESTE II',          'displacementRate' => '15.00', 'region' => '1', 'city_id' => 5]);
+        Neighborhood::create(['name' => 'MULTIRÃO',             'displacementRate' => '15.00', 'region' => '1', 'city_id' => 5]);
+        Neighborhood::create(['name' => 'PRIMAVERA',            'displacementRate' => '15.00', 'region' => '1', 'city_id' => 5]);
+        Neighborhood::create(['name' => 'PALMEIRA',             'displacementRate' => '15.00', 'region' => '1', 'city_id' => 5]);
+        Neighborhood::create(['name' => 'POVOADO',              'displacementRate' => '15.00', 'region' => '1', 'city_id' => 5]);
+        Neighborhood::create(['name' => 'RODAGEM',              'displacementRate' => '15.00', 'region' => '1', 'city_id' => 5]);
+        Neighborhood::create(['name' => 'ROSÁRIOS',             'displacementRate' => '15.00', 'region' => '1', 'city_id' => 5]);
+        Neighborhood::create(['name' => 'SANTA TEREZINA',       'displacementRate' => '15.00', 'region' => '1', 'city_id' => 5]);
+        Neighborhood::create(['name' => 'SÃO JOSÉ',             'displacementRate' => '15.00', 'region' => '1', 'city_id' => 5]);
+        Neighborhood::create(['name' => 'ZONA RURAL',           'displacementRate' => '15.00', 'region' => '1', 'city_id' => 5]);
     }
 }

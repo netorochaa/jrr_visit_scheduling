@@ -21,7 +21,7 @@
                 @include('templates.components.hidden', ['hidden' => 'site', 'value' => true])
             </div>
             <div class="col-sm-10">
-                @include('templates.components.select', ['label' => 'Selecione um horário e o tipo de coletador', 'col' => '12', 'select' => 'infoCollect', 'data' => [], 'attributes' => ['id' => 'infoCollectSel', 'class' => 'form-control select2bs4']])
+                @include('templates.components.select', ['label' => 'Selecione um horário e o tipo de coletador', 'col' => '12', 'select' => 'infoCollect', 'data' => [], 'attributes' => ['id' => 'infoCollectSel', 'class' => 'form-control select2bs4', 'disabled' => 'true']])
             </div>
         </div>
     </div>

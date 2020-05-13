@@ -10,9 +10,9 @@
   @include('templates.content.header')
   @include('templates.content.content1col', ['contentbody' => 'collect.schedule'])
   @include('templates.content.modallarge',  [
-    'titlemodal' => $titlemodal , 
+    'titlemodal' => $titlemodal ,
     'contentmodal' => 'collect.person.register',
-    'titlemodal2' => $titlemodal, 
+    'titlemodal2' => $titlemodal,
     'contentmodal2' => 'collect.person.registered'
     ])
 @endsection
@@ -64,7 +64,7 @@
       var selectCancellation = document.getElementById('cancellationSelect');
 
       if(checkCancellation.checked)
-        selectCancellation.disabled = false;    
+        selectCancellation.disabled = false;
       else
       {
         selectCancellation.selectedIndex = 0;
@@ -111,27 +111,30 @@
     }
 
     function activeButton(){
-      // var submitSchedule = document.getElementById('submitSchedule');
-      var buttonConfirmed = document.getElementById('buttonConfirmed');
-      var labelValue = document.getElementById('labelValue');
+        // var submitSchedule = document.getElementById('submitSchedule');
+        var buttonConfirmed = document.getElementById('buttonConfirmed');
+        var labelValue = document.getElementById('labelValue');
 
-      if(labelValue.innerHTML != "R$ 0")
-        buttonConfirmed.disabled = false;
-      else
-        buttonConfirmed.disabled = true;
+        if(buttonConfirmed != null)
+        {
+            if(labelValue.innerHTML != "R$ 0")
+                buttonConfirmed.disabled = false;
+            else
+                buttonConfirmed.disabled = true;
+        }
     }
 
     $(document).ready(function() {
       changeAuthUser();
       activeButton();
-      function limpa_formulário_cep() 
+      function limpa_formulário_cep()
       {
           // Limpa valores do formulário de cep.
           $("#rua").val("");
       }
 
       //Quando o campo cep perde o foco.
-      $("#cep").blur(function() 
+      $("#cep").blur(function()
       {
 
           //Nova variável "cep" somente com dígitos.

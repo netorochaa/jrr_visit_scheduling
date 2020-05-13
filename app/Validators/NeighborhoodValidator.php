@@ -24,9 +24,6 @@ class NeighborhoodValidator extends LaravelValidator
             'city_id' => 'required',
         ],
         ValidatorInterface::RULE_UPDATE => [
-            'name' => 'required',
-            'displacementRate' => 'required',
-            'city_id' => 'required',
         ],
     ];
 }

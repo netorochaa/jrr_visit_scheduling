@@ -127,7 +127,7 @@ class CollectsController extends Controller
     public function available(Request $request)
     {
         $neighborhood_id = $request->get('neighborhood_id');
-        $dateOfCollect   = Util::setDateLocalBRToDb($request->get('datecollect'), false); 
+        $dateOfCollect   = Util::setDateLocalBRToDb($request->get('datecollect'), false);
         $dateNow         = date("Y-m-d h:i");
         $collector_list  = $this->collectorRepository->where('active', 'on')->get();
 
@@ -146,14 +146,14 @@ class CollectsController extends Controller
                             ->whereIn('collector_id', $array_collectors)
                             ->where('status', '1')
                             ->orderBy('date')->orderBy('collector_id')
-                            ->get();         
+                            ->get();
 
-        for ($i=0; $i < count($freeDay_list); $i++) 
+        for ($i=0; $i < count($freeDay_list); $i++)
             $collect_list = $collect_list->whereNotBetween('date', [$freeDay_list[$i]['dateStart'], $freeDay_list[$i]['dateEnd']]);
 
         return $collect_list->toJson();
     }
-    
+
     public function schedule($id)
     {
         if(!\Auth::check())
@@ -171,7 +171,7 @@ class CollectsController extends Controller
                 $patientType_list       = $this->patientTypeRepository->patientTypeWithResponsible_list();
                 $collectType_list       = $this->repository->collectType_list();
                 // $statusCollects_list    = $this->repository->statusCollects_list();
-                $payment_list           = $this->repository->payment_list();
+                $payment_list           = $this->repository->payment_list(false);
                 $userAuth_list          = $this->userRepository->where([['id', '>', 1], ['active', 'on'], ['type', '>', 2]])->pluck('name', 'name');
                 $people_list            = $this->peopleRepository->all();
                 $typeResponsible_list   = $this->peopleRepository->typeResponsible_list();
@@ -228,11 +228,11 @@ class CollectsController extends Controller
         // else
         // {
             $site = $request->has('site') ? true : false;
-            try 
+            try
             {
                 $collect = $this->repository->find($id);
                 $idUser = $site ? 2 : Auth::user()->id;
-                
+
                 // UPDATE DATA
                 $this->validator->with($request->all())->passesOrFail(ValidatorInterface::RULE_UPDATE);
                 $collect = $this->repository->update($request->except('cancellationType_id', 'site'), $id);
@@ -241,7 +241,7 @@ class CollectsController extends Controller
                     'message' => 'Coleta atualizada',
                     'type'    => 'info'
                 ];
-                
+
                 // CANCELLATION COLLECT
                 if($request->has('cancellationType_id'))
                 {
@@ -269,8 +269,8 @@ class CollectsController extends Controller
                     session()->flash('return', $response);
                     return $site ? redirect()->route('collect.public') : redirect()->route('collect.index') ;
                 }
-            } 
-            catch (ValidatorException $e) 
+            }
+            catch (ValidatorException $e)
             {
                 $response = [
                     'message' => $e->getMessageBag(),
@@ -301,7 +301,7 @@ class CollectsController extends Controller
             if($sessionActive->id != (int)$idCollect) return redirect()->route('collect.public');
         }
 
-        
+
         $collect = $this->repository->find($idCollect);
 
         if($collect->neighborhood != null && $collect->status > 1)
@@ -319,12 +319,12 @@ class CollectsController extends Controller
                 $newCollect = $this->repository->update(['user_id' => $idOrigin, 'neighborhood_id' => $idNeighborhood, 'status' => $status, 'reserved_at' => new DateTime()], $idCollect);
 
                 //START SESSION
-                if($site) 
+                if($site)
                 {
                     $request->session()->put('collect', $newCollect);
                     $request->session()->put('timer', date('Y-m-d H:i'));
                 }
-                
+
                 $response = [
                     'message' => $site ? 'Data e horário reservados por 10 minutos, preencha os demais dados para confirmar reserva.' : 'Data e horário reservados',
                     'type'    => 'info'
@@ -355,7 +355,7 @@ class CollectsController extends Controller
         }
         else
         {
-            try 
+            try
             {
                 // 4 = CONFIRMADA
                 $this->repository->update(['status' => 4, 'user_id_confirmed' => $idUser, 'confirmed_at' =>  Util::dateNowForDB()], $collect->id);
@@ -363,8 +363,8 @@ class CollectsController extends Controller
                     'message' => 'Coleta ' . $collect->id . ' confirmada',
                     'type'    => 'info'
                 ];
-            } 
-            catch (Exception $e) 
+            }
+            catch (Exception $e)
             {
                 $response = [
                     'message' => $e->getMessage(),
@@ -382,7 +382,7 @@ class CollectsController extends Controller
         $collect = $this->repository->find($id);
         $idUser = $site ? 2 : Auth::user()->id;
 
-        try 
+        try
         {
            // CANCELLATION COLLECT
            if($request->get('cancellationType_id'))
@@ -402,8 +402,8 @@ class CollectsController extends Controller
                 'message' => 'Coleta ' . $collect->id . ' finalizada',
                 'type'    => 'info'
             ];
-        } 
-        catch (Exception $e) 
+        }
+        catch (Exception $e)
         {
             $response = [
                 'message' => $e->getMessage(),
@@ -491,7 +491,7 @@ class CollectsController extends Controller
     {
         $request['cancellationType_id'] = 1;
         $request['site'] = true;
-        
+
         return $this->update($request, $id);
     }
 

@@ -63,6 +63,7 @@ class NeighborhoodRepositoryEloquent extends BaseRepository implements Neighborh
                     ->select(DB::raw('concat(neighborhoods.name ,
                                         " - ", cities.name ,"-", cities.UF, " [", case
                                         when neighborhoods.region = 1 then "ZONA NORTE"
-                                        when neighborhoods.region = 2 then "ZONA SUL" END, "]") as name'), 'neighborhoods.id as id');
+                                        when neighborhoods.region = 2 then "ZONA SUL" END, "]") as name'), 'neighborhoods.id as id')
+                    ->where('neighborhoods.active', 'on');
     }
 }

@@ -77,15 +77,16 @@ class CollectRepositoryEloquent extends BaseRepository implements CollectReposit
         $list = [
             '1' => 'EM ESPÉCIE',
             '2' => 'DÉBITO',
-            '3' => 'CRÉDITO'
+            '3' => 'CRÉDITO',
+            '4' => 'CORTESIA'
           ];
 
-          if(!$site) array_push($list, ['4' => 'CORTESIA']);
+          if($site) unset($list['4']);
 
           return $list;
     }
 
-    
+
     public function collectReset($collect)
     {
         $collect['collectType'] = '1';
@@ -109,7 +110,7 @@ class CollectRepositoryEloquent extends BaseRepository implements CollectReposit
         $collect['confirmed_at'] = null;
         $collect['closed_at'] = null;
         $collect['created_at'] = null;
-        $collect['updated_at'] = null;        
+        $collect['updated_at'] = null;
 
         return $collect;
     }
