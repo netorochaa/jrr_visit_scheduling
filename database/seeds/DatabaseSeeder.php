@@ -44,6 +44,7 @@ class DatabaseSeeder extends Seeder
 
     private function createCancellationType()
     {
+        CancellationType::create(['name' => 'DESISTÊNCIA [SITE]']);
         CancellationType::create(['name' => 'REMARCADA']);
         CancellationType::create(['name' => 'DESISTÊNCIA']);
         CancellationType::create(['name' => 'GUIA NÃO AUTORIZADA']);

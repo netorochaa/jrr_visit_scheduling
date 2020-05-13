@@ -1,6 +1,18 @@
 <div class="card">
     {!! Form::open(['route' => 'collect.public', 'method' => 'get', 'role' => 'form', 'class' => 'form-horizontal']) !!}
     <div class="card-body">
+        @if ($sessionActive != null)
+            <div class="info-box mb-3 bg-warning">
+                <span class="info-box-icon"><i class="fas fa-tag"></i></span>
+                <div class="info-box-content">
+                    <span class="info-box-text">Você possui um agendamento pendente</span>
+                    <span class="info-box-number"><h4 class="lead">Nº {{ $sessionActive->id }} | {{ $sessionActive->formatted_date }} ÀS {{ $sessionActive->hour }} | {{ $sessionActive->neighborhood->name }} - {{ $sessionActive->neighborhood->city->name }}</h4></span>
+                    <button type="button" onclick="location.href='{{ route('collect.public.public_schedule', $sessionActive->id) }}'" class="btn btn-secondary">Voltar para finalizar agendamento</button>
+                    <button type="button" onclick="location.href='{{ route('collect.public.public_cancellation', $sessionActive->id) }}'" class="btn btn-danger">Cancelar agendamento</button>
+                </div>
+                <!-- /.info-box-content -->
+            </div>
+        @endif
         <div class="row">
             <div class="col-sm-12">
                 <label>Selecione o bairro da coleta</label>

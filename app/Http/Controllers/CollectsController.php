@@ -218,22 +218,24 @@ class CollectsController extends Controller
         }
     }
 
-    public function update(CollectUpdateRequest $request, $id)
+    public function update(Request $request, $id)
     {
-        if(!\Auth::check())
-        {
-            session()->flash('return');
-            return view('auth.login');
-        }
-        else
-        {
+        // if(!\Auth::check())
+        // {
+        //     session()->flash('return');
+        //     return view('auth.login');
+        // }
+        // else
+        // {
+            $site = $request->has('site') ? true : false;
             try 
             {
                 $collect = $this->repository->find($id);
-            
+                $idUser = $site ? 2 : Auth::user()->id;
+                
                 // UPDATE DATA
                 $this->validator->with($request->all())->passesOrFail(ValidatorInterface::RULE_UPDATE);
-                $collect = $this->repository->update($request->except('cancellationType_id'), $id);
+                $collect = $this->repository->update($request->except('cancellationType_id', 'site'), $id);
 
                 $response = [
                     'message' => 'Coleta atualizada',
@@ -245,8 +247,9 @@ class CollectsController extends Controller
                 {
                     $collect['closed_at']           = Util::dateNowForDB();;
                     $collect['cancellationType_id'] = (integer) $request->get('cancellationType_id');
-                    // 7 = CANCELADA POR ATENDENTE
-                    $collect['status']              = '7';
+                    $collect['user_id_cancelled']   = 2;
+                    // 7 = CANCELADA POR ATENDENTE | 8 = CANCELADA PELO SITE
+                    $collect['status']              = $site ? '8' : '7';
 
                     // UPDATE DATA WITH TYPE CANCELLATION COLLECT
                     $this->repository->update($collect->toArray(), $collect->id);
@@ -262,9 +265,9 @@ class CollectsController extends Controller
                         'message' => 'Coleta cancelada',
                         'type'    => 'info'
                     ];
-
+                    $request->session()->flush();
                     session()->flash('return', $response);
-                    return redirect()->route('collect.index') ;
+                    return $site ? redirect()->route('collect.public') : redirect()->route('collect.index') ;
                 }
             } 
             catch (ValidatorException $e) 
@@ -275,8 +278,8 @@ class CollectsController extends Controller
                 ];
             }
             session()->flash('return', $response);
-            return redirect()->route('collect.schedule', $collect->id);
-        }
+            return $site ? redirect()->route('collect.public') : redirect()->route('collect.schedule', $collect->id);
+        // }
     }
 
     public function reserve(Request $request)
@@ -285,10 +288,20 @@ class CollectsController extends Controller
         // ORIGIN OF RESERVE, SITE OR RECEPCIONIST
         $site           = $request->has('site') ? true : false;
         $idCollect      = $request->get('infoCollect');
-        $idNeighborhood = $request->get('neighborhood_id');
+        $idNeighborhood = (int)$request->get('neighborhood_id');
         $idOrigin       = $site ? 2 : Auth::user()->id;
         $status         = $site ? 2 : 3;
 
+        $sessionActive = null;
+        if($request->session()->has('collect')){
+            $sessionActive = $request->session()->get('collect');
+            // dd((int)$idCollect);
+            // dd($sessionActive->id);
+            // dd($sessionActive->id != (int)$idCollect);
+            if($sessionActive->id != (int)$idCollect) return redirect()->route('collect.public');
+        }
+
+        
         $collect = $this->repository->find($idCollect);
 
         if($collect->neighborhood != null && $collect->status > 1)
@@ -303,12 +316,12 @@ class CollectsController extends Controller
         else
         {
             try {
-                $this->repository->update(['user_id' => $idOrigin, 'neighborhood_id' => $idNeighborhood, 'status' => $status, 'reserved_at' => new DateTime()], $idCollect);
-                
+                $newCollect = $this->repository->update(['user_id' => $idOrigin, 'neighborhood_id' => $idNeighborhood, 'status' => $status, 'reserved_at' => new DateTime()], $idCollect);
+
                 //START SESSION
                 if($site) 
                 {
-                    $request->session()->put('collect', $collect);
+                    $request->session()->put('collect', $newCollect);
                     $request->session()->put('timer', date('Y-m-d H:i'));
                 }
                 
@@ -365,8 +378,10 @@ class CollectsController extends Controller
 
     public function close(Request $request, $id)
     {
+        $site = $request->has('site') ? true : false;
         $collect = $this->repository->find($id);
-        // dd($request->all());
+        $idUser = $site ? 2 : Auth::user()->id;
+
         try 
         {
            // CANCELLATION COLLECT
@@ -384,9 +399,9 @@ class CollectsController extends Controller
            }
 
            $response = [
-            'message' => 'Coleta ' . $collect->id . ' finalizada',
-            'type'    => 'info'
-        ];
+                'message' => 'Coleta ' . $collect->id . ' finalizada',
+                'type'    => 'info'
+            ];
         } 
         catch (Exception $e) 
         {
@@ -395,15 +410,20 @@ class CollectsController extends Controller
                 'type'    => 'error'
             ];
         }
+        $request->session()->flush();
         session()->flash('return', $response);
-        return redirect()->route('activity.index');
+        return $site ? redirect()->route('collect.public') : redirect()->route('activity.index');
     }
 
     // SCHEDULE PUBLIC
     public function publicCollect(Request $request)
     {
-        // $request->session()->flush();
+        $sessionActive = null;
+        if($request->session()->has('collect'))
+            $sessionActive = $request->session()->get('collect');
+
         // dd($request->session()->all());
+
         if(!$request->has('neighborhood'))
         {
             $neighborhood_list  = $this->neighborhoodRepository->where('active', 'on')->get();
@@ -415,12 +435,13 @@ class CollectsController extends Controller
         return view('collect.public.public_index', [
             'titlespage' => ['Coleta Domiciliar'],
             'titlecard'  => 'Agendar coleta',
+            'sessionActive' => $sessionActive,
             'neighborhood_list'     => $neighborhood_list ?? null,
             'neighborhood_model'    => $neighborhood_model ?? null,
         ]);
     }
 
-    public function publicSchedule($id)
+    public function publicSchedule(Request $request, $id)
     {
         try
         {
@@ -464,6 +485,14 @@ class CollectsController extends Controller
             session()->flash('return', $response);
             return redirect()->route('collect.index');
         }
+    }
+
+    public function publicCancellation(Request $request, $id)
+    {
+        $request['cancellationType_id'] = 1;
+        $request['site'] = true;
+        
+        return $this->update($request, $id);
     }
 
     /**

@@ -44,6 +44,7 @@ Route::get('/available', ['as' => 'collect.available', 'uses' => 'CollectsContro
 // Collect public
 Route::get('/public/collect', ['as' => 'collect.public', 'uses' => 'CollectsController@publicCollect']);
 Route::get('/public/schedule/{id}', ['as' => 'collect.public.public_schedule', 'uses' => 'CollectsController@publicSchedule']);
+Route::get('/public/schedule/cancellation/{id}', ['as' => 'collect.public.public_cancellation', 'uses' => 'CollectsController@publicCancellation']);
 
 // Person
 Route::resource('collect.person', 'PeopleController');

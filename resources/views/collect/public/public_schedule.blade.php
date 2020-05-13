@@ -46,6 +46,7 @@
         </div>
         <div class="card-footer">
             @include('templates.components.submit', ['input' => 'Salvar', 'attributes' => ['id' => 'submitSchedule', 'class' => 'btn btn-outline-primary']])
+            <button type="button" onclick="location.href='{{ route('collect.public.public_cancellation', $collect->id) }}'" class="btn btn-danger">Cancelar agendamento</button>
         </div>
     </div>
 {!! Form::close() !!}
