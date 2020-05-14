@@ -16,7 +16,7 @@
                 <small class="text-muted">{{ $person->patientType->name }} @if($person->typeResponsible) | {{ $person->formatted_TypeResponsible }} {{ $person->nameResponsible }} @endif</small>
             </td>
             <td>{{ $person->ra }}</td>
-            <td>{{ $person->getCovenantAttribute($person->pivot->covenant) ?? "NÃO INFORMADO" }}</td>
+            <td>{{ $person->getCovenantAttribute($person->pivot->covenant) ?? "NÃO INFORMADO"}}</td>
             <td>{{ $person->pivot->exams ?? "NÃO INFORMADO" }}</td>
             <td>
                 <div class="btn-group">

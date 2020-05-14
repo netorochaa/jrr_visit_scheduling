@@ -3,5 +3,6 @@
       <b>Version</b> 1.0.0
     </div>
     <strong>Copyright &copy; 2020 </strong> |
-    <small> Template: <a href="http://adminlte.io">AdminLTE.io</a> - Desenvolvedor Neto Rocha</small>
+    <small>Desenvolvido pelo Núcleo de Tecnologia da informação - NTI</small>
+    {{--  Template: <a href="http://adminlte.io">AdminLTE.io</a> - --}}
 </footer>

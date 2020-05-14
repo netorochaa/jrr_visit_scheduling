@@ -9,7 +9,7 @@
     <tbody>
         @foreach ($collector->neighborhoods as $neighborhoods)
         <tr>
-            <td>{{ $neighborhoods->name }}</td>
+            <td>{{ $neighborhoods->getNeighborhoodZone() }}</td>
             <td>{{ $neighborhoods->city->name }} - {{ $neighborhoods->city->UF }}</td>
             <td>
                 <div class="btn-group">

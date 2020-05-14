@@ -52,11 +52,14 @@ class ActivitiesController extends Controller
                                                             ->where([['collector_id', $collector->id], 
                                                                     ['status', '>', 3]])
                                                             ->orderBy('date')->get();
+                                                            // dd($activity);
                 // IF ALL COLLECTS DONE
-                if($activity->end == null)
+                if($activity)
                 {
-                    if(count($collect_list->where('status', 4)) == 0) 
-                        $this->repository->update(['status' => 2, 'end' => Util::dateNowForDB()], $activity->id);
+                    if($activity->end == null){
+                        if(count($collect_list->whereIn('status', [4, 5])) == 0) 
+                            $this->repository->update(['status' => 2, 'end' => Util::dateNowForDB()], $activity->id);
+                    }
                 }
                 return view('activity.index', [
                     'namepage'      => 'Rota do dia',

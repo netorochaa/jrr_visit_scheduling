@@ -68,7 +68,8 @@ class PersonRepositoryEloquent extends BaseRepository implements PersonRepositor
             '6' => 'AVÔ/AVÓ',
             '7' => 'TIO',
             '8' => 'PRIMO',
-            '9' => 'OUTROS'
+            '9' => 'CÔNJUGE',
+            '10' => 'OUTROS'
           ];
 
           return $list;

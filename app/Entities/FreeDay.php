@@ -24,7 +24,7 @@ class FreeDay extends Model implements Transformable
 
     public function collectors()
     {
-        return $this->belongsToMany(Collector::class, 'collector_has_freedays', 'freedays_id', 'collector_id',);
+        return $this->belongsToMany(Collector::class, 'collector_has_freedays', 'freedays_id', 'collector_id');
     }
 
     public function getFormattedTypeAttribute()

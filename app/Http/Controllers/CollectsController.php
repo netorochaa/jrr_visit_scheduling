@@ -249,7 +249,7 @@ class CollectsController extends Controller
                     $collect['cancellationType_id'] = (integer) $request->get('cancellationType_id');
                     $collect['user_id_cancelled']   = 2;
                     // 7 = CANCELADA POR ATENDENTE | 8 = CANCELADA PELO SITE
-                    $collect['status']              = $site ? '8' : '7';
+                    $collect['status']              = $site ? 7 : 8;
 
                     // UPDATE DATA WITH TYPE CANCELLATION COLLECT
                     $this->repository->update($collect->toArray(), $collect->id);
@@ -410,8 +410,10 @@ class CollectsController extends Controller
                 'type'    => 'error'
             ];
         }
-        $request->session()->flush();
+        
+        if($site) $request->session()->flush();
         session()->flash('return', $response);
+
         return $site ? redirect()->route('collect.public') : redirect()->route('activity.index');
     }
 
