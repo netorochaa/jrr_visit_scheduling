@@ -24,7 +24,7 @@
             <div class="col-sm-10">
                 @include('templates.components.select', ['label' => 'Selecione um horário e o tipo de coletador', 'col' => '12', 'select' => 'infoCollect', 'data' => [], 'attributes' => ['id' => 'infoCollectSel', 'class' => 'form-control select2bs4', 'disabled' => 'true']])
             </div>
-            <p class="text-muted">Prezado cliente, este agendamento será avaliado de acordo com a disponibilidade e estará sujeito a alterações na data ou horário.</p>
+            <p>Prezado cliente, este agendamento será avaliado de acordo com a disponibilidade do laboratório e estará sujeito a alterações na data ou horário.</p>
         </div>
     </div>
     <div class="card-footer">

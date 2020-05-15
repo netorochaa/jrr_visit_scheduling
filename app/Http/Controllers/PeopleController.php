@@ -40,7 +40,6 @@ class PeopleController extends Controller
         $site = $request->session()->has('collect');
         if(!Auth::check() && !$site)
         {
-            dd( $request->session()->all());
             session()->flash('return');
             return view('auth.login');
         }
@@ -65,7 +64,7 @@ class PeopleController extends Controller
                     'type'    => 'error'
                 ];
             }
-            
+
             session()->flash('return', $response);
             return $site ? redirect()->route('collect.public.schedule', $collect_id) : redirect()->route('collect.schedule', $collect_id);
         }

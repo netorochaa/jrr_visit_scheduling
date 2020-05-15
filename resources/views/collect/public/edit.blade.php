@@ -37,7 +37,20 @@
         }
       });
     });
-  
+
+    function changeAuthUser()
+    {
+      var selectPayment = document.getElementById('selPayament');
+      var inputChangePay = document.getElementById('changePay');
+
+      if(selectPayment.selectedIndex == "3")
+        inputChangePay.disabled = true;
+      else if(selectPayment.selectedIndex != "0")
+        inputChangePay.disabled = true;
+      else
+        inputChangePay.disabled = false;
+    }
+
     function changeResponsible(sel)
     {
       var selectType = document.getElementById('selectType');
@@ -79,7 +92,7 @@
     function activeButton(){
       var submitSchedule = document.getElementById('submitSchedule');
       var labelValue = document.getElementById('labelValue');
-      
+
       if(labelValue.innerHTML != "R$ 0")
         submitSchedule.disabled = false;
       else
@@ -88,14 +101,14 @@
 
     $(document).ready(function() {
       activeButton();
-      function limpa_formulário_cep() 
+      function limpa_formulário_cep()
       {
           // Limpa valores do formulário de cep.
           $("#rua").val("");
       }
 
       //Quando o campo cep perde o foco.
-      $("#cep").blur(function() 
+      $("#cep").blur(function()
       {
 
           //Nova variável "cep" somente com dígitos.

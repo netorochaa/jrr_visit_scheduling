@@ -1,5 +1,5 @@
 <div class="card">
-    {!! Form::open(['route' => 'collect.public', 'method' => 'get', 'role' => 'form', 'class' => 'form-horizontal']) !!}
+    {!! Form::open(['route' => 'public.index', 'method' => 'get', 'role' => 'form', 'class' => 'form-horizontal']) !!}
     <div class="card-body">
         @if ($sessionActive != null)
             <div class="info-box mb-3 bg-warning">
