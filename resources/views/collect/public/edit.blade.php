@@ -8,7 +8,7 @@
 
 @section('content')
   @include('templates.content.header')
-  @include('templates.content.content1col', ['contentbody' => 'collect.public.public_schedule'])
+  @include('templates.content.content1col', ['contentbody' => 'collect.public.schedule'])
   @include('templates.content.modallarge',  ['titlemodal' => $titlemodal , 'contentmodal' => 'collect.person.register',])
 @endsection
 
@@ -28,6 +28,13 @@
         "info": false,
         "autoWidth": false,
         "responsive": true,
+        "language": {
+          "decimal": "",
+          "emptyTable": "Nenhum paciente cadastrado! Clique no + para adicionar.",
+          "loadingRecords": "A carregar dados...",
+          "processing": "A processar...",
+          "zeroRecords": "Não foram encontrados resultados"
+        }
       });
     });
   

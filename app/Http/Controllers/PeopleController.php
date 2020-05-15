@@ -15,6 +15,7 @@ use App\Repositories\CollectRepository;
 use App\Validators\PersonValidator;
 use DateTime;
 use App\Entities\Util;
+use Auth;
 
 date_default_timezone_set('America/Recife');
 
@@ -36,33 +37,43 @@ class PeopleController extends Controller
     {
         //Ver a possibilidade de atrelar endereço da coleta com endereço do paciente, para assim os endereço entrar automaticamente na coleta
         // dd($request->all());
-
-        try
+        $site = $request->session()->has('collect');
+        if(!Auth::check() && !$site)
         {
-            $this->validator->with($request->all())->passesOrFail(ValidatorInterface::RULE_CREATE);
-            $person = $this->repository->create($request->all());
-
-            if($person != null) $person->collects()->attach($collect_id, $request->only('covenant', 'exams'));
-
-            $response = [
-                'message' => 'Paciente cadastrado',
-                'type'   => 'info',
-            ];
+            dd( $request->session()->all());
+            session()->flash('return');
+            return view('auth.login');
         }
-        catch (ValidatorException $e)
+        else
         {
-            $response = [
-                'message' =>  $e->getMessageBag(),
-                'type'    => 'error'
-            ];
+            try
+            {
+                $this->validator->with($request->all())->passesOrFail(ValidatorInterface::RULE_CREATE);
+                $person = $this->repository->create($request->all());
+
+                if($person != null) $person->collects()->attach($collect_id, $request->only('covenant', 'exams'));
+
+                $response = [
+                    'message' => 'Paciente cadastrado',
+                    'type'   => 'info',
+                ];
+            }
+            catch (ValidatorException $e)
+            {
+                $response = [
+                    'message' =>  $e->getMessageBag(),
+                    'type'    => 'error'
+                ];
+            }
+            
+            session()->flash('return', $response);
+            return $site ? redirect()->route('collect.public.schedule', $collect_id) : redirect()->route('collect.schedule', $collect_id);
         }
-        session()->flash('return', $response);
-        return redirect()->route('collect.schedule', $collect_id);
     }
 
     public function edit($collect_id, $person_id)
     {
-        if(!\Auth::check())
+        if(!Auth::check())
         {
             session()->flash('return');
             return view('auth.login');
@@ -99,7 +110,7 @@ class PeopleController extends Controller
 
     public function update(PersonUpdateRequest $request, $collect_id, $people_id)
     {
-        if(!\Auth::check())
+        if(!Auth::check())
         {
             session()->flash('return');
             return view('auth.login');
@@ -132,7 +143,7 @@ class PeopleController extends Controller
 
     public function attachPeopleCollect(Request $request)
     {
-        if(!\Auth::check())
+        if(!Auth::check())
         {
             session()->flash('return');
             return view('auth.login');
@@ -162,9 +173,10 @@ class PeopleController extends Controller
         }
     }
 
-    public function detachPeopleCollect($people_id, $collect_id)
+    public function detachPeopleCollect(Request $request, $people_id, $collect_id)
     {
-        if(!\Auth::check())
+        $site = $request->session()->has('collect');
+        if(!Auth::check() && !$site)
         {
             session()->flash('return');
             return view('auth.login');
@@ -188,7 +200,7 @@ class PeopleController extends Controller
                 ];
             }
             session()->flash('return', $response);
-            return redirect()->route('collect.schedule', $collect_id);
+            return $site ? redirect()->route('collect.public.schedule', $collect_id) : redirect()->route('collect.schedule', $collect_id);
         }
     }
 

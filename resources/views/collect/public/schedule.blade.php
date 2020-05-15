@@ -1,4 +1,4 @@
-{!! Form::model($collect, ['route' => ['collect.update', $collect->id], 'method' => 'put', 'role' => 'form', 'class' => 'form-horizontal']) !!}
+{!! Form::model($collect, ['route' => ['public.update', $collect->id], 'method' => 'put', 'role' => 'form', 'class' => 'form-horizontal']) !!}
     <div class="card">
         <div class="card-body">
             <h4 class="lead">Nº {{ $collect->id }} | Status: <b>{{ $collect->formatted_status }}</b> | Coletador: {{ $collect->collector->name }}
@@ -7,7 +7,7 @@
                 @include('templates.components.input',  ['label' => 'Data',   'col' => '4', 'input'  => 'date',         'attributes' => ['required' => 'true', 'class' => 'form-control', 'disabled' => 'true'], 'value' => $collect->formatted_date])
                 @include('templates.components.input',  ['label' => 'Hora',   'col' => '2', 'input'  => 'hour',         'attributes' => ['required' => 'true', 'class' => 'form-control', 'disabled' => 'true']])
                 @include('templates.components.input',  ['label' => 'Bairro', 'col' => '4', 'input'  => 'neighborhood', 'attributes' => ['required' => 'true', 'class' => 'form-control', 'disabled' => 'true'], 'value' => $collect->neighborhood->getNeighborhoodZone()])
-                @include('templates.components.label',  ['label' => 'Taxa',   'col' => '2', 'input'  => '',             'attributes' => ['required' => 'true', 'class' => 'form-control', 'disabled' => 'true'], 'text' => "R$ " . $collect->neighborhood->displacementRate])
+                @include('templates.components.label',  ['label' => 'Taxa (adicional acima de 2 pacientes)',   'col' => '2', 'input'  => '',             'attributes' => ['required' => 'true', 'class' => 'form-control', 'disabled' => 'true'], 'text' => "R$ " . $collect->neighborhood->displacementRate])
             </div>
             <p class="text-muted">Data e hora reservada por 10 minutos, preencha os dados abaixo e salve para confirmar sua reserva.</p>
             <hr>
@@ -46,7 +46,7 @@
         </div>
         <div class="card-footer">
             @include('templates.components.submit', ['input' => 'Salvar', 'attributes' => ['id' => 'submitSchedule', 'class' => 'btn btn-outline-primary']])
-            <button type="button" onclick="location.href='{{ route('collect.public.public_cancellation', $collect->id) }}'" class="btn btn-danger">Cancelar agendamento</button>
+            <button type="button" onclick="location.href='{{ route('collect.public.cancellation', $collect->id) }}'" class="btn btn-danger float-right">Cancelar agendamento</button>
         </div>
     </div>
 {!! Form::close() !!}

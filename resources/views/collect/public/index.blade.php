@@ -11,9 +11,9 @@
 @section('content')
   @include('templates.content.header')
   @if($neighborhood_model)
-    @include('templates.content.content1col', ['contentbody' => 'collect.public.public_register'])
+    @include('templates.content.content1col', ['contentbody' => 'collect.public.register'])
   @else
-    @include('templates.content.content1col', ['contentbody' => 'collect.public.public_selectNeighborhood'])
+    @include('templates.content.content1col', ['contentbody' => 'collect.public.neighborhood'])
   @endif
 @endsection
 
@@ -70,7 +70,6 @@
     });
 
     $(document).ready(function() {
-
       $("#schedulingDate").blur(function() 
       {
         if(verificateDate())

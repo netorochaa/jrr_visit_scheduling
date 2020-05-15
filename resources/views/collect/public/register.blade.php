@@ -1,14 +1,15 @@
 <div class="card">
-    {!! Form::open(['route' => 'collect.reserve', 'method' => 'post', 'role' => 'form', 'class' => 'form-horizontal']) !!}
+    {!! Form::open(['route' => 'collect.public.reserve', 'method' => 'post', 'role' => 'form', 'class' => 'form-horizontal']) !!}
     <div class="card-body">
+        {{-- COLOCAR INFOBOX EM PÁGINA SEPARADA POIS ESTA SENDO USADA EM DOIS ARQUIVOS --}}
         @if ($sessionActive != null)
             <div class="info-box mb-3 bg-warning">
                 <span class="info-box-icon"><i class="fas fa-tag"></i></span>
                 <div class="info-box-content">
                     <span class="info-box-text">Você possui um agendamento pendente</span>
                     <span class="info-box-number"><h4 class="lead">Nº {{ $sessionActive->id }} | {{ $sessionActive->formatted_date }} ÀS {{ $sessionActive->hour }} | {{ $sessionActive->neighborhood->name }} - {{ $sessionActive->neighborhood->city->name }}</h4></span>
-                    <button type="button" onclick="location.href='{{ route('collect.public.public_schedule', $sessionActive->id) }}'" class="btn btn-secondary">Voltar para finalizar agendamento</button>
-                    <button type="button" onclick="location.href='{{ route('collect.public.public_cancellation', $sessionActive->id) }}'" class="btn btn-danger">Cancelar agendamento</button>
+                    <button type="button" onclick="location.href='{{ route('collect.public.schedule', $sessionActive->id) }}'" class="btn btn-secondary">Voltar para finalizar agendamento</button>
+                    <button type="button" onclick="location.href='{{ route('collect.public.cancellation', $sessionActive->id) }}'" class="btn btn-danger">Cancelar agendamento</button>
                 </div>
                 <!-- /.info-box-content -->
             </div>
@@ -23,6 +24,7 @@
             <div class="col-sm-10">
                 @include('templates.components.select', ['label' => 'Selecione um horário e o tipo de coletador', 'col' => '12', 'select' => 'infoCollect', 'data' => [], 'attributes' => ['id' => 'infoCollectSel', 'class' => 'form-control select2bs4', 'disabled' => 'true']])
             </div>
+            <p class="text-muted">Prezado cliente, este agendamento será avaliado de acordo com a disponibilidade e estará sujeito a alterações na data ou horário.</p>
         </div>
     </div>
     <div class="card-footer">
