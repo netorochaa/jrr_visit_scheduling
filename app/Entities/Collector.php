@@ -14,7 +14,7 @@ class Collector extends Model implements Transformable
 
     public $timestamps = true;
     protected $table = 'collectors';
-    protected $fillable = ['name', 'mondayToFriday', 'saturday', 'sunday', 'startingAddress', 'active', 'user_id'];
+    protected $fillable = ['name', 'mondayToFriday', 'saturday', 'sunday', 'startingAddress', 'active', 'showInSite', 'user_id'];
 
     public function neighborhoods()
     {
@@ -60,7 +60,7 @@ class Collector extends Model implements Transformable
             $month = $dateSplit[1];
             $year = $dateSplit[0];
             $hour = $date[1];
-            
+
             return $day . "/" . $month . "/" . $year . " " . $hour;
         }
     }
@@ -75,8 +75,22 @@ class Collector extends Model implements Transformable
             $month = $dateSplit[1];
             $year = $dateSplit[0];
             $hour = $date[1];
-            
+
             return $day . "/" . $month . "/" . $year . " " . $hour;
+        }
+    }
+
+    public function getFormattedshowInSiteAttribute(){
+        switch ($this->attributes['showInSite']) {
+            case "on":
+                return "SIM";
+                break;
+            case null:
+                return "NÃO";
+                break;
+            default:
+                return $this->attributes['showInSite'];
+                break;
         }
     }
 }

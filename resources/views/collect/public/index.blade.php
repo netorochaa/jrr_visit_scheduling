@@ -79,7 +79,7 @@
 
           $("#describe-feedback").html("Carregando...");
 
-          $.getJSON("../available?neighborhood_id=" + neighborhood + "&datecollect=" + date, function(dados) {
+          $.getJSON("../available?site=true&neighborhood_id=" + neighborhood + "&datecollect=" + date, function(dados) {
             if(dados.length > 0){
               var option = '<option>Selecione</option>';
               $.each(dados, function(i, obj){

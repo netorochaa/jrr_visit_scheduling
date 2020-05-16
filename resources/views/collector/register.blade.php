@@ -11,14 +11,18 @@
             @include('templates.components.input', ['label' => 'Link no mapa do início da atividade do coletador', 'col' => '6', 'input' => 'startingAddress', 'attributes' => ['class' => 'form-control']])
             @include('templates.components.select', ['label' => 'Colaborador', 'col' => '6', 'select' => 'user_id', 'data' => $user_list, 'attributes' => ['class' => 'form-control select2', 'style' => 'width: 100%;']])
         </div>
+        <div class="row">
+            <div class="col-sm-6">
+                @include('templates.components.checkbox', ['label' => 'Disponível no site', 'col' => '4', 'input' => 'showInSite'])
+            </div>
+        </div>
         <h3>Horários</h3>
-
         <div class="row">
             @include('templates.components.input',  ['label' => 'Data de início/alteração', 'col' => '6', 'input' => 'dateStart', 'attributes' => ['id' => 'dateStart','require' => 'true', 'class' => 'form-control', 'autocomplete' => 'off']])
             @if($collector ?? null)
                 <div class="col-sm-6">
                     <p class="lead text-muted">É importante haver planejamento no momento de editar horários do coletadores. Procure realizar alterações para datas que não hajam coletas confirmadas, pois poderá afetar a rota do coletador. COLETAS AGENDADAS NÃO TERÃO HORÁRIOS MODIFICADOS.</p>
-                </div>        
+                </div>
             @endif
             @include('templates.components.select', ['label' => 'Segundas/sextas', 'listExists' => $collector->mondayToFriday ?? null, 'col' => '12', 'selected' => $collector->mondayToFriday ?? null, 'select' => 'mondayToFriday[]', 'data' => $schedules, 'attributes' => ['class' => 'form-control select2bs4', 'multiple' => 'multiple', 'style' => 'width: 100%;']])
             @include('templates.components.select', ['label' => 'Sábados', 'listExists' =>  $collector->saturday ?? null, 'col' => '12', 'select' => 'saturday[]', 'data' => $schedules, 'attributes' => ['class' => 'form-control select2bs4', 'multiple' => 'multiple', 'style' => 'width: 100%;']])

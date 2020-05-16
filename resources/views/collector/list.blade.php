@@ -18,10 +18,29 @@
                     Atualizado: {{ $collector->formatted_updatedAt }}
                 </small>
             </td>
-            <td>{{ $collector->mondayToFriday }}</td>
-            <td>{{ $collector->saturday }}</td>
-            <td>{{ $collector->sunday }}</td>
-            {{-- <td>{{ $collector->startingAddress }}</td> --}}
+            <td>
+                <table>
+                    @if($collector->mondayToFriday)
+                        <tr>
+                            <td>Seg-Sex</td>
+                            <td><small>{{ $collector->mondayToFriday }}</small></td>
+                        </tr>
+                    @endif
+                    @if($collector->saturday)
+                        <tr>
+                            <td>Sábados</td>
+                            <td><small>{{ $collector->saturday }}</small></td>
+                        </tr>
+                    @endif
+                    @if($collector->sunday)
+                        <tr>
+                            <td>Domingos</td>
+                            <td><small>{{ $collector->sunday }}</small></td>
+                        </tr>
+                    @endif
+                </table>
+            </td>
+            <td>{{ $collector->formatted_showInSite }}</td>
             <td>{{ $collector->user->name }}</td>
             <td style="text-align: center"><u class="badge badge-primary"> <a href="{{ route('collector.show', $collector->id) }}" style="color: white"> {{ count($collector->neighborhoods) }}</a></u> </td>
             <td>

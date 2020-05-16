@@ -6,9 +6,9 @@ use DateTime;
 use DateInterval;
 use DatePeriod;
 use DB;
+use Auth;
 use App\Entities\Util;
 
-use App\Http\Requests;
 use Prettus\Validator\Contracts\ValidatorInterface;
 use Prettus\Validator\Exceptions\ValidatorException;
 use App\Http\Requests\CollectorCreateRequest;
@@ -61,7 +61,7 @@ class CollectorsController extends Controller
                 'schedules'     => $schedules,
                 //Info of entitie
                 'table'               => $this->repository->getTable(),
-                'thead_for_datatable' => ['Nome', 'Segunda/Sexta', 'Sábados', 'Domingos', 'Colaborador', 'Bairros', 'Status'],
+                'thead_for_datatable' => ['Nome', 'Horários', 'Disponível site', 'Colaborador', 'Bairros', 'Status'],
                 'collectors_list'     => $collectors_list
             ]);
         }
@@ -69,7 +69,7 @@ class CollectorsController extends Controller
 
     public function store(CollectorCreateRequest $request)
     {
-        if(!\Auth::check())
+        if(!Auth::check())
         {
             session()->flash('return');
             return view('auth.login');
@@ -84,20 +84,22 @@ class CollectorsController extends Controller
                 // dd($request->all());
                 //Send data to array
                 if($request->has('mondayToFriday'))
-                { 
+                {
                     $arrayMondayToFriday = $request->get('mondayToFriday');
-                    $request->merge(['mondayToFriday' => implode(',', $request->get('mondayToFriday'))]); 
+                    $request->merge(['mondayToFriday' => implode(',', $request->get('mondayToFriday'))]);
                 }
                 if($request->has('saturday'))
-                { 
+                {
                     $arraySaturday = $request->get('saturday');
-                    $request->merge(['saturday' => implode(',', $request->get('saturday'))]); 
+                    $request->merge(['saturday' => implode(',', $request->get('saturday'))]);
                 }
                 if($request->has('sunday'))
-                { 
+                {
                     $arraySunday = $request->get('sunday');
-                    $request->merge(['sunday' => implode(',', $request->get('sunday'))]); 
+                    $request->merge(['sunday' => implode(',', $request->get('sunday'))]);
                 }
+
+                $request->merge(['showInSite' => $request->has('showInSite') ? 'on' : null]);
 
                 $this->validator->with($request->all())->passesOrFail(ValidatorInterface::RULE_CREATE);
                 $collector = $this->repository->create($request->all());
@@ -108,7 +110,7 @@ class CollectorsController extends Controller
 
                 $interval = new DateInterval('P1D');
                 $periodo = new DatePeriod($inicio, $interval ,$fim);
-
+                dd($arrayMondayToFriday);
                 //CRIAR MÉTODO E MOVER PARA ENTIDADE OU REPOSITORIO
                 foreach($periodo as $data)
                 {
@@ -199,7 +201,7 @@ class CollectorsController extends Controller
                 {
                     for ($i=0; $i < count($neighborhoods); $i++)
                         $collector->neighborhoods()->attach($neighborhoods[$i]);
-                    
+
                     $response = [
                         'message' => 'Bairros relacionados',
                         'type'   => 'info',
@@ -276,7 +278,7 @@ class CollectorsController extends Controller
 
     public function update(CollectorUpdateRequest $request, $id)
     {
-        if(!\Auth::check())
+        if(!Auth::check())
         {
             session()->flash('return');
             return view('auth.login');
@@ -285,36 +287,44 @@ class CollectorsController extends Controller
         {
             try
             {
+                $collector_old = $this->repository->find($id);
                 $arrayMondayToFriday = null;
                 $arraySaturday = null;
                 $arraySunday = null;
-                // dd($request->all());
                 //Send data to array
                 if($request->has('mondayToFriday'))
-                { 
+                {
                     $arrayMondayToFriday = $request->get('mondayToFriday');
-                    $request->merge(['mondayToFriday' => implode(',', $request->get('mondayToFriday'))]); 
+                    $request->merge(['mondayToFriday' => implode(',', $request->get('mondayToFriday'))]);
                 }
+                else
+                    $arrayMondayToFriday = explode(',', $collector_old->mondayToFriday);
                 if($request->has('saturday'))
-                { 
+                {
                     $arraySaturday = $request->get('saturday');
-                    $request->merge(['saturday' => implode(',', $request->get('saturday'))]); 
+                    $request->merge(['saturday' => implode(',', $request->get('saturday'))]);
                 }
+                else
+                    $arraySaturday = explode(',', $collector_old->saturday);
                 if($request->has('sunday'))
-                { 
+                {
                     $arraySunday = $request->get('sunday');
-                    $request->merge(['sunday' => implode(',', $request->get('sunday'))]); 
+                    $request->merge(['sunday' => implode(',', $request->get('sunday'))]);
                 }
+                else
+                    $arraySunday = explode(',', $collector_old->sunday);
 
+                $request->merge(['showInSite' => $request->has('showInSite') ? 'on' : null]);
+
+                // dd($request->all());
                 //UPDATE COLLECTOR
                 $this->validator->with($request->all())->passesOrFail(ValidatorInterface::RULE_UPDATE);
                 $collector = $this->repository->update($request->all(), $id);
 
                 //REMOVE OLD DATES AVAILABLES
                 $collects = $this->collectRepository->where('collector_id', $id)->get();
-                foreach($collects as $collect){
+                foreach($collects as $collect)
                     if($collect->status < 2) $this->collectRepository->destroy($collect->id);
-                }
 
                 // PREPARE NEWS DATES
                 $inicio = new DateTime(Util::setDateLocalBRToDb($request->get('dateStart'), true));

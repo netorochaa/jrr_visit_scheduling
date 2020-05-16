@@ -230,10 +230,13 @@ class CollectsController extends Controller
     // API TO GET AVAILABLES
     public function available(Request $request)
     {
+        $site = $request->has('site') ? true : false;
+        $where = $site ? ['active' => 'on', 'showInSite' => 'on'] : ['active' => 'on'];
+
         $neighborhood_id = $request->get('neighborhood_id');
         $dateOfCollect   = Util::setDateLocalBRToDb($request->get('datecollect'), false);
         $dateNow         = date("Y-m-d h:i");
-        $collector_list  = $this->collectorRepository->where('active', 'on')->get();
+        $collector_list  = $this->collectorRepository->where($where)->get();
 
         $array_collectors = [];
         foreach($collector_list as $collector)

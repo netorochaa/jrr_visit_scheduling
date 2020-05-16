@@ -13,11 +13,6 @@
         <div class="row">
             @include('templates.components.input', ['label' => 'Período', 'col' => '12', 'input' => 'dateRange', 'incon' => 'calendar-alt', 'attributes' => ['require' => 'true', 'class' => 'form-control']])
         </div>
-        <div class="row">
-            <div class="col-sm-6">
-                @include('templates.components.checkbox', ['label' => 'Ativo', 'col' => '4', 'input' => 'active', 'checked' => 'true'])
-            </div>
-        </div>
     </div>
     <div class="card-footer">
         @include('templates.components.submit', ['input' => 'Salvar', 'attributes' => ['class' => 'btn btn-outline-primary']])
