@@ -10,10 +10,14 @@ use App\Repositories\NeighborhoodRepository;
 use App\Repositories\CancellationTypeRepository;
 use App\Repositories\PatientTypeRepository;
 use App\Repositories\PersonRepository;
+use App\Repositories\CollectorRepository;
+use App\Repositories\FreeDayRepository;
 use App\Validators\CollectValidator;
 use App\Entities\Util;
 use DateTime;
 use Exception;
+use DB;
+use Log;
 
 date_default_timezone_set('America/Recife');
 
@@ -24,7 +28,8 @@ class PublicCollectController extends Controller
     protected $validator;
 
     public function __construct(CollectRepository $repository, CollectValidator $validator, NeighborhoodRepository $neighborhoodRepository,
-                                CancellationTypeRepository $cancellationTypeRepository ,PersonRepository $peopleRepository, PatientTypeRepository $patientTypeRepository)
+                                CancellationTypeRepository $cancellationTypeRepository ,PersonRepository $peopleRepository, PatientTypeRepository $patientTypeRepository,
+                                CollectorRepository $collectorRepository, FreeDayRepository $freeDayRepository)
     {
         $this->repository                 = $repository;
         $this->validator                  = $validator;
@@ -32,6 +37,99 @@ class PublicCollectController extends Controller
         $this->cancellationTypeRepository = $cancellationTypeRepository;
         $this->peopleRepository           = $peopleRepository;
         $this->patientTypeRepository      = $patientTypeRepository;
+        $this->collectorRepository        = $collectorRepository;
+        $this->freeDayRepository          = $freeDayRepository;
+    }
+
+    // API TO GET AVAILABLES
+    public function available(Request $request)
+    {
+        try
+        {
+            $site = $request->has('site') ? true : false;
+            $where = $site ? ['active' => 'on', 'showInSite' => 'on'] : ['active' => 'on'];
+
+            $neighborhood_id = $request->get('neighborhood_id');
+            $dateOfCollect   = Util::setDateLocalBRToDb($request->get('datecollect'), false);
+            $dateNow         = date("Y-m-d h:i");
+            $collector_list  = $this->collectorRepository->where($where)->get();
+
+            $array_collectors = [];
+            foreach($collector_list as $collector)
+            {
+                foreach($collector->neighborhoods as $neighborhood)
+                    if($neighborhood->id == $neighborhood_id) array_push($array_collectors, $collector->id);
+            }
+
+            $freeDay_list = $this->freeDayRepository->where('dateStart', '>', $dateNow)->get();
+            $collect_list = DB::table('collects')
+                                ->select('collects.id', 'collects.date', 'collects.hour', 'collects.status', 'collectors.name')
+                                ->join('collectors', 'collects.collector_id', '=', 'collectors.id')
+                                ->whereDate('date', $dateOfCollect)
+                                ->whereIn('collector_id', $array_collectors)
+                                ->where('status', '1')
+                                ->orderBy('date')->orderBy('collector_id');
+
+            for ($i=0; $i < count($freeDay_list); $i++)
+                $collect_list = $collect_list->whereNotBetween('date', [$freeDay_list[$i]['dateStart'], $freeDay_list[$i]['dateEnd']]);
+
+            Log::channel('mysql')->info('Get Api available: ' . $dateOfCollect . " - Bairro: " . $neighborhood_id);
+
+            return $collect_list->get()->toJson();
+        }
+        catch(Exception $e)
+        {
+            Log::channel('mysql')->info('Erro api available: ' . $e->getMessage());
+        }
+    }
+
+    // API RELEASE IN 10 MIN. COLLECTS WITH STATUS = NEW
+    public function release(Request $request)
+    {
+        $auth = $request->has('list_all_new_collects_more_10_min') ? true : false;
+        if($auth)
+        {
+            $collects = $this->repository->where('status', 2)->get();
+            if(count($collects) > 0)
+            {
+                try
+                {
+                    foreach($collects as $collect)
+                    {
+                        $reserved_at = new DateTime($collect->reserved_at);
+                        $diff_date = $reserved_at->diff(new DateTime());
+                        // dd($diff_date->i);
+                        if($diff_date->i > 10)
+                        {
+                            $id_user = 2;
+                            $request->session()->flush();
+                            // UPDATE DATA WITH TYPE CANCELLATION COLLECT
+                            $this->repository->update([
+                                'status'                => 7,
+                                'cancellationType_id'   => 2,
+                                'user_id_cancelled'     => $id_user,
+                                'closed_at'             => Util::dateNowForDB()
+                            ], $collect->id);
+                            // Reset values for new releasing collect
+                            $collect = $this->repository->collectReset($collect);
+                            $arrayCollect = $collect->toArray();
+                            // remove id of array
+                            unset($arrayCollect['id']);
+                            // insert new releasing, available for schedule
+                            $this->repository->insert($arrayCollect);
+                            Log::channel('mysql')->info('Get Api release: ' . $collect->date . ' - Tempo: ' . $diff_date->i);
+                        }
+                    }
+                }
+                catch(Exception $e)
+                {
+                    Log::channel('mysql')->info('Erro api release: ' . $e->getMessage());
+
+                    return false;
+                }
+            }
+            return true;
+        }
     }
 
     // COLLECT PUBLIC

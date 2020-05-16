@@ -9,7 +9,7 @@
 @endsection
 
 @section('content')
-  @include('templates.content.header')  
+  @include('templates.content.header')
   @if($neighborhood_model)
     @include('templates.content.content1col', ['contentbody' => 'collect.register'])
   @else
@@ -71,15 +71,15 @@
 
     $(document).ready(function() {
 
-      $("#schedulingDate").blur(function() 
+      $("#schedulingDate").blur(function()
       {
         if(verificateDate())
         {
           var date = $(this).val();
           var neighborhood = $('#inputNeighborhood').val();
-        
+
           $("#describe-feedback").html("Carregando...");
-          
+
           $.getJSON("available?neighborhood_id=" + neighborhood + "&datecollect=" + date, function(dados) {
             if(dados.length > 0){
               var option = '<option>Selecione</option>';
@@ -89,14 +89,14 @@
               $("#describe-feedback").html(dados.length + " horários para agendamento nesta data");
               $('#infoCollectSel').prop('disabled', false);
               $('#submitSelectNeighborhood').attr('disabled', false);
-              
+
             }else{
               $("#describe-feedback").html("Não há horários disponíveis para esta data!");
               $('#infoCollectSel').prop('disabled', true);
               $('#submitSelectNeighborhood').attr('disabled', true);
             }
-            $('#infoCollectSel').html(option).show(); 
-          }); 
+            $('#infoCollectSel').html(option).show();
+          });
         }else{
           $("#describe-feedback").html("Você não pode marcar coletas para esta data!");
           $('#submitSelectNeighborhood').attr('disabled', true);

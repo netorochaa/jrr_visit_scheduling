@@ -14,7 +14,6 @@ use App\Repositories\CollectorRepository;
 use App\Repositories\CancellationTypeRepository;
 use App\Repositories\UserRepository;
 use App\Repositories\PersonRepository;
-use App\Repositories\FreeDayRepository;
 use App\Repositories\PatientTypeRepository;
 use App\Repositories\ActivityRepository;
 use App\Validators\CollectValidator;
@@ -22,7 +21,6 @@ use App\Entities\Util;
 use DateTime;
 use Exception;
 use Auth;
-use DB;
 
 date_default_timezone_set('America/Recife');
 
@@ -33,8 +31,7 @@ class CollectsController extends Controller
 
     public function __construct(CollectRepository $repository, CollectValidator $validator, NeighborhoodRepository $neighborhoodRepository,
                                 CollectorRepository $collectorRepository, CancellationTypeRepository $cancellationTypeRepository, UserRepository $userRepository,
-                                PersonRepository $peopleRepository, FreeDayRepository $freeDayRepository, PatientTypeRepository $patientTypeRepository,
-                                ActivityRepository $activityRepository)
+                                PersonRepository $peopleRepository,PatientTypeRepository $patientTypeRepository, ActivityRepository $activityRepository)
     {
         $this->repository                 = $repository;
         $this->validator                  = $validator;
@@ -43,7 +40,6 @@ class CollectsController extends Controller
         $this->cancellationTypeRepository = $cancellationTypeRepository;
         $this->userRepository             = $userRepository;
         $this->peopleRepository           = $peopleRepository;
-        $this->freeDayRepository          = $freeDayRepository;
         $this->patientTypeRepository      = $patientTypeRepository;
         $this->activityRepository         = $activityRepository;
     }
@@ -226,39 +222,6 @@ class CollectsController extends Controller
             }
         }
     // END LIST PAGES
-
-    // API TO GET AVAILABLES
-    public function available(Request $request)
-    {
-        $site = $request->has('site') ? true : false;
-        $where = $site ? ['active' => 'on', 'showInSite' => 'on'] : ['active' => 'on'];
-
-        $neighborhood_id = $request->get('neighborhood_id');
-        $dateOfCollect   = Util::setDateLocalBRToDb($request->get('datecollect'), false);
-        $dateNow         = date("Y-m-d h:i");
-        $collector_list  = $this->collectorRepository->where($where)->get();
-
-        $array_collectors = [];
-        foreach($collector_list as $collector)
-        {
-            foreach($collector->neighborhoods as $neighborhood)
-                if($neighborhood->id == $neighborhood_id) array_push($array_collectors, $collector->id);
-        }
-
-        $freeDay_list = $this->freeDayRepository->where('dateStart', '>', $dateNow)->get();
-        $collect_list = DB::table('collects')
-                            ->select('collects.id', 'collects.date', 'collects.hour', 'collects.status', 'collectors.name')
-                            ->join('collectors', 'collects.collector_id', '=', 'collectors.id')
-                            ->whereDate('date', $dateOfCollect)
-                            ->whereIn('collector_id', $array_collectors)
-                            ->where('status', '1')
-                            ->orderBy('date')->orderBy('collector_id');
-
-        for ($i=0; $i < count($freeDay_list); $i++)
-            $collect_list = $collect_list->whereNotBetween('date', [$freeDay_list[$i]['dateStart'], $freeDay_list[$i]['dateEnd']]);
-
-        return $collect_list->get()->toJson();
-    }
 
     public function schedule($id)
     {
