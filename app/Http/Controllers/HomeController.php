@@ -6,8 +6,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use App\Repositories\UserRepository;
 use App\Repositories\CollectRepository;
+use App\Repositories\CollectorRepository;
 use App\Validators\UserValidator;
-use App\Entities\Util;
 use Auth;
 use Exception;
 use Log;
@@ -19,11 +19,13 @@ class HomeController extends Controller
     private $repository, $collectRepository;
     private $validator;
 
-    public function __construct(UserRepository $repository, UserValidator $validator, CollectRepository $collectRepository)
+    public function __construct(UserRepository $repository, UserValidator $validator, CollectRepository $collectRepository,
+                                CollectorRepository $collectorRepository)
     {
         $this->repository = $repository;
         $this->validator  = $validator;
         $this->collectRepository = $collectRepository;
+        $this->collectorRepository = $collectorRepository;
     }
 
     public function index(Request $request)
@@ -58,7 +60,31 @@ class HomeController extends Controller
                         Auth::login($user);
                         Auth::user() ? Log::channel('mysql')->info('Usuário: ' . $user->name . ' logou!') : Log::channel('mysql')->error('Usuário: ' . $user->name . ' erro, não logou!');
 
+                        // IF COLLECTOR
+                        if(Auth::user()->type == 2)
+                        {
+                            $collector = $this->collectorRepository->findWhere(['user_id' => Auth::user()->id])->first();
+
+                            if($collector)
+                            {
+                                $arrayMondayToFriday = null;
+                                $arraySaturday = null;
+                                $arraySunday = null;
+                                // dd($request->all());
+                                //Send data to array
+                                if($collector->mondayToFriday)
+                                    $arrayMondayToFriday = explode(',', $collector->mondayToFriday);
+                                if($collector->saturday)
+                                    $arraySaturday = explode(',', $collector->saturday);
+                                if($collector->sunday)
+                                    $arraySunday = explode(',', $collector->sunday);
+
+                                $this->collectorRepository->setAvailableCollects($arrayMondayToFriday, $arraySaturday, $arraySunday, date('d/m/Y'), $collector->id);
+                            }
+                        }
+
                         $collects = $this->collectRepository->whereMonth('date', '=', date('m'))->get();
+
                         return view('home', [
                             'namepage'      => 'Home',
                             'threeview'     => null,

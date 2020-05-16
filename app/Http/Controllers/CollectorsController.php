@@ -2,11 +2,8 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use DateTime;
-use DateInterval;
-use DatePeriod;
-use DB;
 use Auth;
+use DB;
 use App\Entities\Util;
 
 use Prettus\Validator\Contracts\ValidatorInterface;
@@ -39,7 +36,7 @@ class CollectorsController extends Controller
 
     public function index()
     {
-        if(!\Auth::check())
+        if(!Auth::check())
         {
             session()->flash('return');
             return view('auth.login');
@@ -101,63 +98,12 @@ class CollectorsController extends Controller
 
                 $request->merge(['showInSite' => $request->has('showInSite') ? 'on' : null]);
 
+                // UPDATE COLLECTOR
                 $this->validator->with($request->all())->passesOrFail(ValidatorInterface::RULE_CREATE);
                 $collector = $this->repository->create($request->all());
 
-                $inicio = new DateTime(Util::setDateLocalBRToDb($request->get('dateStart'), true));
-                $fim = new DateTime();
-                $fim->modify('+2 month');
+                $this->repository->setAvailableCollects($arrayMondayToFriday, $arraySaturday, $arraySunday, $request->get('dateStart'), $collector->id);
 
-                $interval = new DateInterval('P1D');
-                $periodo = new DatePeriod($inicio, $interval ,$fim);
-                dd($arrayMondayToFriday);
-                //CRIAR MÉTODO E MOVER PARA ENTIDADE OU REPOSITORIO
-                foreach($periodo as $data)
-                {
-                    $day = $data->format("l");
-                    $date = $data->format("Y-m-d");
-
-                    if($day == "Monday" ||
-                        $day == "Tuesday" ||
-                        $day == "Wednesday" ||
-                        $day == "Thursday" ||
-                        $day == "Friday")
-                    {
-                        if($arrayMondayToFriday)
-                        {
-                            for($i = 0; $i < count($arrayMondayToFriday); $i++)
-                            {
-                                DB::table('collects')->insert(
-                                    ['date' => $date . " " . $arrayMondayToFriday[$i], 'hour' => $arrayMondayToFriday[$i], 'collector_id' => $collector->id, 'created_at' => Util::dateNowForDB()]
-                                );
-                            }
-                        }
-                    }
-                    else if ($day == "Saturday")
-                    {
-                        if($arraySaturday)
-                        {
-                            for($i = 0; $i < count($arraySaturday); $i++)
-                            {
-                                DB::table('collects')->insert(
-                                    ['date' => $date . " " . $arraySaturday[$i], 'hour' => $arraySaturday[$i], 'collector_id' => $collector->id, 'created_at' => Util::dateNowForDB()]
-                                );
-                            }
-                        }
-                    }
-                    else if ($day == "Sunday")
-                    {
-                        if($arraySunday)
-                        {
-                            for($i = 0; $i < count($arraySunday); $i++)
-                            {
-                                DB::table('collects')->insert(
-                                    ['date' => $date . " " . $arraySunday[$i], 'hour' => $arraySunday[$i], 'collector_id' => $collector->id, 'created_at' => Util::dateNowForDB()]
-                                );
-                            }
-                        }
-                    }
-                }
                 $response = [
                     'message' => 'Coletador criado',
                     'type'   => 'info',
@@ -292,31 +238,34 @@ class CollectorsController extends Controller
                 $arraySaturday = null;
                 $arraySunday = null;
                 //Send data to array
+                // SEG A SEX
                 if($request->has('mondayToFriday'))
                 {
                     $arrayMondayToFriday = $request->get('mondayToFriday');
                     $request->merge(['mondayToFriday' => implode(',', $request->get('mondayToFriday'))]);
                 }
                 else
-                    $arrayMondayToFriday = explode(',', $collector_old->mondayToFriday);
+                    $arrayMondayToFriday = $collector_old->mondayToFriday ? explode(',', $collector_old->mondayToFriday) : null;
+                // SÁBADO
                 if($request->has('saturday'))
                 {
                     $arraySaturday = $request->get('saturday');
                     $request->merge(['saturday' => implode(',', $request->get('saturday'))]);
                 }
                 else
-                    $arraySaturday = explode(',', $collector_old->saturday);
+                    $arraySaturday = $collector_old->saturday ? explode(',', $collector_old->saturday) : null;
+                // DOMINGO
                 if($request->has('sunday'))
                 {
                     $arraySunday = $request->get('sunday');
                     $request->merge(['sunday' => implode(',', $request->get('sunday'))]);
                 }
                 else
-                    $arraySunday = explode(',', $collector_old->sunday);
+                    $arraySunday = $collector_old->sunday ? explode(',', $collector_old->sunday) : null;
 
+                // CHECK IF SITE
                 $request->merge(['showInSite' => $request->has('showInSite') ? 'on' : null]);
 
-                // dd($request->all());
                 //UPDATE COLLECTOR
                 $this->validator->with($request->all())->passesOrFail(ValidatorInterface::RULE_UPDATE);
                 $collector = $this->repository->update($request->all(), $id);
@@ -326,61 +275,7 @@ class CollectorsController extends Controller
                 foreach($collects as $collect)
                     if($collect->status < 2) $this->collectRepository->destroy($collect->id);
 
-                // PREPARE NEWS DATES
-                $inicio = new DateTime(Util::setDateLocalBRToDb($request->get('dateStart'), true));
-                $fim = new DateTime();
-                $fim->modify('+2 month');
-
-                $interval = new DateInterval('P1D');
-                $periodo = new DatePeriod($inicio, $interval ,$fim);
-
-                //CRIAR MÉTODO E MOVER PARA ENTIDADE OU REPOSITORIO
-                foreach($periodo as $data)
-                {
-                    $day = $data->format("l");
-                    $date = $data->format("Y-m-d");
-
-                    if($day == "Monday" ||
-                        $day == "Tuesday" ||
-                        $day == "Wednesday" ||
-                        $day == "Thursday" ||
-                        $day == "Friday")
-                    {
-                        if($arrayMondayToFriday)
-                        {
-                            for($i = 0; $i < count($arrayMondayToFriday); $i++)
-                            {
-                                DB::table('collects')->insert(
-                                    ['date' => $date . " " . $arrayMondayToFriday[$i], 'hour' => $arrayMondayToFriday[$i], 'collector_id' => $collector->id, 'created_at' => Util::dateNowForDB()]
-                                );
-                            }
-                        }
-                    }
-                    else if ($day == "Saturday")
-                    {
-                        if($arraySaturday)
-                        {
-                            for($i = 0; $i < count($arraySaturday); $i++)
-                            {
-                                DB::table('collects')->insert(
-                                    ['date' => $date . " " . $arraySaturday[$i], 'hour' => $arraySaturday[$i], 'collector_id' => $collector->id, 'created_at' => Util::dateNowForDB()]
-                                );
-                            }
-                        }
-                    }
-                    else if ($day == "Sunday")
-                    {
-                        if($arraySunday)
-                        {
-                            for($i = 0; $i < count($arraySunday); $i++)
-                            {
-                                DB::table('collects')->insert(
-                                    ['date' => $date . " " . $arraySunday[$i], 'hour' => $arraySunday[$i], 'collector_id' => $collector->id, 'created_at' => Util::dateNowForDB()]
-                                );
-                            }
-                        }
-                    }
-                }
+                $this->repository->setAvailableCollects($arrayMondayToFriday, $arraySaturday, $arraySunday, $request->get('dateStart'), $collector->id);
 
                 $response = [
                     'message' => 'Coletador atualizado',

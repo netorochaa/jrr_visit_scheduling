@@ -7,6 +7,13 @@ use Prettus\Repository\Criteria\RequestCriteria;
 use App\Repositories\CollectorRepository;
 use App\Entities\Collector;
 use App\Validators\CollectorValidator;
+use App\Entities\Util;
+use DateTime;
+use DateInterval;
+use DatePeriod;
+use DB;
+
+date_default_timezone_set('America/Recife');
 
 /**
  * Class CollectorRepositoryEloquent.
@@ -43,6 +50,84 @@ class CollectorRepositoryEloquent extends BaseRepository implements CollectorRep
     public function boot()
     {
         $this->pushCriteria(app(RequestCriteria::class));
+    }
+
+    public function setAvailableCollects($arrayMondayToFriday, $arraySaturday, $arraySunday, $start, $collector_id)
+    {
+        // PREPARE NEWS DATES
+        $inicio = new DateTime(Util::setDateLocalBRToDb($start, true));
+        $fim = new DateTime();
+        $fim->modify('+2 month');
+
+        $interval = new DateInterval('P1D');
+        $periodo = new DatePeriod($inicio, $interval ,$fim);
+
+        //CRIAR MÉTODO E MOVER PARA ENTIDADE OU REPOSITORIO
+        foreach($periodo as $data)
+        {
+            $day    = $data->format("l");
+            $date   = $data->format("Y-m-d");
+
+            if($day == "Monday"     ||
+                $day == "Tuesday"   ||
+                $day == "Wednesday" ||
+                $day == "Thursday"  ||
+                $day == "Friday")
+            {
+                if($arrayMondayToFriday)
+                {
+                    // dd($arraySunday);
+                    for($i = 0; $i < count($arrayMondayToFriday); $i++)
+                    {
+                        if(DB::table('collects')
+                                ->where(['collector_id' => $collector_id, 'status' => 1])
+                                ->whereDate('date', $date)
+                                ->whereTime('date', $arrayMondayToFriday[$i])->count() == 0)
+                        {
+                            DB::table('collects')->insert(
+                                ['date' => $date . " " . $arrayMondayToFriday[$i], 'hour' => $arrayMondayToFriday[$i], 'collector_id' => $collector_id, 'created_at' => Util::dateNowForDB()]
+                            );
+                        }
+                    }
+                }
+            }
+            else if ($day == "Saturday")
+            {
+                if($arraySaturday)
+                {
+                    for($i = 0; $i < count($arraySaturday); $i++)
+                    {
+                        if(DB::table('collects')
+                                ->where(['collector_id' => $collector_id, 'status' => 1])
+                                ->whereDate('date', $date)
+                                ->whereTime('date', $arrayMondayToFriday[$i])->count() == 0)
+                        {
+                            DB::table('collects')->insert(
+                                ['date' => $date . " " . $arraySaturday[$i], 'hour' => $arraySaturday[$i], 'collector_id' => $collector_id, 'created_at' => Util::dateNowForDB()]
+                            );
+                        }
+                    }
+                }
+            }
+            else if ($day == "Sunday")
+            {
+                if($arraySunday)
+                {
+                    for($i = 0; $i < count($arraySunday); $i++)
+                    {
+                        if(DB::table('collects')
+                                ->where(['collector_id' => $collector_id, 'status' => 1])
+                                ->whereDate('date', $date)
+                                ->whereTime('date', $arrayMondayToFriday[$i])->count() == 0)
+                        {
+                            DB::table('collects')->insert(
+                                ['date' => $date . " " . $arraySunday[$i], 'hour' => $arraySunday[$i], 'collector_id' => $collector_id, 'created_at' => Util::dateNowForDB()]
+                            );
+                        }
+                    }
+                }
+            }
+        }
     }
 
     public function schedules()

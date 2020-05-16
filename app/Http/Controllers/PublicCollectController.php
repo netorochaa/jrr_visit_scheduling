@@ -244,7 +244,7 @@ class PublicCollectController extends Controller
 
     public function cancellation(Request $request, $id)
     {
-        $request['cancellationType_id'] = 1;
+        $request['cancellationType_id'] = 2;
         return $this->update($request, $id);
     }
 

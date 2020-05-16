@@ -249,16 +249,15 @@ class CollectsController extends Controller
         $collect_list = DB::table('collects')
                             ->select('collects.id', 'collects.date', 'collects.hour', 'collects.status', 'collectors.name')
                             ->join('collectors', 'collects.collector_id', '=', 'collectors.id')
-                            ->whereBetween('date', [$dateOfCollect . ' 00:00:01', $dateOfCollect .  ' 23:59:59'])
+                            ->whereDate('date', $dateOfCollect)
                             ->whereIn('collector_id', $array_collectors)
                             ->where('status', '1')
-                            ->orderBy('date')->orderBy('collector_id')
-                            ->get();
+                            ->orderBy('date')->orderBy('collector_id');
 
         for ($i=0; $i < count($freeDay_list); $i++)
             $collect_list = $collect_list->whereNotBetween('date', [$freeDay_list[$i]['dateStart'], $freeDay_list[$i]['dateEnd']]);
 
-        return $collect_list->toJson();
+        return $collect_list->get()->toJson();
     }
 
     public function schedule($id)
