@@ -17,12 +17,14 @@
                 {{-- VERIFICA SE ESTA EM ANDAMENTO --}}
                 @if($collect->status == '5')
                     {{-- MOSTRA ENDEREÇO SE NÃO NULO--}}
-                    @if($collect->address != null) 
+                    @if($collect->address != null)
                         <small>
                             Endereço: {{ $collect->address }}, {{ $collect->numberAddress }}, {{ $collect->neighborhood->name }} {{ $collect->cep }}<br>
                             <span class="text-muted">Complemento: {{ $collect->complementAddress }} <br>
                             Referência: {{ $collect->referenceAddress }}</span><br>
-                            @if($collect->status == '5') <a class="btn btn-info btn-sm" style="color: white"><i class="fas fa-map-marked-alt"></i> Ir para mapa</a> @endif
+                            @if($collect->status == '5')
+                                <a target="_blank" href="https://www.google.com.br/maps/place/{{ str_replace(' ', '+', $collect->address . ', ' . $collect->numberAddress . ', ' . $collect->neighborhood->name . ', ' . $collect->neighborhood->city->name) }}" class="btn btn-info btn-sm" style="color: white"><i class="fas fa-map-marked-alt"></i> Ir para mapa</a>
+                            @endif
                         </small>
                     {{-- SE ENDEREÇO NULO --}}
                     @else
@@ -30,7 +32,7 @@
                     @endif
                     <hr>
                     {{-- MOSTRA PACIENTES --}}
-                    <h5 class="lead">Taxa: {{ $collect->formatted_payment }} <b>R$ {{ (string) count($collect->people) * $collect->neighborhood->displacementRate }}</b> 
+                    <h5 class="lead">Taxa: {{ $collect->formatted_payment }} <b>R$ {{ (string) count($collect->people) * $collect->neighborhood->displacementRate }}</b>
                         @if($collect->payment == 1) - Troco: R$ {{ $collect->changePayment ?? "0.00" }} @endif</h5>
                     <?php $count = 1; ?>
                     @foreach ($collect->people as $person)

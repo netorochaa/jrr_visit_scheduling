@@ -18,7 +18,7 @@
 <!-- /.modal -->
 @if ($numberModal ?? null)
 <div class="modal fade" id="modal-lg">
-    <div class="modal-dialog modal-lg">
+    <div class="modal-dialog modal-xl">
         <div class="modal-content">
             <div class="modal-header">
                 <h4 class="modal-title">{{ $titlemodal2 }}</h4>
@@ -34,5 +34,5 @@
     </div>
     <!-- /.modal-dialog -->
 </div>
-<!-- /.modal -->    
+<!-- /.modal -->
 @endif

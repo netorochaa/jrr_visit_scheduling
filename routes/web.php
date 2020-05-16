@@ -36,6 +36,7 @@ Route::resource('collect', 'CollectsController');
 Route::get('/reserved', ['as' => 'collect.list.reserved', 'uses' => 'CollectsController@listReserved']);
 Route::get('/cancelled', ['as' => 'collect.list.cancelled', 'uses' => 'CollectsController@listCancelled']);
 Route::post('/reserve', ['as' => 'collect.reserve', 'uses' => 'CollectsController@reserve']);
+Route::get('/extra', ['as' => 'collect.extra', 'uses' => 'CollectsController@extra']);
 Route::get('/schedule/{id}', ['as' => 'collect.schedule', 'uses' => 'CollectsController@schedule']);
 Route::get('/confirmed/{id}', ['as' => 'collect.confirmed', 'uses' => 'CollectsController@confirmed']);
 Route::get('/close/{id}', ['as' => 'collect.close', 'uses' => 'CollectsController@close']);

@@ -79,6 +79,103 @@ class CollectsController extends Controller
         }
     }
 
+    // EXTRA COLLECT
+    public function extra()
+    {
+        if(!Auth::check())
+        {
+            session()->flash('return');
+            return view('auth.login');
+        }
+        else
+        {
+            try
+            {
+                $cancellationType_list  = $this->cancellationTypeRepository->where('active', 'on')->pluck('name', 'id');
+                $patientType_list       = $this->patientTypeRepository->patientTypeWithResponsible_list();
+                $collectType_list       = $this->repository->collectType_list();
+                $payment_list           = $this->repository->payment_list(false);
+                $userAuth_list          = $this->userRepository->where([['id', '>', 1], ['active', 'on'], ['type', '>', 2]])->pluck('name', 'name');
+                $people_list            = $this->peopleRepository->all();
+                $typeResponsible_list   = $this->peopleRepository->typeResponsible_list();
+                $covenant_list          = $this->peopleRepository->covenant_list();
+                $collector_list         = $this->collectorRepository->where('active', 'on')->pluck('name', 'id');
+                $hour_list              = $this->collectorRepository->schedules();
+                $neighborhood_list      = $this->neighborhoodRepository->where('active', 'on')->pluck('name', 'id');
+
+                return view('collect.extra', [
+                    'namepage'      => 'Coleta extra',
+                    'numberModal'   => '2',
+                    'threeview'     => 'Coletas',
+                    'titlespage'    => ['Coleta extra'],
+                    'titlecard'     => 'Cadastrar coleta extra',
+                    'titlecard2'    => 'Adicionar paciente',
+                    'titlemodal'    => 'Cadastrar paciente',
+                    'goback'        => false,
+                    'add'           => false,
+                    //Lists for select
+                    'cancellationType_list' => $cancellationType_list,
+                    'patientType_list'      => $patientType_list,
+                    'collectType_list'      => $collectType_list,
+                    'payment_list'          => $payment_list,
+                    'userAuth_list'         => $userAuth_list,
+                    'people_list'           => $people_list,
+                    'typeResponsible_list'  => $typeResponsible_list,
+                    'covenant_list'         => $covenant_list,
+                    'collector_list'        => $collector_list,
+                    'hour_list'             => $hour_list,
+                    'neighborhood_list'     => $neighborhood_list,
+                    //Info of entitie
+                    'table' => $this->repository->getTable()
+                ]);
+            }
+            catch(Exception $e)
+            {
+                $response = [
+                    'message' =>  $e->getMessage(),
+                    'type'    => 'error'
+                ];
+                session()->flash('return', $response);
+                return redirect()->route('home');
+            }
+        }
+    }
+    public function store(Request $request)
+    {
+        if(!Auth::check())
+        {
+            session()->flash('return');
+            return view('auth.login');
+        }
+        else
+        {
+            // RESERVED
+            $status = 3;
+            try
+            {
+                $request->merge(['date' => Util::setDateLocalBRToDb($request->get('date') . " " . $request->get('hour'), true)]);
+                $request->merge(['status' => $status]);
+
+                $this->validator->with($request->all())->passesOrFail(ValidatorInterface::RULE_CREATE);
+                $collect = $this->repository->create($request->all());
+
+                $response = [
+                    'message' => 'Coleta criada',
+                    'type'   => 'info',
+                ];
+            }
+            catch (ValidatorException $e)
+            {
+                $response = [
+                    'message' =>  $e->getMessageBag(),
+                    'type'    => 'error'
+                ];
+            }
+            session()->flash('return', $response);
+            return redirect()->route('collect.schedule', $collect->id);
+        }
+    }
+
     // LIST PAGES - DEIXAR APENAS UM MÉTODO
         public function listReserved()
         {
@@ -179,12 +276,12 @@ class CollectsController extends Controller
                 $collectType_list       = $this->repository->collectType_list();
                 $payment_list           = $this->repository->payment_list(false);
                 $userAuth_list          = $this->userRepository->where([['id', '>', 1], ['active', 'on'], ['type', '>', 2]])->pluck('name', 'name');
-                $people_list            = $this->peopleRepository->all();
+                $people_list            = $this->peopleRepository->orderBy('created_at', 'desc')->distinct('cpf')->get();
                 $typeResponsible_list   = $this->peopleRepository->typeResponsible_list();
                 $covenant_list          = $this->peopleRepository->covenant_list();
                 $quant                  = count($collect->people);
                 $priceString            = "R$ " . count($collect->people) > 2 ? (count($collect->people)-1) * $collect->neighborhood->displacementRate : $collect->neighborhood->displacementRate;
-                
+
                 return view('collect.edit', [
                     'namepage'      => 'Agendar coleta',
                     'numberModal'   => '2',
@@ -268,7 +365,7 @@ class CollectsController extends Controller
                         'message' => 'Coleta cancelada',
                         'type'    => 'info'
                     ];
-                
+
                     session()->flash('return', $response);
                     return redirect()->route('collect.index') ;
                 }
@@ -312,7 +409,7 @@ class CollectsController extends Controller
             }
             else
             {
-                try 
+                try
                 {
                     $this->repository->update(['user_id' => $id_origin, 'neighborhood_id' => $id_neighborhood, 'status' => $status, 'reserved_at' => new DateTime()], $collect->id);
 
@@ -320,8 +417,8 @@ class CollectsController extends Controller
                         'message' => 'Data e horário reservados',
                         'type'    => 'info'
                     ];
-                } 
-                catch (Exception $e) 
+                }
+                catch (Exception $e)
                 {
                     $response = [
                         'message' => $e->getMessage(),
@@ -426,5 +523,4 @@ class CollectsController extends Controller
     public function destroy($id){}
     public function edit($id){}
     public function show($id){}
-    public function store(Request $request){}
 }

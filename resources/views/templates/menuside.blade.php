@@ -54,6 +54,12 @@
                             </a>
                         </li>
                         <li class="nav-item">
+                            <a href="{{ route('collect.extra', null) }}" class="nav-link @if($namepage == 'Coleta extra') active @endif">
+                                <i class="far fa-circle nav-icon"></i>
+                                <p>Extra</p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
                             <a href="{{ route('collect.list.reserved') }}" class="nav-link @if($namepage == 'Coletas reservadas') active @endif">
                                 <i class="far fa-circle nav-icon"></i>
                                 <p>Reservadas</p>

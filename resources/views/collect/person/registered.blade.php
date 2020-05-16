@@ -10,7 +10,14 @@
                         <option value="" selected></option>
                         @foreach ($people_list->whereNotIn('id', $collect->people->pluck('id')) as $people)
                             <option value="{{ $people->id }}">
-                                {{ $people->name }} | CPF: {{ $people->CPF }} | RG: {{ $people->RG }} | Nasc: {{ $people->birth }} | {{ $people->patientType->name }}
+                                {{ $people->name }} |
+                                CPF: {{ $people->CPF }} |
+                                @if($people->RG != null) RG: {{ $people->RG }} |@endif
+                                Nasc: {{ $people->birth }} |
+                                {{ $people->patientType->name }} |
+                                Fone: {{ $people->fone }}
+                                @if($people->email != null)| E-mail: {{ $people->email }} @endif
+
                             </option>
                         @endforeach
                     </select>
