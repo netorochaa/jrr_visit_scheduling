@@ -102,7 +102,6 @@ class PublicCollectController extends Controller
                         if($diff_date->i > 10)
                         {
                             $id_user = 2;
-                            $request->session()->flush();
                             // UPDATE DATA WITH TYPE CANCELLATION COLLECT
                             $this->repository->update([
                                 'status'                => 7,
@@ -128,7 +127,7 @@ class PublicCollectController extends Controller
                     return false;
                 }
             }
-            return true;
+            return count($collects) . " - " . date('d/m/Y H:i');
         }
     }
 
@@ -138,18 +137,15 @@ class PublicCollectController extends Controller
         // dd($request->session()->all());
         $sessionActive = null;
         if($request->session()->has('collect'))
+        {
             $sessionActive = $request->session()->get('collect');
-
-        // dd($request->session()->all());
-
-        if(!$request->has('neighborhood'))
-        {
-            $neighborhood_list  = $this->neighborhoodRepository->where('active', 'on')->get();
+            $collect = $this->repository->find($sessionActive->id);
+            if($collect->status == 7) $request->session()->flush();
         }
-        else
-        {
-            $neighborhood_model = $this->neighborhoodRepository->find($request->get('neighborhood'));
-        }
+
+        if(!$request->has('neighborhood')) $neighborhood_list = $this->neighborhoodRepository->where('active', 'on')->get();
+        else $neighborhood_model = $this->neighborhoodRepository->find($request->get('neighborhood'));
+
         return view('collect.public.index', [
             'titlespage' => ['Solicitação de Coleta Domiciliar'],
             'titlecard'  => 'Solicitar Agendamento',
@@ -164,10 +160,22 @@ class PublicCollectController extends Controller
     {
         try
         {
-            if(!$request->session()->has('collect'))
-                return redirect()->route('public.index');
-
             $collect = $this->repository->find($id);
+            if($request->session()->has('collect'))
+            {
+                $sessionActive = $request->session()->get('collect');
+                $collect = $this->repository->find($sessionActive->id);
+                if($collect->status == 7)
+                {
+                    $request->session()->flush();
+                    $response = [
+                        'message' => 'Período de solicitação expirado. A sessão foi encerrada.',
+                        'type'    => 'info'
+                    ];
+                    session()->flash('return', $response);
+                    return redirect()->route('public.index');
+                }
+            }else return redirect()->route('public.index');
 
             $cancellationType_list  = $this->cancellationTypeRepository->where('active', 'on')->pluck('name', 'id');
             $patientType_list       = $this->patientTypeRepository->patientTypeWithResponsible_list();
@@ -176,9 +184,10 @@ class PublicCollectController extends Controller
             $typeResponsible_list   = $this->peopleRepository->typeResponsible_list();
             $covenant_list          = $this->peopleRepository->covenant_list();
             $quant                  = count($collect->people);
-            $price                  = count($collect->people) > 2 ? (count($collect->people)-1) * $collect->neighborhood->displacementRate : count($collect->people) == 0 ? "0" : $collect->neighborhood->displacementRate;
+            $price                  = $quant == 0   ? 0 : $collect->neighborhood->displacementRate;
+            $price                  = $quant  > 2   ? ($quant-1) * $collect->neighborhood->displacementRate : $collect->neighborhood->displacementRate;
             $priceString            = "R$ " . (string) $price;
-
+            // dd($price);
             return view('collect.public.edit', [
                 'titlespage' => ['Solicitação de Coleta Domiciliar'],
                 'titlecard'  => 'Dados da solicitação',
@@ -249,9 +258,9 @@ class PublicCollectController extends Controller
                         'message' => 'Data e horário reservados por 10 minutos, preencha os demais dados para confirmar a solicitação',
                         'type'    => 'info'
                     ];
+                    session()->flash('return', $response);
+                    return redirect()->route('collect.public.schedule', $collect->id);
                 }
-                session()->flash('return', $response);
-                return redirect()->route('collect.public.schedule', $collect->id);
             }
             else
             {
@@ -269,6 +278,8 @@ class PublicCollectController extends Controller
                 'message' => $e->getMessage(),
                 'type'    => 'erro'
             ];
+            session()->flash('return', $response);
+            return redirect()->route('public.index');
         }
     }
 
@@ -276,14 +287,14 @@ class PublicCollectController extends Controller
     {
         try
         {
-            // dd($request->session()->has('collect'));
             //SESSION ACTIVE? PREVIOUSLY RESERVED COLLECTION?
             if($request->session()->has('collect'))
             {
-                $collect    = $this->repository->find($id);
+                $collect = $this->repository->find($id);
                 // USER SITE = 2
-                $id_user    = 2;
+                $id_user = 2;
                 // UPDATE DATA
+                $request->merge(['status' => 3]);
                 $collect = $this->repository->update($request->except('cancellationType_id'), $id);
 
                 $request->session()->flush();
@@ -309,6 +320,8 @@ class PublicCollectController extends Controller
                         'message' => 'Solicitação de agendamento cancelada',
                         'type'    => 'info'
                     ];
+                    session()->flash('return', $response);
+                    return redirect()->route('public.index');
                 }
             }
             else
@@ -317,14 +330,14 @@ class PublicCollectController extends Controller
                     'message' => 'Sessão encerrada',
                     'type'    => 'info'
                 ];
+                session()->flash('return', $response);
+                return redirect()->route('public.index');
             }
-            session()->flash('return', $response);
-            return redirect()->route('public.index');
         }
         catch (Exception $e)
         {
             $response = [
-                'message' => $e->getMessageBag(),
+                'message' => $e->getMessage(),
                 'type'    => 'error'
             ];
             session()->flash('return', $response);

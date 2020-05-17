@@ -22,7 +22,8 @@
             <hr>
             <div class="row">
                 @include('templates.components.input', ['label' => 'CEP',       'col' => '2', 'input'  => 'cep',            'value' => $collect->cep ?? null,           'attributes' => ['id' => 'cep', 'size' => '10', 'maxlength' => '9', 'class' => 'form-control', 'data-inputmask' => "'mask': '99999-999'", 'data-cep', 'im-insert' => 'true']])
-                @include('templates.components.input', ['label' => 'Endereço',  'col' => '8', 'input'  => 'address',        'value' => $collect->address ?? null,       'attributes' => ['required' => 'true', 'id' => 'rua', 'class' => 'form-control', 'placeholder' => 'rua, conjunto, avenida, favela...']])
+                @include('templates.components.input', ['label' => 'Endereço',  'col' => '6', 'input'  => 'address',        'value' => $collect->address ?? null,       'attributes' => ['required' => 'true', 'id' => 'rua', 'class' => 'form-control', 'placeholder' => 'rua, conjunto, avenida, favela...']])
+                @include('templates.components.input', ['label' => 'Bairro',    'col' => '2', 'input'  => '',                                                           'attributes' => ['id' => 'bairro', 'class' => 'form-control', 'disabled' => 'true']])
                 @include('templates.components.input', ['label' => 'Nº',        'col' => '2', 'input'  => 'numberAddress',  'value' => $collect->numberAddress ?? null, 'attributes' => ['required' => 'true', 'class' => 'form-control']])
             </div>
             <div class="row">
@@ -45,7 +46,7 @@
             </div>
         </div>
         <div class="card-footer">
-            @include('templates.components.submit', ['input' => 'Salvar', 'attributes' => ['id' => 'submitSchedule', 'class' => 'btn btn-outline-primary']])
+            @include('templates.components.submit', ['input' => 'Enviar', 'attributes' => ['id' => 'submitSchedule', 'class' => 'btn btn-outline-primary']])
             <button type="button" onclick="location.href='{{ route('collect.public.cancellation', $collect->id) }}'" class="btn btn-danger float-right">Cancelar agendamento</button>
         </div>
     </div>

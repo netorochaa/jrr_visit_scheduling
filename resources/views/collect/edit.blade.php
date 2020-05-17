@@ -157,6 +157,7 @@
                       if (!("erro" in dados)) {
                           //Atualiza os campos com os valores da consulta.
                           $("#rua").val(dados.logradouro);
+                          $("#bairro").val(dados.bairro)
                       } //end if.
                       else {
                           //CEP pesquisado não foi encontrado.

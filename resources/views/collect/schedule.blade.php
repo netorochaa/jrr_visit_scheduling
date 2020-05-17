@@ -29,8 +29,10 @@
             </div>
             @if ($collect ?? null)
                 <h5 class="lead">Paciente(s)
-                    <button type="button" data-toggle="modal" data-target="#modal-xl" class="btn btn-outline-success"><i class="fas fa-plus"></i> Novo</button>
-                    <button type="button" data-toggle="modal" data-target="#modal-lg" class="btn btn-outline-success"><i class="fas fa-plus"></i> Já possui cadastro</button>
+                    @if ($collect->status < 7)
+                        <button type="button" data-toggle="modal" data-target="#modal-xl" class="btn btn-outline-success"><i class="fas fa-plus"></i> Novo</button>
+                        <button type="button" data-toggle="modal" data-target="#modal-lg" class="btn btn-outline-success"><i class="fas fa-plus"></i> Já possui cadastro</button>
+                    @endif
                 </h5>
                 <div class="row">
                     <div class="col-12">
@@ -41,7 +43,8 @@
             @endif
             <div class="row">
                 @include('templates.components.input', ['label' => 'CEP',       'col' => '2', 'input'  => 'cep',            'value' => $collect->cep ?? null,           'attributes' => ['id' => 'cep', 'size' => '10', 'maxlength' => '9', 'class' => 'form-control', 'data-inputmask' => "'mask': '99999-999'", 'data-cep', 'im-insert' => 'true']])
-                @include('templates.components.input', ['label' => 'Endereço',  'col' => '8', 'input'  => 'address',        'value' => $collect->address ?? null,       'attributes' => ['id' => 'rua', 'class' => 'form-control', 'placeholder' => 'rua, conjunto, avenida, favela...']])
+                @include('templates.components.input', ['label' => 'Endereço',  'col' => '6', 'input'  => 'address',        'value' => $collect->address ?? null,       'attributes' => ['id' => 'rua', 'class' => 'form-control', 'placeholder' => 'rua, conjunto, avenida, favela...']])
+                @include('templates.components.input', ['label' => 'Bairro',    'col' => '2', 'input'  => '',                                                           'attributes' => ['id' => 'bairro', 'class' => 'form-control', 'disabled' => 'true']])
                 @include('templates.components.input', ['label' => 'Nº',        'col' => '2', 'input'  => 'numberAddress',  'value' => $collect->numberAddress ?? null, 'attributes' => ['class' => 'form-control']])
             </div>
             <div class="row">
@@ -58,9 +61,11 @@
                 </div>
                 <hr>
                 <div class="row">
-                    <div clas="col-sm-6">
-                        @include('templates.components.checkbox', ['label' => 'Cancelar', 'col' => '12', 'input' => '', 'attributes' => ['id' => 'cancellationCheck', 'class' => 'form-check-input', 'onchange' => 'changeCancellation()']])
-                    </div>
+                    @if ($collect->status < 7)
+                        <div clas="col-sm-6">
+                            @include('templates.components.checkbox', ['label' => 'Cancelar', 'col' => '12', 'input' => '', 'attributes' => ['id' => 'cancellationCheck', 'class' => 'form-check-input', 'onchange' => 'changeCancellation()']])
+                        </div>
+                    @endif
                     @include('templates.components.select', ['label' => '', 'col' => '8', 'select' => 'cancellationType_id', 'selected' => $collect->cancellationType_id ?? null, 'attributes' => ['required' => 'true', 'id' => 'cancellationSelect', 'class' => 'form-control', 'disabled' => 'true'], 'data' => ['' => '', 'Selecione' => $cancellationType_list]])
                 </div>
                 <hr>
@@ -73,8 +78,21 @@
                 @include('templates.components.file', ['label' => 'Anexos', 'col' => '6', 'input' => 'attachment', 'attributes' => ['class' => 'form-control', 'multiple' => 'true', 'disabled']])
             </div>
         </div>
-        <div class="card-footer">
-            @include('templates.components.submit', ['input' => 'Salvar', 'attributes' => ['id' => 'submitSchedule', 'class' => 'btn btn-outline-primary']])
-        </div>
+
+        @if ($collect ?? null)
+            @if ($collect->status > 6)
+                <div class="card-footer">
+                    @include('templates.components.submit', ['input' => 'Salvar', 'attributes' => ['class' => 'btn btn-outline-primary', 'disabled' => 'true']])
+                </div>
+            @else
+                <div class="card-footer">
+                    @include('templates.components.submit', ['input' => 'Salvar', 'attributes' => ['id' => 'submitSchedule', 'class' => 'btn btn-outline-primary']])
+                </div>
+            @endif
+        @else
+            <div class="card-footer">
+                @include('templates.components.submit', ['input' => 'Salvar', 'attributes' => ['id' => 'submitSchedule', 'class' => 'btn btn-outline-primary']])
+            </div>
+        @endif
     </div>
 {!! Form::close() !!}

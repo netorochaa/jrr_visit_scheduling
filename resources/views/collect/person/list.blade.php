@@ -19,10 +19,12 @@
             <td>{{ $person->getCovenantAttribute($person->pivot->covenant) ?? "NÃO INFORMADO"}}</td>
             <td>{{ $person->pivot->exams ?? "NÃO INFORMADO" }}</td>
             <td>
-                <div class="btn-group">
-                    @if($collect->status != 2) <button type="button" onclick="location.href='{{ route('collect.person.edit', [$collect->id, $person->id]) }}'" class="btn btn-info"  ><i class='fas fa-pen'></i></button> @endif
-                    <button type="button" onclick="location.href='{{ route('person.collect.detach', [$person->id, $collect->id]) }}'" class="btn btn-danger"  ><i class="fas fa-trash"></i></button>
-                </div>
+                @if($collect->status < 7)
+                    <div class="btn-group">
+                        @if($collect->status != 2) <button type="button" onclick="location.href='{{ route('collect.person.edit', [$collect->id, $person->id]) }}'" class="btn btn-info"  ><i class='fas fa-pen'></i></button> @endif
+                        <button type="button" onclick="location.href='{{ route('person.collect.detach', [$person->id, $collect->id]) }}'" class="btn btn-danger"  ><i class="fas fa-trash"></i></button>
+                    </div>
+                @endif
             </td>
         </tr>
         @endforeach

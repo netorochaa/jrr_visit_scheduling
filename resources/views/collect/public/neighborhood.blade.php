@@ -5,10 +5,10 @@
             <div class="info-box mb-3 bg-warning">
                 <span class="info-box-icon"><i class="fas fa-tag"></i></span>
                 <div class="info-box-content">
-                    <span class="info-box-text">Você possui um agendamento pendente</span>
+                    <span class="info-box-text">Você possui uma solicitação pendente</span>
                     <span class="info-box-number"><h4 class="lead">Nº {{ $sessionActive->id }} | {{ $sessionActive->formatted_date }} ÀS {{ $sessionActive->hour }} | {{ $sessionActive->neighborhood->name }} - {{ $sessionActive->neighborhood->city->name }}</h4></span>
-                    <button type="button" onclick="location.href='{{ route('collect.public.schedule', $sessionActive->id) }}'" class="btn btn-secondary">Voltar para finalizar agendamento</button>
-                    <button type="button" onclick="location.href='{{ route('collect.public.cancellation', $sessionActive->id) }}'" class="btn btn-danger">Cancelar agendamento</button>
+                    <button type="button" onclick="location.href='{{ route('collect.public.schedule', $sessionActive->id) }}'" class="btn btn-secondary">Voltar para finalizar solicitação</button>
+                    <button type="button" onclick="location.href='{{ route('collect.public.cancellation', $sessionActive->id) }}'" class="btn btn-danger">Cancelar solicitação</button>
                 </div>
                 <!-- /.info-box-content -->
             </div>
