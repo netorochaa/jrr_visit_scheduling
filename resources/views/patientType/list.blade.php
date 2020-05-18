@@ -1,4 +1,4 @@
-<table id="table-{{ $table }}" class="table table-bordered table-striped">
+<table id="table-{{ $table }}" class="table table-striped table-sm">
     <thead>
         <tr>
             @foreach ($thead_for_datatable as $ths)
@@ -16,8 +16,8 @@
             <td>
                 <div class="btn-group">
                   {!! Form::open(['route' => ['patienttype.destroy', $patientType->id], 'method' => 'DELETE']) !!}
-                    <div class="btn-group">                        
-                        @include('templates.components.submit', ['input' => 'Deletar', 'attributes' => ['class' => 'btn btn-danger']])
+                    <div class="btn-group">
+                        @include('templates.components.submit', ['input' => 'Deletar', 'attributes' => ['class' => 'btn btn-danger btn-sm']])
                     </div>
                     {!! Form::close() !!}
                     </td>

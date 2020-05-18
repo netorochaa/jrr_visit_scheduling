@@ -1,4 +1,4 @@
-<table id="table-{{ $table }}" class="table table-bordered table-striped">
+<table id="table-{{ $table }}" class="table table-striped table-sm">
     <thead>
         <tr>
             @foreach ($thead_for_datatable as $ths)
@@ -28,7 +28,7 @@
                   {!! Form::open(['route' => ['freedays.destroy', $freedays->id], 'method' => 'DELETE']) !!}
                     <div class="btn-group">
                         {{-- <button type="button" onclick="location.href='{{ route('freedays.edit', $freedays->id) }}'" class="btn btn-info"  ><i class='fas fa-pen'></i></button> --}}
-                        @include('templates.components.submit', ['input' => 'Deletar', 'attributes' => ['class' => 'btn btn-danger']])
+                        @include('templates.components.submit', ['input' => 'Deletar', 'attributes' => ['class' => 'btn btn-danger btn-sm']])
                     </div>
                     {!! Form::close() !!}
                     </td>

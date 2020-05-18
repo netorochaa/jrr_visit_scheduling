@@ -1,3 +1,2 @@
-<!-- <label class="{{ $class ?? null }} submit"> -->
-	{!! Form::submit($input, $attributes) !!}
-<!-- </label> -->
+{!! Form::submit($input, $attributes) !!}
+

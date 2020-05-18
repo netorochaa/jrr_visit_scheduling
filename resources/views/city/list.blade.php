@@ -17,8 +17,8 @@
                 <div class="btn-group">
                   {!! Form::open(['route' => ['city.destroy', $city->id], 'method' => 'DELETE']) !!}
                     <div class="btn-group">
-                        <button type="button" onclick="location.href='{{ route('city.edit', $city->id) }}'" class="btn btn-info"  ><i class='fas fa-pen'></i></button>
-                        @include('templates.components.submit', ['input' => 'Deletar', 'attributes' => ['class' => 'btn btn-danger']])
+                        <button type="button" onclick="location.href='{{ route('city.edit', $city->id) }}'" class="btn btn-info btn-sm"  ><i class='fas fa-pen'></i></button>
+                        @include('templates.components.submit', ['input' => 'Deletar', 'attributes' => ['class' => 'btn btn-danger btn-sm']])
                     </div>
                     {!! Form::close() !!}
                     </td>

@@ -1,5 +1,5 @@
-<div class="col-sm-{{ $col ?? null }}">
-	@if ($label != null) 
+<div class="col-sm-{{ $col ?? null }} {{ $form ?? null }}">
+	@if ($label != null)
 		<label>{{ $label }}</label>
 	@endif
 	@if(!empty($icon))

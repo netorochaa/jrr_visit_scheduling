@@ -1,5 +1,5 @@
-<table id="table-people" class="table table-striped display compact">
-    <thead>
+<table id="table-people" class="table table-striped table-sm">
+    <thead class="thead-dark">
         <tr>
             <th>Nome</th>
             @if($collect->status != 2) <th>RA</th> @endif
@@ -21,8 +21,8 @@
             <td>
                 @if($collect->status < 7)
                     <div class="btn-group">
-                        @if($collect->status != 2) <button type="button" onclick="location.href='{{ route('collect.person.edit', [$collect->id, $person->id]) }}'" class="btn btn-info"  ><i class='fas fa-pen'></i></button> @endif
-                        <button type="button" onclick="location.href='{{ route('person.collect.detach', [$person->id, $collect->id]) }}'" class="btn btn-danger"  ><i class="fas fa-trash"></i></button>
+                        @if($collect->status != 2) <button type="button" onclick="location.href='{{ route('collect.person.edit', [$collect->id, $person->id]) }}'" class="btn btn-info btn-sm"  ><i class='fas fa-pen'></i></button> @endif
+                        <button type="button" onclick="location.href='{{ route('person.collect.detach', [$person->id, $collect->id]) }}'" class="btn btn-danger btn-sm"  ><i class="fas fa-trash"></i></button>
                     </div>
                 @endif
             </td>

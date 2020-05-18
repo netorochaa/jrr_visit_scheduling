@@ -6,8 +6,6 @@ use Illuminate\Http\Request;
 
 use Prettus\Validator\Contracts\ValidatorInterface;
 use Prettus\Validator\Exceptions\ValidatorException;
-use App\Http\Requests\CollectCreateRequest;
-use App\Http\Requests\CollectUpdateRequest;
 use App\Repositories\CollectRepository;
 use App\Repositories\NeighborhoodRepository;
 use App\Repositories\CollectorRepository;
@@ -245,7 +243,9 @@ class CollectsController extends Controller
                 $typeResponsible_list   = $this->peopleRepository->typeResponsible_list();
                 $covenant_list          = $this->peopleRepository->covenant_list();
                 $quant                  = count($collect->people);
-                $priceString            = "R$ " . count($collect->people) > 2 ? (count($collect->people)-1) * $collect->neighborhood->displacementRate : $collect->neighborhood->displacementRate;
+                $price                  = $quant == 0   ? 0 : $collect->neighborhood->displacementRate;
+                $price                  = $quant  > 2   ? ($quant-1) * $collect->neighborhood->displacementRate : $collect->neighborhood->displacementRate;
+                $priceString            = "R$ " . (string) $price;
 
                 return view('collect.edit', [
                     'namepage'      => 'Agendar coleta',

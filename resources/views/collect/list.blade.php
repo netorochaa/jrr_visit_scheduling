@@ -11,7 +11,7 @@
         @foreach ($collect_list as $collectMarked)
         <tr>
             {{-- COLETA --}}
-            <td> 
+            <td>
                 <span style="display:none">{{ $collectMarked->date }}</span>
                 <b>{{ $collectMarked->formatted_date }} - {{ $collectMarked->hour }}</b>
                 @if($collectMarked->user != null)
@@ -25,7 +25,7 @@
             {{-- PAG. TAXA --}}
             <td>
                 {{ $collectMarked->formatted_payment }} <br>
-                @if($collectMarked->payment == "1") 
+                @if($collectMarked->payment == "1")
                     <span class="text-muted">Troco: R$</span> {{ $collectMarked->changePayment ?? "0.00"}}
                 @elseif($collectMarked->payment == "4")
                     <span class="text-muted">Autorizada:</span> {{ $collectMarked->AuthCourtesy }}
@@ -37,7 +37,7 @@
                 <small>{{ $collectMarked->neighborhood->city->name }}</small>
             </td>
             {{-- ENDEREÇO --}}
-            <td>@if($collectMarked->address != null) 
+            <td>@if($collectMarked->address != null)
                 <small>
                     Endereço: {{ $collectMarked->address }}, {{ $collectMarked->numberAddress }}, {{ $collectMarked->neighborhood->name }} {{ $collectMarked->cep }}<br>
                     <span class="text-muted">Complemento: {{ $collectMarked->complementAddress }} <br>
@@ -56,19 +56,19 @@
             <td>
                 @if ($collectMarked->status == 3)
                     <span class="badge badge-warning rounded">
-                @elseif($collectMarked->status == 4)    
+                @elseif($collectMarked->status == 4)
                     <span class="badge badge-success rounded">
                 @elseif($collectMarked->status == 5)
                     <span class="badge badge-white rounded">
-                @elseif($collectMarked->status == 6)    
+                @elseif($collectMarked->status == 6)
                     <span class="badge badge-secondary rounded">
-                @elseif($collectMarked->status > 6)    
+                @elseif($collectMarked->status > 6)
                     <span class="badge badge-danger rounded">
                 @endif
                 {{ $collectMarked->formatted_status }}</span>
-                @if($collectMarked->status == 4)    
+                @if($collectMarked->status == 4)
                     <br><small>Via: {{ $collectMarked->confirmed->name ?? null }}</small>
-                @elseif($collectMarked->status > 6)    
+                @elseif($collectMarked->status > 6)
                     <br><small>Via: {{ $collectMarked->cancelled->name ?? null }} - {{ $collectMarked->cancellationtype->name }}</small>
                 @endif
                 @if(count($collectMarked->people) != 0)
@@ -77,7 +77,7 @@
             </td>
             <td>
                 <div class="btn-group">
-                    <button type="button" onclick="location.href='{{ route('collect.schedule', $collectMarked->id) }}'" class="btn btn-info"  ><i class='fas fa-pen'></i></button>        
+                    <button type="button" onclick="location.href='{{ route('collect.schedule', $collectMarked->id) }}'" class="btn btn-info btn-sm"  ><i class='fas fa-pen'></i></button>
                 </div>
               </td>
         </tr>

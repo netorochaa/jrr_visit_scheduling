@@ -1,4 +1,4 @@
-<table id="table-{{ $table }}" class="table table-bordered table-striped">
+<table id="table-{{ $table }}" class="table table-sm">
     <thead>
         <tr>
             @foreach ($thead_for_datatable as $ths)
@@ -19,7 +19,7 @@
                 </small>
             </td>
             <td>
-                <table>
+                <table class="table table-striped table-sm">
                     @if($collector->mondayToFriday)
                         <tr>
                             <td>Seg-Sex</td>
@@ -42,7 +42,7 @@
             </td>
             <td>{{ $collector->formatted_showInSite }}</td>
             <td>{{ $collector->user->name }}</td>
-            <td style="text-align: center"><u class="badge badge-primary"> <a href="{{ route('collector.show', $collector->id) }}" style="color: white"> {{ count($collector->neighborhoods) }}</a></u> </td>
+            <td><u class="badge badge-primary"> <a href="{{ route('collector.show', $collector->id) }}" style="color: white"> {{ count($collector->neighborhoods) }}</a></u> </td>
             <td>
                 {{ $collector->formatted_active }}
             </td>
@@ -51,8 +51,8 @@
                     <div class="btn-group">
                         {!! Form::open(['route' => ['collector.destroy', $collector->id], 'method' => 'DELETE']) !!}
                             <div class="btn-group">
-                                <button type="button" onclick="location.href='{{ route('collector.edit', $collector->id) }}'" class="btn btn-info"  ><i class='fas fa-pen'></i></button>
-                                @include('templates.components.submit', ['input' => 'Inativar', 'attributes' => ['class' => 'btn btn-danger']])
+                                <button type="button" onclick="location.href='{{ route('collector.edit', $collector->id) }}'" class="btn btn-info btn-sm"><i class='fas fa-pen'></i></button>
+                                @include('templates.components.submit', ['input' => 'Inativar', 'attributes' => ['class' => 'btn btn-danger btn-sm']])
                             </div>
                             {!! Form::close() !!}
                         </div>
