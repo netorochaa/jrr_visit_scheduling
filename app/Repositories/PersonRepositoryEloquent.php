@@ -15,31 +15,16 @@ use App\Validators\PersonValidator;
  */
 class PersonRepositoryEloquent extends BaseRepository implements PersonRepository
 {
-    /**
-     * Specify Model class name
-     *
-     * @return string
-     */
     public function model()
     {
         return Person::class;
     }
-
-    /**
-    * Specify Validator class name
-    *
-    * @return mixed
-    */
-    public function validator()
+   public function validator()
     {
 
         return PersonValidator::class;
     }
 
-
-    /**
-     * Boot up the repository, pushing criteria
-     */
     public function boot()
     {
         $this->pushCriteria(app(RequestCriteria::class));
@@ -50,8 +35,22 @@ class PersonRepositoryEloquent extends BaseRepository implements PersonRepositor
         $list = [
             '1' => 'PARTICULAR',
             '2' => 'UNIMED',
-            '3' => 'BRADESCO',
-            '4' => 'CORTESIA'
+            '3' => 'BRADESCO SAÚDE',
+            '4' => 'AFRAFEP',
+            '5' => 'AMIL SAÚDE',
+            '6' => 'ASSEFAZ',
+            '7' => 'BANCO DO BRASIL',
+            '8' => 'CAMED VIDA',
+            '9' => 'CAPESAUDE',
+            '10' => 'CAPESEP',
+            '11' => 'CONSEDER',
+            '12' => 'CORREIOS',
+            '13' => 'FUNASA',
+            '14' => 'FUNCEF',
+            '15' => 'GEAP',
+            '16' => 'SAÚDE CAIXA',
+            '17' => 'SAÚDE EXCELSIOR',
+            '18' => 'OUTROS'
           ];
 
           return $list;
@@ -74,5 +73,5 @@ class PersonRepositoryEloquent extends BaseRepository implements PersonRepositor
 
           return $list;
     }
-    
+
 }

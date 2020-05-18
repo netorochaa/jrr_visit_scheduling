@@ -2,10 +2,9 @@
 <aside class="main-sidebar elevation-4 sidebar-light-warning">
     <!-- Brand Logo -->
     <a href="" class="brand-link navbar-light">
-        {{-- <img src="../../dist/img/AdminLTELogo.png"
-            alt="AdminLTE Logo"
-            class="brand-image img-circle elevation-3"
-            style="opacity: .8"> --}}
+        <img src="http://roseannedore.com.br/img/logo_roseanelab.png"
+            alt="Laboratório Roseanne Dore"
+            class="brand-image">
         <span class="brand-text font-weight-light"><strong>RD</strong>omiciliar</span>
     </a>
 
@@ -14,7 +13,7 @@
         <!-- Sidebar user (optional) -->
         <div class="user-panel mt-3 pb-3 mb-3 d-flex">
             <div class="image">
-                <img src="../img/avatar.png" class="img-circle elevation-2" alt="User Image">
+                <img src="{{ asset('img/avatar.png') }}" class="img-circle elevation-2" alt="User Image">
             </div>
             <div class="info">
                 <a href="{{ route('user.edit', Auth::user()->id) }}" class="d-block">{{ Auth::user()->name }}</a>

@@ -89,7 +89,7 @@ class CollectsController extends Controller
                 $patientType_list       = $this->patientTypeRepository->patientTypeWithResponsible_list();
                 $collectType_list       = $this->repository->collectType_list();
                 $payment_list           = $this->repository->payment_list(false);
-                $userAuth_list          = $this->userRepository->where([['id', '>', 1], ['active', 'on'], ['type', '>', 2]])->pluck('name', 'name');
+                $userAuth_list          = $this->userRepository->where([['id', '>', 1], ['active', 'on']])->whereBetween('type', [3, 98])->pluck('name', 'name');
                 $people_list            = $this->peopleRepository->all();
                 $typeResponsible_list   = $this->peopleRepository->typeResponsible_list();
                 $covenant_list          = $this->peopleRepository->covenant_list();
@@ -238,7 +238,7 @@ class CollectsController extends Controller
                 $patientType_list       = $this->patientTypeRepository->patientTypeWithResponsible_list();
                 $collectType_list       = $this->repository->collectType_list();
                 $payment_list           = $this->repository->payment_list(false);
-                $userAuth_list          = $this->userRepository->where([['id', '>', 1], ['active', 'on'], ['type', '>', 2]])->pluck('name', 'name');
+                $userAuth_list          = $this->userRepository->where([['id', '>', 1], ['active', 'on']])->whereBetween('type', [3, 98])->pluck('name', 'name');
                 $people_list            = $this->peopleRepository->orderBy('created_at', 'desc')->distinct('cpf')->get();
                 $typeResponsible_list   = $this->peopleRepository->typeResponsible_list();
                 $covenant_list          = $this->peopleRepository->covenant_list();
