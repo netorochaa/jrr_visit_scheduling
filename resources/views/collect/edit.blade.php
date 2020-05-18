@@ -19,6 +19,7 @@
 
 @section('footer-distinct')
   <script src=" {{ asset('select2/js/select2.full.min.js') }} "></script>
+  <script src=" {{ asset('moment/moment.min.js') }}"></script>
   <script>
     $(function () {
       //Initialize Select2 Elements
@@ -108,6 +109,29 @@
         inputFone.value = "";
         inputFone.disabled = true;
       }
+    }
+
+    function checkAge(input)
+    {
+        var age = document.getElementById('age');
+        var dateSplit = input.value.split('/');
+        var day = dateSplit[0];
+        var month = dateSplit[1];
+        var year = dateSplit[2];
+
+        var dateMomment = moment(year + "-" + month + "-" + day);
+        var dateNow = moment().format("YYYY-MM-DD");
+        if(!dateMomment.isValid()){
+            input.value = "";
+            return;
+        }
+        if(dateMomment.diff(dateNow, 'years') > -8){
+            input.value = "";
+            age.style.color = "red";
+        }else{
+            age.style.color = "black";
+        }
+
     }
 
     function activeButton(){

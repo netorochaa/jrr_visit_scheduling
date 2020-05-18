@@ -6,12 +6,13 @@
             @if($collect->status == 2) @include('templates.components.hidden', ['hidden' => 'site', 'value' => true]) @endif
     @endif
     <div class="card-body">
+        <p class="lead" id="age">ATENÇÃO: Não realizamos coletas domiciliares em crianças com idade inferior a 8 anos. Favor dirigir-se a unidade mais próxima.</p>
         <div class="row">
             @include('templates.components.input',  ['label' => 'Nome',         'col' => '4', 'input'  => 'name',   'attributes' => ['required' => 'true', 'class' => 'form-control']])
-            @include('templates.components.input',  ['label' => 'Nascimento',   'col' => '4', 'input'  => 'birth',  'attributes' => ['required' => 'true', 'class' => 'form-control', 'data-inputmask' => "'mask': '99/99/9999'", 'data-date', 'im-insert' => 'true']])
+            @include('templates.components.input',  ['label' => 'Nascimento',   'col' => '4', 'input'  => 'birth',  'attributes' => ['onBlur' => 'checkAge(this)','required' => 'true', 'class' => 'form-control', 'data-inputmask' => "'mask': '99/99/9999'", 'data-date', 'im-insert' => 'true']])
             @include('templates.components.input',  ['label' => 'E-mail',       'col' => '4', 'input'  => 'email',  'attributes' => ['class'    => 'form-control']])
             {{-- LINE --}}
-        @if($collect->status != 2) 
+        @if($collect->status != 2)
             @include('templates.components.input',  ['label' => 'RA',       'col' => '4', 'input'  => 'ra',     'attributes' => ['class' => 'form-control', 'data-inputmask' => "'mask': '9999999999'", 'data-ra', 'im-insert' => 'true']])
         @endif
             @include('templates.components.input',  ['label' => 'CPF',      'col' => '4', 'input'  => 'CPF',    'attributes' => ['required' => 'true', 'class' => 'form-control', 'data-inputmask' => "'mask': '99999999999'", 'data-cpf', 'im-insert' => 'true']])
