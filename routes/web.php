@@ -61,3 +61,16 @@ Route::get('activity/{id}/close', ['as' => 'activity.close', 'uses' => 'Activiti
 
 // Report
 Route::get('/report/cash', ['as' => 'report.cash', 'uses' => 'ReportController@cash']);
+
+Route::get('/mailable', function () {
+    $collect = App\Entities\Collect::find(29);
+
+    $response = [
+        'message'   => 'Solicitação de agendamento enviada',
+        'text'      => 'Anote o número da sua solicitação: Nº ' . $collect->id,
+        'describe'  => count($collect->people) . ' pacientes na data: ' . $collect->formatted_date . ' às ' . $collect->hour . ' no seguinte endereço: ' . $collect->address . ', ' . $collect->numberAddress . ', ' . $collect->neighborhood->name . ' ' . $collect->cep,
+        'type'      => 'info'
+    ];
+    session()->flash('return', $response);
+    return new App\Mail\SendMailSchedule();
+});

@@ -3,8 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-// use App\Http\Requests\CollectCreateRequest;
-// use App\Http\Requests\CollectUpdateRequest;
+use Illuminate\Support\Facades\Mail;
 use App\Repositories\CollectRepository;
 use App\Repositories\NeighborhoodRepository;
 use App\Repositories\CancellationTypeRepository;
@@ -14,6 +13,7 @@ use App\Repositories\CollectorRepository;
 use App\Repositories\FreeDayRepository;
 use App\Validators\CollectValidator;
 use App\Entities\Util;
+use App\Mail\SendMailSchedule;
 use DateTime;
 use Exception;
 use DB;
@@ -323,6 +323,18 @@ class PublicCollectController extends Controller
                     session()->flash('return', $response);
                     return redirect()->route('public.index');
                 }
+
+                $response = [
+                    'message'   => 'Solicitação de agendamento enviada',
+                    'text'      => 'Anote o número da sua solicitação: Nº ' . $collect->id,
+                    'describe'  => count($collect->people) . ' paciente(s) na data: ' . $collect->formatted_date . ' às ' . $collect->hour . ' no seguinte endereço: ' . $collect->address . ', ' . $collect->numberAddress . ', ' . $collect->neighborhood->name . ' ' . $collect->cep,
+                    'type'      => 'info'
+                ];
+                // send email
+                foreach ($collect->people as $person) {
+                    session()->flash('return', $response);
+                    Mail::to($person->email)->send(new SendMailSchedule());
+                }
             }
             else
             {
@@ -340,14 +352,11 @@ class PublicCollectController extends Controller
                 'message' => $e->getMessage(),
                 'type'    => 'error'
             ];
+            Log::channel('mysql')->error($e->getMessage());
             session()->flash('return', $response);
             return redirect()->route('public.index');
         }
-        $response = [
-            'message' => 'Solicitação de agendamento enviada',
-            'text'    => 'Anote o número da sua solicitação: Nº ' . $collect->id,
-            'type'    => 'info'
-        ];
+
         session()->flash('return', $response);
         return view('collect.public.sent');
 

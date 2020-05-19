@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 
 use Prettus\Validator\Contracts\ValidatorInterface;
 use Prettus\Validator\Exceptions\ValidatorException;
+use Illuminate\Support\Facades\Mail;
 use App\Repositories\CollectRepository;
 use App\Repositories\NeighborhoodRepository;
 use App\Repositories\CollectorRepository;
@@ -19,6 +20,7 @@ use App\Entities\Util;
 use DateTime;
 use Exception;
 use Auth;
+
 
 date_default_timezone_set('America/Recife');
 

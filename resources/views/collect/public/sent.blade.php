@@ -6,11 +6,14 @@
         <div class="card-body" >
             <div class="row">
                 <div style="text-align: center">
+                    <img src="http://roseannedore.com.br/img/logo_roseanelab.png"
+                        alt="Laboratório Roseanne Dore" width="200px">
                     @if (session('return'))
                         @if(session('return')['type'] == 'error')
                             <h1 style="color: red">{{ session('return')['message'] }}</h1>
                         @else
                             <h1 style="color: lightgreen">{{ session('return')['message'] }}</h1>
+                            <p>{{ session('return')['describe'] }}</p>
                             <p>{{ session('return')['text'] }}</p>
                         @endif
                         <h2>Em breve o laboratório entrará em contato pelo telefone ou e-mail informado para CONFIRMAR seu agendamento.</h2>
