@@ -13,7 +13,7 @@
                             <h1 style="color: red">{{ session('return')['message'] }}</h1>
                         @else
                             <h1 style="color: lightgreen">{{ session('return')['message'] }}</h1>
-                            <p>{{ session('return')['describe'] }}</p><br>
+                            <p>{{ session('return')['describe'] }}</p>
                             <p>{{ session('return')['text'] }}</p>
                         @endif
                         <h2>Em breve o laboratório entrará em contato pelo telefone ou e-mail para CONFIRMAR seu agendamento.</h2>
