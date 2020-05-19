@@ -16,10 +16,12 @@ use App\Repositories\PersonRepository;
 use App\Repositories\PatientTypeRepository;
 use App\Repositories\ActivityRepository;
 use App\Validators\CollectValidator;
+use App\Mail\SendMailSchedule;
 use App\Entities\Util;
 use DateTime;
 use Exception;
 use Auth;
+use Log;
 
 
 date_default_timezone_set('America/Recife');
@@ -192,7 +194,7 @@ class CollectsController extends Controller
                     'titlecard'  => 'Lista de coletas reservadas',
                     //Info of entitie
                     'table'               => $this->repository->getTable(),
-                    'thead_for_datatable' => ['Data/Hora', 'Código', 'Pagamento Taxa', 'Bairro', 'Endereço', 'Coletador', 'Status'],
+                    'thead_for_datatable' => ['Data/Hora', 'Código', 'Paciente', 'Pagamento Taxa', 'Bairro', 'Endereço', 'Coletador', 'Status'],
                     'collect_list'        => $collect_list
                 ]);
             }
@@ -216,7 +218,7 @@ class CollectsController extends Controller
                     'titlecard'  => 'Lista de coletas canceladas',
                     //Info of entitie
                     'table'               => $this->repository->getTable(),
-                    'thead_for_datatable' => ['Data/Hora', 'Código', 'Pagamento Taxa', 'Bairro', 'Endereço', 'Coletador', 'Status'],
+                    'thead_for_datatable' => ['Data/Hora', 'Código','Paciente', 'Pagamento Taxa', 'Bairro', 'Endereço', 'Coletador', 'Status'],
                     'collect_list'        => $collect_list
                 ]);
             }
@@ -304,11 +306,6 @@ class CollectsController extends Controller
                 // UPDATE DATA
                 $this->validator->with($request->all())->passesOrFail(ValidatorInterface::RULE_UPDATE);
                 $collect = $this->repository->update($request->except('cancellationType_id', 'site'), $id);
-
-                $response = [
-                    'message' => 'Coleta atualizada',
-                    'type'    => 'info'
-                ];
 
                 // CANCELLATION COLLECT
                 if($request->has('cancellationType_id'))
@@ -425,10 +422,6 @@ class CollectsController extends Controller
                 {
                     // 4 = CONFIRMADA
                     $this->repository->update(['status' => 4, 'user_id_confirmed' => $id_user, 'confirmed_at' =>  Util::dateNowForDB()], $collect->id);
-                    $response = [
-                        'message' => 'Coleta ' . $collect->id . ' confirmada',
-                        'type'    => 'info'
-                    ];
                 }
                 catch (Exception $e)
                 {
@@ -436,7 +429,20 @@ class CollectsController extends Controller
                         'message' => $e->getMessage(),
                         'type'    => 'error'
                     ];
+                    Log::channel('mysql')->error($e->getMessage());
                 }
+                $response = [
+                    'message'   => 'Agendamento para coleta domiciliar CONFIRMADO',
+                    'text'      => 'Anote o número da sua solicitação: Nº ' . $collect->id,
+                    'describe'  => count($collect->people) . ' paciente(s) na data: ' . $collect->formatted_date . ' às ' . $collect->hour . ' no seguinte endereço: ' . $collect->address . ', ' . $collect->numberAddress . ', ' . $collect->neighborhood->name . ' ' . $collect->cep,
+                    'type'      => 'confirmed'
+                ];
+                // send email
+                foreach ($collect->people as $person) {
+                    session()->flash('return', $response);
+                    Mail::to($person->email)->queue(new SendMailSchedule());
+                }
+
                 session()->flash('return', $response);
                 return redirect()->route('collect.index');
             }

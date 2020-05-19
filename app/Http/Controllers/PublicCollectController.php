@@ -323,7 +323,6 @@ class PublicCollectController extends Controller
                     session()->flash('return', $response);
                     return redirect()->route('public.index');
                 }
-
                 $response = [
                     'message'   => 'Solicitação de agendamento enviada',
                     'text'      => 'Anote o número da sua solicitação: Nº ' . $collect->id,
@@ -333,7 +332,7 @@ class PublicCollectController extends Controller
                 // send email
                 foreach ($collect->people as $person) {
                     session()->flash('return', $response);
-                    Mail::to($person->email)->send(new SendMailSchedule());
+                    Mail::to($person->email)->queue(new SendMailSchedule());
                 }
             }
             else

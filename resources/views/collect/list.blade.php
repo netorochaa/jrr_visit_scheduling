@@ -22,8 +22,20 @@
             <td>
                 <p><span class="lead">{{ $collectMarked->id }}</span></p>
             </td>
+            {{-- PACIENTES --}}
+            <td>
+                @foreach ($collectMarked->people as $person)
+                    - <small>{{ $person->name }} ({{ $person->patientType->name }})<br>
+                        <span class="text-muted">RA: {{ $person->ra }}</span></small><br>
+                @endforeach
+            </td>
             {{-- PAG. TAXA --}}
             <td>
+                @if(count($collectMarked->people) != 0)
+                    <span class="text-muted">
+                        Pacientes: {{ count($collectMarked->people) }}
+                    </span><br>
+                @endif
                 {{ $collectMarked->formatted_payment }} <br>
                 @if($collectMarked->payment == "1")
                     <span class="text-muted">Troco: R$</span> {{ $collectMarked->changePayment ?? "0.00"}}
@@ -70,9 +82,6 @@
                     <br><small>Via: {{ $collectMarked->confirmed->name ?? null }}</small>
                 @elseif($collectMarked->status > 6)
                     <br><small>Via: {{ $collectMarked->cancelled->name ?? null }} - {{ $collectMarked->cancellationtype->name }}</small>
-                @endif
-                @if(count($collectMarked->people) != 0)
-                    <br><span class="text-muted">Pacientes: {{ count($collectMarked->people) }}</span>
                 @endif
             </td>
             <td>

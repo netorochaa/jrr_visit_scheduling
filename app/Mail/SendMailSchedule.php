@@ -8,15 +8,17 @@ use Illuminate\Mail\Mailable;
 use Illuminate\Queue\SerializesModels;
 use Log;
 
-class SendMailSchedule extends Mailable
+class SendMailSchedule extends Mailable implements ShouldQueue
 {
     use Queueable, SerializesModels;
     public function __construct(){}
 
+    // run php artisan config:cache
+
     public function build()
     {
         return $this->from('contato.domiciliar@roseannedore.com.br', 'Contato - Lab. Roseanne Dore Soares')
-                    ->subject('Solicitação de agendamento - Lab. Roseanne Dore Soares')
+                    ->subject('Coleta domiciliar - Lab. Roseanne Dore Soares')
                     ->view('collect.public.sent');
     }
 }

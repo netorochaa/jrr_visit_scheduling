@@ -2,6 +2,7 @@
     <thead class="thead-dark">
         <tr>
             <th>Nome</th>
+            <th>Contato</th>
             @if($collect->status != 2) <th>RA</th> @endif
             <th>Convênio</th>
             <th>Exames</th>
@@ -14,6 +15,10 @@
             <td>
                 <b>{{ $person->name }}</b><br>
                 <small class="text-muted">{{ $person->patientType->name }} @if($person->typeResponsible) | {{ $person->formatted_TypeResponsible }} {{ $person->nameResponsible }} @endif</small>
+            </td>
+            <td>
+                <small>Telefone: {{ $person->fone }}<br>
+                E-mail: {{ $person->email ?? "Não informado" }}</small>
             </td>
             @if($collect->status != 2) <td>{{ $person->ra }}</td> @endif
             <td>{{ $person->getCovenantAttribute($person->pivot->covenant) ?? "NÃO INFORMADO"}}</td>
