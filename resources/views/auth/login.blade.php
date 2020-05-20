@@ -25,7 +25,7 @@
                     <!--<br><small>Caso você não possua credênciais entre em contato com seu superior para solicitar.</small>-->
                 </p>
                 <label>
-                    {!! Form::email('email', 'jose.neto@roseannedore.com.br', ['required' => 'true', 'placeholder' => 'E-mail da empresa']) !!}
+                    {!! Form::email('email', null, ['required' => 'true', 'placeholder' => 'E-mail da empresa']) !!}
                 </label>
                 <label>
                     {!! Form::password('password', ['required' => 'true', 'placeholder' => 'Senha']) !!}
