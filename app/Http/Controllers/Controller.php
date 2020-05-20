@@ -13,17 +13,6 @@ date_default_timezone_set('America/Recife');
 class Controller extends BaseController
 {
     use AuthorizesRequests, DispatchesJobs, ValidatesRequests;
-
-    /**
-     * method for user autenticate
-     */
-
-    public function login()
-    {
-        Auth::logout();
-        return view('auth.login');
-
-    }
 }
 
 
