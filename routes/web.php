@@ -2,21 +2,18 @@
 
 use Illuminate\Support\Facades\Route;
 
-// Route::get('/home', 'HomeController@index')->name('home');
-
 // Auth
 Route::get('/', ['as' => 'auth.login', 'uses' => 'AuthController@login']);
 Route::get('/home', ['as' => 'auth.home', 'uses' => 'AuthController@dashboard']);
 Route::get('/logout', ['as' => 'auth.logout', 'uses' => 'AuthController@logout']);
 Route::post('/login', ['as' => 'auth.login.do', 'uses' => 'AuthController@do']);
 
-
 // Users
 Route::resource('user', 'UsersController');
 
 // Collector
 Route::resource('collector', 'CollectorsController');
-Route::post('collector/{collector_id}/neighborhoods',                   ['as' => 'collector.neighborhoods.attach', 'uses' => 'CollectorsController@attachCollectorNeighborhoods']);
+Route::post('collector/{collector_id}/neighborhoods', ['as' => 'collector.neighborhoods.attach', 'uses' => 'CollectorsController@attachCollectorNeighborhoods']);
 Route::post('collector/{collector_id}/neighborhoods/{neighborhood_id}', ['as' => 'collector.neighborhoods.detach', 'uses' => 'CollectorsController@detachCollectorNeighborhoods']);
 
 // City

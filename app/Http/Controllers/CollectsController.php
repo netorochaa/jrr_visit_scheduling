@@ -134,7 +134,7 @@ class CollectsController extends Controller
                     'type'    => 'error'
                 ];
                 session()->flash('return', $response);
-                return redirect()->route('home');
+                return redirect()->route('auth.home');
             }
         }
     }

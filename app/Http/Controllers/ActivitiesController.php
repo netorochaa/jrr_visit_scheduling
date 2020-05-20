@@ -31,7 +31,7 @@ class ActivitiesController extends Controller
         $this->repository           = $repository;
         $this->validator            = $validator;
         $this->collectRepository    = $collectRepository;
-        $this->collectorRepository  = $collectorRepository; 
+        $this->collectorRepository  = $collectorRepository;
         $this->cancellationTypeRepository = $cancellationTypeRepository;
     }
 
@@ -49,7 +49,7 @@ class ActivitiesController extends Controller
                                                     ['collector_id', $collector->id]])
                                                 ->first();
                 $collect_list   = $this->collectRepository->whereDate('date', $dateNow)
-                                                            ->where([['collector_id', $collector->id], 
+                                                            ->where([['collector_id', $collector->id],
                                                                     ['status', '>', 3]])
                                                             ->orderBy('date')->get();
                                                             // dd($activity);
@@ -57,7 +57,7 @@ class ActivitiesController extends Controller
                 if($activity)
                 {
                     if($activity->end == null){
-                        if(count($collect_list->whereIn('status', [4, 5])) == 0) 
+                        if(count($collect_list->whereIn('status', [4, 5])) == 0)
                             $this->repository->update(['status' => 2, 'end' => Util::dateNowForDB()], $activity->id);
                     }
                 }
@@ -79,7 +79,7 @@ class ActivitiesController extends Controller
                     'table'         => $this->repository->getTable(),
                     'activity'      => $activity
                 ]);
-            }else return redirect()->route('home');
+            }else return redirect()->route('auth.home');
         }
         else return view('auth.login');
     }
@@ -105,7 +105,7 @@ class ActivitiesController extends Controller
                 ];
                 $this->validator->with($data)->passesOrFail(ValidatorInterface::RULE_CREATE);
                 $activity = $this->repository->create($data);
-                $ok = Collect::whereDate('date', $dateNowShort)->where([['collector_id', $request->get('collector_id')], 
+                $ok = Collect::whereDate('date', $dateNowShort)->where([['collector_id', $request->get('collector_id')],
                                                                         ['status', '>', 3]])
                                                                 ->update(['status' => '5']);
                 $response = [
@@ -136,15 +136,15 @@ class ActivitiesController extends Controller
         {
             $dateNow = date("Y-m-d H:i");
             $activity = $this->repository->find($id);
-            try 
+            try
             {
                 $this->repository->update(['status' => '3', 'end' => $dateNow, 'reasonCancellation' => $request->get('reasonCancellation')], $activity->id);
                 $response = [
                     'message' => 'Rota ' . $activity->id . ' encerrada',
                     'type'    => 'info'
                 ];
-            } 
-            catch (\Exception $e) 
+            }
+            catch (\Exception $e)
             {
                 $response = [
                     'message' => $e->getMessage(),
@@ -152,7 +152,7 @@ class ActivitiesController extends Controller
                 ];
             }
             session()->flash('return', $response);
-            return redirect()->route('home');
+            return redirect()->route('auth.home');
         }
     }
 
