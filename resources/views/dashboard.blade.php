@@ -1,4 +1,4 @@
-<h4 class="lead">Suas estatísticas</h4>
+<h4 class="lead">Suas estatísticas este mês</h4>
 <div class="row">
     <div class="col-12 col-sm-6 col-md-3">
         <div class="info-box">
@@ -6,7 +6,7 @@
                 <i class="fas fa-vial"></i>
             </span>
             <div class="info-box-content">
-                <span class="info-box-text">Confirmadas neste mês</span>
+                <span class="info-box-text">Confirmadas</span>
                 <span class="info-box-number">
                     {{ count($collects->where('user_id_confirmed', Auth::user()->id)) }} <small>coletas</small>
                 </span>
@@ -19,7 +19,7 @@
                 <i class="fas fa-vial"></i>
             </span>
             <div class="info-box-content">
-                <span class="info-box-text">Aguardando confirmação neste mês</span>
+                <span class="info-box-text">Reservadas</span>
                 <span class="info-box-number">
                     {{ count($collects->where('user_id', Auth::user()->id)) }} <small>coletas</small>
                 </span>
@@ -32,7 +32,7 @@
                 <i class="fas fa-vial"></i>
             </span>
             <div class="info-box-content">
-                <span class="info-box-text">Canceladas neste mês</span>
+                <span class="info-box-text">Canceladas</span>
                 <span class="info-box-number">
                     {{ count($collects->where('user_id_cancelled', Auth::user()->id)) }} <small>coletas</small>
                 </span>
