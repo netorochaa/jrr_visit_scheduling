@@ -10,6 +10,21 @@
            -box-sizing: border-box;
 }
 
+@media only screen and (max-device-width: 900px) {
+    #conteudo-view { width:100%!important; }
+    img{width: 500px;}
+    h3, p{
+        font-size: 2em!important;
+    }
+    form label input,
+    form input[type="submit"]{
+        height: 100px!important;
+        width: 100%!important;
+        font-size: 2em!important;
+    }
+    .conteudo-info { display: none!important; }
+}
+
 div.conteudo-info{
     position: absolute;
     width: calc(100% - 400px);
@@ -42,7 +57,7 @@ section#conteudo-view h1{
     color: rgb(0, 70, 95);
 }
 
-section#conteudo-view h3, 
+section#conteudo-view h3,
 section#conteudo-view form p {
     margin-top: -5px;
     float: left;

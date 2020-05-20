@@ -6,8 +6,10 @@
     <link rel="stylesheet" href="{{ asset('css/sweetalert2-theme-bootstrap-4/bootstrap-4.min.css') }}">
     </head>
     <body>
-        @if (session('return'))
-            <input type="hidden" id="{{ session('return')['type'] }}" value="{{ session('return')['message'] }}" class="btn btn-info swalDefaultInfo"/>
+        @if ($errors ?? null)
+            @foreach ($errors->all() as $erro)
+                <input type="hidden" id="error" value="{{ $erro }}" class="btn btn-info swalDefaultInfo"/>
+            @endforeach
         @endif
         <div class="conteudo-info">
             <img src="{{ asset('img/1.png') }}" alt="">
@@ -17,18 +19,18 @@
             <h1>RDomiciliar</h1>
             <h3>Sistema gerenciador de colestas domiciliares</h3>
 
-            {!! Form::open(['route' => 'auth.login', 'method' => 'post']) !!}
-            <p>Acesse o sistema
-                <!--<br><small>Caso você não possua credênciais entre em contato com seu superior para solicitar.</small>-->
-            </p>
-            <label>
-                {!! Form::text('email', null, ['placeholder' => 'E-mail da empresa']) !!}
-            </label>
-            <label>
-                {!! Form::password('password', ['placeholder' => 'Senha']) !!}
-            </label>
-
-            {!! Form::submit('Entrar', []) !!}
+            {!! Form::open(['route' => 'auth.login.do', 'method' => 'post']) !!}
+                @csrf
+                <p>Acesse o sistema
+                    <!--<br><small>Caso você não possua credênciais entre em contato com seu superior para solicitar.</small>-->
+                </p>
+                <label>
+                    {!! Form::email('email', 'jose.neto@roseannedore.com.br', ['required' => 'true', 'placeholder' => 'E-mail da empresa']) !!}
+                </label>
+                <label>
+                    {!! Form::password('password', ['required' => 'true', 'placeholder' => 'Senha']) !!}
+                </label>
+                {!! Form::submit('Entrar', []) !!}
             {!! Form::close() !!}
         </section>
     </body>

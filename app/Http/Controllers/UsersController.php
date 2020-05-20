@@ -13,6 +13,7 @@ use App\Repositories\UserRepository;
 use App\Repositories\CollectorRepository;
 use App\Validators\UserValidator;
 
+
 date_default_timezone_set('America/Recife');
 
 class UsersController extends Controller
@@ -65,7 +66,7 @@ class UsersController extends Controller
         }
         else
         {
-            try 
+            try
             {
                 $this->validator->with($request->all())->passesOrFail(ValidatorInterface::RULE_CREATE);
                 $user = $this->repository->create($request->all());
@@ -75,7 +76,7 @@ class UsersController extends Controller
                     'type'   => 'info',
                 ];
             }
-            catch (ValidatorException $e) 
+            catch (ValidatorException $e)
             {
                 $response = [
                     'message' =>  $e->getMessageBag(),
@@ -122,7 +123,7 @@ class UsersController extends Controller
         }
         else
         {
-            try 
+            try
             {
                 $request->all()['password'] != null ? $userRequest = $request->all() : $userRequest = $request->except('password');
                 $this->validator->with($userRequest)->passesOrFail(ValidatorInterface::RULE_UPDATE);
@@ -132,9 +133,9 @@ class UsersController extends Controller
                     'message' => 'Usuário atualizado',
                     'type'   => 'info',
                 ];
-            } 
-            catch (ValidatorException $e) 
-            { 
+            }
+            catch (ValidatorException $e)
+            {
                 $response = [
                     'message' =>  $e->getMessageBag(),
                     'type'    => 'error'
@@ -154,7 +155,7 @@ class UsersController extends Controller
         }
         else
         {
-            try 
+            try
             {
                 $user = $this->repository->find($id);
                 $user->update(['active' => 'off']);
@@ -162,9 +163,9 @@ class UsersController extends Controller
                     'message' => 'Usuário deletado',
                     'type'   => 'info',
                 ];
-            } 
-            catch (ValidatorException $e) 
-            { 
+            }
+            catch (ValidatorException $e)
+            {
                 $response = [
                     'message' =>  $e->getMessageBag(),
                     'type'    => 'error'
@@ -176,5 +177,5 @@ class UsersController extends Controller
     }
 
     //Methods not used
-    public function show($id){}  
+    public function show($id){}
 }

@@ -24,7 +24,7 @@
         <nav class="mt-2">
             <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
                 <li class="nav-item">
-                    <a href="{{ route('home') }}" class="nav-link @if($namepage == 'Home') active @endif">
+                    <a href="{{ route('auth.home') }}" class="nav-link @if($namepage == 'Home') active @endif">
                         <i class="nav-icon fas fa-th"></i>
                         <p>Home</p>
                     </a>

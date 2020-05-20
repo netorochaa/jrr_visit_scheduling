@@ -4,19 +4,18 @@ namespace App\Entities;
 
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Support\Facades\Hash;
 
 class User extends Authenticatable
 {
     use Notifiable;
-
     public $timestamps = true;
-    protected $table = 'users';
     protected $fillable = ['password', 'name', 'email', 'type', 'active'];
     protected $hidden = ['password', 'remember_token'];
 
     public function setPasswordAttribute($value)
     {
-        $this->attributes['password'] = env('PASSWORD_HASH') ? bcrypt($value) : $value;
+        $this->attributes['password'] = env('PASSWORD_HASH') ? Hash::make($value) : $value;
     }
 
     public function collector()
@@ -61,7 +60,7 @@ class User extends Authenticatable
                 break;
         }
     }
-    
+
     public function getFormattedCreatedAtAttribute(){
         if($this->attributes['created_at'] != null)
         {
@@ -72,7 +71,7 @@ class User extends Authenticatable
             $month = $dateSplit[1];
             $year = $dateSplit[0];
             $hour = $date[1];
-            
+
             return $day . "/" . $month . "/" . $year . " " . $hour;
         }
     }
@@ -87,7 +86,7 @@ class User extends Authenticatable
             $month = $dateSplit[1];
             $year = $dateSplit[0];
             $hour = $date[1];
-            
+
             return $day . "/" . $month . "/" . $year . " " . $hour;
         }
     }

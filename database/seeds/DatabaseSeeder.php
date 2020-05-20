@@ -6,14 +6,12 @@ Use App\Entities\PatientType;
 Use App\Entities\City;
 Use App\Entities\Neighborhood;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\Hash;
+
+date_default_timezone_set('America/Recife');
 
 class DatabaseSeeder extends Seeder
 {
-    /**
-     * Seed the application's database.
-     *
-     * @return void
-     */
     public function run()
     {
         $this->createUser();
@@ -27,7 +25,7 @@ class DatabaseSeeder extends Seeder
     {
         User::create([
             'email' => 'jose.neto@roseannedore.com.br',
-            'password' => env('PASSWORD_HASH') ? bcrypt('123') : '123',
+            'password' => Hash::make('th3b4tm4n'),
             'name' => 'Admin',
             'type' => '99',
             'active' => 'on'
@@ -35,7 +33,7 @@ class DatabaseSeeder extends Seeder
 
         User::create([
             'email' => 'contato@roseannedore.com.br',
-            'password' => env('PASSWORD_HASH') ? bcrypt('123') : '123',
+            'password' => '123',
             'name' => 'Site',
             'type' => '1',
             'active' => 'off'

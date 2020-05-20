@@ -2,11 +2,14 @@
 
 use Illuminate\Support\Facades\Route;
 
+// Route::get('/home', 'HomeController@index')->name('home');
+
 // Auth
-Route::get('/', ['uses' => 'Controller@login']);
-Route::get('/logout', ['as' => 'auth.logout', 'uses' => 'HomeController@logout']);
-Route::get('/home', ['as' => 'home', 'uses' => 'HomeController@index']);
-Route::post('/home', ['as' => 'auth.login', 'uses' => 'HomeController@index']);
+Route::get('/', ['as' => 'auth.login', 'uses' => 'AuthController@login']);
+Route::get('/home', ['as' => 'auth.home', 'uses' => 'AuthController@dashboard']);
+Route::get('/logout', ['as' => 'auth.logout', 'uses' => 'AuthController@logout']);
+Route::post('/login', ['as' => 'auth.login.do', 'uses' => 'AuthController@do']);
+
 
 // Users
 Route::resource('user', 'UsersController');
@@ -61,16 +64,3 @@ Route::get('activity/{id}/close', ['as' => 'activity.close', 'uses' => 'Activiti
 
 // Report
 Route::get('/report/cash', ['as' => 'report.cash', 'uses' => 'ReportController@cash']);
-
-Route::get('/mailable', function () {
-    $collect = App\Entities\Collect::find(29);
-
-    $response = [
-        'message'   => 'Solicitação de agendamento enviada',
-        'text'      => 'Anote o número da sua solicitação: Nº ' . $collect->id,
-        'describe'  => count($collect->people) . ' pacientes na data: ' . $collect->formatted_date . ' às ' . $collect->hour . ' no seguinte endereço: ' . $collect->address . ', ' . $collect->numberAddress . ', ' . $collect->neighborhood->name . ' ' . $collect->cep,
-        'type'      => 'info'
-    ];
-    session()->flash('return', $response);
-    return new App\Mail\SendMailSchedule();
-});
