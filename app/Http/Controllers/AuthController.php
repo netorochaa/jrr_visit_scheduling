@@ -43,7 +43,11 @@ class AuthController extends Controller
 
     public function do(Request $request)
     {
-        $credentials = $request->only('email', 'password');
+        $credentials =[
+            'email' => $request->get('email'),
+            'password' => $request->get('password'),
+            'active' => 'on'
+        ];
         if(Auth::attempt($credentials))
         {
             // IF COLLECTOR

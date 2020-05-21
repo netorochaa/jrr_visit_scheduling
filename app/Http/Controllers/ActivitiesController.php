@@ -86,7 +86,7 @@ class ActivitiesController extends Controller
 
     public function store(ActivityCreateRequest $request)
     {
-        if(!\Auth::check())
+        if(!Auth::check())
         {
             session()->flash('return');
             return view('auth.login');
@@ -127,7 +127,7 @@ class ActivitiesController extends Controller
 
     public function close(Request $request, $id)
     {
-        if(!\Auth::check())
+        if(!Auth::check())
         {
             session()->flash('return');
             return view('auth.login');

@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Route;
 // Auth
 Route::get('/', ['as' => 'auth.login', 'uses' => 'AuthController@login']);
 Route::get('/home', ['as' => 'auth.home', 'uses' => 'AuthController@dashboard']);
+Route::get('/login', 'AuthController@dashboard');
 Route::get('/logout', ['as' => 'auth.logout', 'uses' => 'AuthController@logout']);
 Route::post('/login', ['as' => 'auth.login.do', 'uses' => 'AuthController@do']);
 

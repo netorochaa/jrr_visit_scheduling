@@ -28,32 +28,37 @@ class PatientTypesController extends Controller
 
     public function index()
     {
-        if(!\Auth::check())
+        if(!Auth::check())
         {
             session()->flash('return');
             return view('auth.login');
         }
         else
         {
-            $patientTypes  = $this->repository->where('active', 'on')->get();
-            return view('patienttype.index', [
-                'namepage'      => 'Tipo de paciente',
-                'threeview'     => 'Cadastros',
-                'titlespage'    => ['Cadastro de tipo de paciente'],
-                'titlecard'     => 'Lista dos tipos de pacientes',
-                'titlemodal'    => 'Cadastrar tipo de paciente',
-                'add'           => true,
-                //List of entitie
-                'table' => $this->repository->getTable(),
-                'thead_for_datatable' => ['Nome', 'Responsável', 'Criado'],
-                'patientTypes' => $patientTypes
-            ]);
+            if(Auth::user()->type > 2)
+            {
+                $patientTypes  = $this->repository->where('active', 'on')->get();
+                return view('patienttype.index', [
+                    'namepage'      => 'Tipo de paciente',
+                    'threeview'     => 'Cadastros',
+                    'titlespage'    => ['Cadastro de tipo de paciente'],
+                    'titlecard'     => 'Lista dos tipos de pacientes',
+                    'titlemodal'    => 'Cadastrar tipo de paciente',
+                    'add'           => true,
+                    //List of entitie
+                    'table' => $this->repository->getTable(),
+                    'thead_for_datatable' => ['Nome', 'Responsável', 'Criado'],
+                    'patientTypes' => $patientTypes
+                ]);
+            }
+            else
+                return redirect()->route('auth.home')->withErrors(['Você não tem permissão para esta ação, entre em contato com seu superior.']);
         }
     }
 
     public function store(PatientTypeCreateRequest $request)
     {
-        if(!\Auth::check())
+        if(!Auth::check())
         {
             session()->flash('return');
             return view('auth.login');
@@ -62,13 +67,18 @@ class PatientTypesController extends Controller
         {
             try
             {
-                $this->validator->with($request->all())->passesOrFail(ValidatorInterface::RULE_CREATE);
-                $patientType = $this->repository->create($request->all());
+                if(Auth::user()->type > 2)
+                {
+                    $this->validator->with($request->all())->passesOrFail(ValidatorInterface::RULE_CREATE);
+                    $this->repository->create($request->all());
 
-                $response = [
-                    'message' => 'Tipo de paciente cadastrado',
-                    'type'   => 'info',
-                ];
+                    $response = [
+                        'message' => 'Tipo de paciente cadastrado',
+                        'type'   => 'info',
+                    ];
+                }
+                else
+                    return redirect()->route('auth.home')->withErrors(['Você não tem permissão para esta ação, entre em contato com seu superior.']);
             }
             catch (ValidatorException $e)
             {
@@ -84,29 +94,34 @@ class PatientTypesController extends Controller
 
     public function destroy($id)
     {
-        if(!\Auth::check())
+        if(!Auth::check())
         {
             session()->flash('return');
             return view('auth.login');
         }
         else
         {
-            try 
+            try
             {
-                $deleted = $this->repository->update(['active' => 'off'], $id);
-                $response = [
-                    'message' => 'Tipo de paciente deletado',
-                    'type'   => 'info',
-                ];
-            } 
-            catch (Exception $e) 
+                if(Auth::user()->type > 2)
+                {
+                    $this->repository->update(['active' => 'off'], $id);
+                    $response = [
+                        'message' => 'Tipo de paciente deletado',
+                        'type'   => 'info',
+                    ];
+                }
+                else
+                    return redirect()->route('auth.home')->withErrors(['Você não tem permissão para esta ação, entre em contato com seu superior.']);
+            }
+            catch (Exception $e)
             {
                 $response = [
                     'message' => $e->getMessage(),
                     'type'   => 'error',
                 ];
             }
-            
+
             session()->flash('return', $response);
             return redirect()->route('patienttype.index');
         }

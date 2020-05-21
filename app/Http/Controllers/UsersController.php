@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 
-use App\Http\Requests;
 use Prettus\Validator\Contracts\ValidatorInterface;
 use Prettus\Validator\Exceptions\ValidatorException;
 use App\Http\Requests\UserCreateRequest;
@@ -12,7 +11,8 @@ use App\Http\Requests\UserUpdateRequest;
 use App\Repositories\UserRepository;
 use App\Repositories\CollectorRepository;
 use App\Validators\UserValidator;
-
+use App\Entities\User;
+use Auth;
 
 date_default_timezone_set('America/Recife');
 
@@ -30,7 +30,7 @@ class UsersController extends Controller
 
     public function index()
     {
-        if(!\Auth::check())
+        if(!Auth::check())
         {
             session()->flash('return');
             return view('auth.login');
@@ -59,7 +59,7 @@ class UsersController extends Controller
 
     public function store(UserCreateRequest $request)
     {
-        if(!\Auth::check())
+        if(!Auth::check())
         {
             session()->flash('return');
             return view('auth.login');
@@ -68,13 +68,17 @@ class UsersController extends Controller
         {
             try
             {
-                $this->validator->with($request->all())->passesOrFail(ValidatorInterface::RULE_CREATE);
-                $user = $this->repository->create($request->all());
+                if(Auth::user()->type > 2)
+                {
+                    $this->validator->with($request->all())->passesOrFail(ValidatorInterface::RULE_CREATE);
+                    User::create($request->all());
 
-                $response = [
-                    'message' => 'Usuário criado.',
-                    'type'   => 'info',
-                ];
+                    $response = [
+                        'message' => 'Usuário criado.',
+                        'type'   => 'info',
+                    ];
+                }
+                else return redirect()->route('auth.home')->withErrors(['Você não tem permissão para esta ação, entre em contato com seu superior.']);
             }
             catch (ValidatorException $e)
             {
@@ -90,33 +94,37 @@ class UsersController extends Controller
 
     public function edit($id)
     {
-        if(!\Auth::check())
+        if(!Auth::check())
         {
             session()->flash('return');
             return view('auth.login');
         }
         else
         {
-            $user = $this->repository->find($id);
-            $typeUsers_list = $this->repository->typeUser_list();
+            if(Auth::user()->type > 2 || Auth::user()->id == $id)
+            {
+                $user = $this->repository->find($id);
+                $typeUsers_list = $this->repository->typeUser_list();
 
-            return view('user.edit', [
-                'namepage'       => 'Usuário',
-                'threeview'      => 'Cadastros',
-                'titlespage'     => ['Cadastro de usuários'],
-                'titlecard'      => 'Editar usuário',
-                'typeUsers_list' => $typeUsers_list,
-                'table'          => $this->repository->getTable(),
-                'goback'         => true,
-                'add'            => false,
-                'user'           => $user
-            ]);
+                return view('user.edit', [
+                    'namepage'       => 'Usuário',
+                    'threeview'      => 'Cadastros',
+                    'titlespage'     => ['Cadastro de usuários'],
+                    'titlecard'      => 'Editar usuário',
+                    'typeUsers_list' => $typeUsers_list,
+                    'table'          => $this->repository->getTable(),
+                    'goback'         => true,
+                    'add'            => false,
+                    'user'           => $user
+                ]);
+            }
+            else return redirect()->route('auth.home')->withErrors(['Você não tem permissão para esta ação, entre em contato com seu superior.']);
         }
     }
 
     public function update(UserUpdateRequest $request, $id)
     {
-        if(!\Auth::check())
+        if(!Auth::check())
         {
             session()->flash('return');
             return view('auth.login');
@@ -127,7 +135,7 @@ class UsersController extends Controller
             {
                 $request->all()['password'] != null ? $userRequest = $request->all() : $userRequest = $request->except('password');
                 $this->validator->with($userRequest)->passesOrFail(ValidatorInterface::RULE_UPDATE);
-                $user = $this->repository->update($userRequest, $id);
+                User::update($userRequest, $id);
 
                 $response = [
                     'message' => 'Usuário atualizado',
@@ -148,7 +156,7 @@ class UsersController extends Controller
 
     public function destroy($id)
     {
-        if(!\Auth::check())
+        if(!Auth::check())
         {
             session()->flash('return');
             return view('auth.login');
@@ -157,12 +165,16 @@ class UsersController extends Controller
         {
             try
             {
-                $user = $this->repository->find($id);
-                $user->update(['active' => 'off']);
-                $response = [
-                    'message' => 'Usuário deletado',
-                    'type'   => 'info',
-                ];
+                if(Auth::user()->type > 2)
+                {
+                    $user = $this->repository->find($id);
+                    $user->update(['active' => 'off']);
+                    $response = [
+                        'message' => 'Usuário deletado',
+                        'type'   => 'info',
+                    ];
+                }
+                else return redirect()->route('auth.home')->withErrors(['Você não tem permissão para esta ação, entre em contato com seu superior.']);
             }
             catch (ValidatorException $e)
             {

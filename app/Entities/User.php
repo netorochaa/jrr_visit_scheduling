@@ -15,7 +15,7 @@ class User extends Authenticatable
 
     public function setPasswordAttribute($value)
     {
-        $this->attributes['password'] = env('PASSWORD_HASH') ? Hash::make($value) : $value;
+        $this->attributes['password'] = Hash::make($value);
     }
 
     public function collector()

@@ -15,21 +15,11 @@ use App\Validators\UserValidator;
  */
 class UserRepositoryEloquent extends BaseRepository implements UserRepository
 {
-    /**
-     * Specify Model class name
-     *
-     * @return string
-     */
     public function model()
     {
         return User::class;
     }
 
-    /**
-    * Specify Validator class name
-    *
-    * @return mixed
-    */
     public function validator()
     {
 
@@ -56,5 +46,5 @@ class UserRepositoryEloquent extends BaseRepository implements UserRepository
 
       return $list;
     }
-    
+
 }

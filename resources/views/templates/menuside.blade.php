@@ -16,7 +16,9 @@
                 <img src="{{ asset('img/avatar.png') }}" class="img-circle elevation-2" alt="User Image">
             </div>
             <div class="info">
-                <a href="{{ route('user.edit', Auth::user()->id) }}" class="d-block">{{ Auth::user()->name }}</a>
+                <a href="{{ route('user.edit', Auth::user()->id) }}" class="d-block">{{ Auth::user()->name }}<br>
+                    <u><span class="text-muted"><small>Editar usuário</small></span></u>
+                </a>
             </div>
         </div>
 
@@ -72,53 +74,55 @@
                         </li>
                     </ul>
                 </li>
-                <li class="nav-item has-treeview @if($threeview == 'Cadastros') menu-open @endif">
-                    <a href="#" class="nav-link  @if($threeview == 'Cadastros') active @endif">
-                      <i class="nav-icon fas fa-edit"></i>
-                        <p>
-                            Cadastros
-                            <i class="fas fa-angle-left right"></i>
-                        </p>
-                    </a>
-                    <ul class="nav nav-treeview">
-                        <li class="nav-item">
-                            <a href="{{ route('freedays.index') }}" class="nav-link @if($namepage == 'Dias sem coletas') active @endif">
-                                <i class="far fa-circle nav-icon"></i>
-                                <p>Dias sem coletas</p>
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a href="{{ route('collector.index') }}" class="nav-link @if($namepage == 'Coletador') active @endif">
-                                <i class="far fa-circle nav-icon"></i>
-                                <p>Coletador</p>
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a href="{{ route('user.index') }}" class="nav-link @if($namepage == 'Usuário') active @endif">
-                                <i class="far fa-circle nav-icon"></i>
-                                <p>Usuário</p>
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a href="{{ route('neighborhood.index') }}" class="nav-link @if($namepage == 'Bairro') active @endif">
-                                <i class="far fa-circle nav-icon"></i>
-                                <p>Bairro</p>
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a href="{{ route('patienttype.index') }}" class="nav-link @if($namepage == 'Tipo de paciente') active @endif">
-                                <i class="far fa-circle nav-icon"></i>
-                                <p>Tipo de paciente</p>
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a href="{{ route('cancellationtype.index') }}" class="nav-link @if($namepage == 'Cancelamento de coleta') active @endif">
-                                <i class="far fa-circle nav-icon"></i>
-                                <p>Cancelamento de coleta</p>
-                            </a>
-                        </li>
-                    </ul>
-                </li>
+                @if(Auth::user()->type > 2)
+                    <li class="nav-item has-treeview @if($threeview == 'Cadastros') menu-open @endif">
+                        <a href="#" class="nav-link  @if($threeview == 'Cadastros') active @endif">
+                        <i class="nav-icon fas fa-edit"></i>
+                            <p>
+                                Cadastros
+                                <i class="fas fa-angle-left right"></i>
+                            </p>
+                        </a>
+                        <ul class="nav nav-treeview">
+                            <li class="nav-item">
+                                <a href="{{ route('freedays.index') }}" class="nav-link @if($namepage == 'Dias sem coletas') active @endif">
+                                    <i class="far fa-circle nav-icon"></i>
+                                    <p>Dias sem coletas</p>
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="{{ route('collector.index') }}" class="nav-link @if($namepage == 'Coletador') active @endif">
+                                    <i class="far fa-circle nav-icon"></i>
+                                    <p>Coletador</p>
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="{{ route('user.index') }}" class="nav-link @if($namepage == 'Usuário') active @endif">
+                                    <i class="far fa-circle nav-icon"></i>
+                                    <p>Usuário</p>
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="{{ route('neighborhood.index') }}" class="nav-link @if($namepage == 'Bairro') active @endif">
+                                    <i class="far fa-circle nav-icon"></i>
+                                    <p>Bairro</p>
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="{{ route('patienttype.index') }}" class="nav-link @if($namepage == 'Tipo de paciente') active @endif">
+                                    <i class="far fa-circle nav-icon"></i>
+                                    <p>Tipo de paciente</p>
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="{{ route('cancellationtype.index') }}" class="nav-link @if($namepage == 'Cancelamento de coleta') active @endif">
+                                    <i class="far fa-circle nav-icon"></i>
+                                    <p>Cancelamento de coleta</p>
+                                </a>
+                            </li>
+                        </ul>
+                    </li>
+                @endif
                 <li class="nav-item has-treeview @if($threeview == 'Relatórios') menu-open @endif">
                     <a href="#" class="nav-link  @if($threeview == 'Relatórios') active @endif">
                       <i class="nav-icon fas fa-file-alt"></i>

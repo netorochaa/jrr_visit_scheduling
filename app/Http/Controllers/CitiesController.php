@@ -12,6 +12,7 @@ use App\Http\Requests\CityUpdateRequest;
 use App\Repositories\CityRepository;
 use App\Repositories\NeighborhoodRepository;
 use App\Validators\CityValidator;
+use Auth;
 
 date_default_timezone_set('America/Recife');
 
@@ -29,24 +30,29 @@ class CitiesController extends Controller
 
     public function store(CityCreateRequest $request)
     {
-        if(!\Auth::check())
+        if(!Auth::check())
         {
             session()->flash('return');
             return view('auth.login');
         }
         else
         {
-            try 
+            try
             {
-                $this->validator->with($request->all())->passesOrFail(ValidatorInterface::RULE_CREATE);
-                $city = $this->repository->create($request->all());
+                if(Auth::user()->type > 2)
+                {
+                    $this->validator->with($request->all())->passesOrFail(ValidatorInterface::RULE_CREATE);
+                    $this->repository->create($request->all());
 
-                $response = [
-                    'message' => 'Cidade cadastrada',
-                    'type'   => 'info',
-                ];
-            } 
-            catch (ValidatorException $e) 
+                    $response = [
+                        'message' => 'Cidade cadastrada',
+                        'type'   => 'info',
+                    ];
+                }
+                else
+                    return redirect()->route('auth.home')->withErrors(['Você não tem permissão para esta ação, entre em contato com seu superior.']);
+            }
+            catch (ValidatorException $e)
             {
                 $response = [
                     'message' =>  $e->getMessageBag(),
@@ -60,47 +66,57 @@ class CitiesController extends Controller
 
     public function edit($id)
     {
-        if(!\Auth::check())
+        if(!Auth::check())
         {
             session()->flash('return');
             return view('auth.login');
         }
         else
         {
-            $city = $this->repository->find($id);
-            return view('city.edit', [
-                'namepage'       => 'Bairro',
-                'threeview'      => 'Cadastros',
-                'titlespage'     => ['Cadastro de Cidade'],
-                'titlecard'      => 'Editar cidade',
-                'table'          => $this->repository->getTable(),
-                'goback'         => true,
-                'add'            => false,
-                'city'           => $city
-            ]);
+            if(Auth::user()->type > 2)
+            {
+                $city = $this->repository->find($id);
+                return view('city.edit', [
+                    'namepage'       => 'Bairro',
+                    'threeview'      => 'Cadastros',
+                    'titlespage'     => ['Cadastro de Cidade'],
+                    'titlecard'      => 'Editar cidade',
+                    'table'          => $this->repository->getTable(),
+                    'goback'         => true,
+                    'add'            => false,
+                    'city'           => $city
+                ]);
+            }
+            else
+                return redirect()->route('auth.home')->withErrors(['Você não tem permissão para esta ação, entre em contato com seu superior.']);
         }
     }
 
     public function update(CityUpdateRequest $request, $id)
     {
-        if(!\Auth::check())
+        if(!Auth::check())
         {
             session()->flash('return');
             return view('auth.login');
         }
         else
         {
-            try {
-
-                $this->validator->with($request->all())->passesOrFail(ValidatorInterface::RULE_UPDATE);
-                $city = $this->repository->update($request->all(), $id);
-                $response = [
-                    'message' => 'Cidade atualizada',
-                    'type'   => 'info',
-                ];
-            } 
-            catch (ValidatorException $e) 
-            { 
+            try
+            {
+                if(Auth::user()->type > 2)
+                {
+                    $this->validator->with($request->all())->passesOrFail(ValidatorInterface::RULE_UPDATE);
+                    $this->repository->update($request->all(), $id);
+                    $response = [
+                        'message' => 'Cidade atualizada',
+                        'type'   => 'info',
+                    ];
+                }
+                else
+                    return redirect()->route('auth.home')->withErrors(['Você não tem permissão para esta ação, entre em contato com seu superior.']);
+            }
+            catch (ValidatorException $e)
+            {
                 $response = [
                     'message' =>  $e->getMessageBag(),
                     'type'    => 'error'
@@ -113,27 +129,33 @@ class CitiesController extends Controller
 
     public function destroy($id)
     {
-        if(!\Auth::check())
+        if(!Auth::check())
         {
             session()->flash('return');
             return view('auth.login');
         }
         else
         {
-            try {
-                $deleted = $this->repository->update(['active' => 'off'], $id);
-                $neighborhoods = $this->neighborhoodRepository->where('city_id', $id)->get();
+            try
+            {
+                if(Auth::user()->type > 2)
+                {
+                    $deleted = $this->repository->update(['active' => 'off'], $id);
+                    $neighborhoods = $this->neighborhoodRepository->where('city_id', $id)->get();
 
-                if($deleted)
-                    foreach($neighborhoods as $neighborhood) $neighborhood->update(['active' => 'off']);
+                    if($deleted)
+                        foreach($neighborhoods as $neighborhood) $neighborhood->update(['active' => 'off']);
 
-                $response = [
-                    'message' => 'Cidade deletada',
-                    'type'   => 'info',
-                ];
-            } 
-            catch (ValidatorException $e) 
-            { 
+                    $response = [
+                        'message' => 'Cidade deletada',
+                        'type'   => 'info',
+                    ];
+                }
+                else
+                    return redirect()->route('auth.home')->withErrors(['Você não tem permissão para esta ação, entre em contato com seu superior.']);
+            }
+            catch (ValidatorException $e)
+            {
                 $response = [
                     'message' =>  $e->getMessageBag(),
                     'type'    => 'error'
