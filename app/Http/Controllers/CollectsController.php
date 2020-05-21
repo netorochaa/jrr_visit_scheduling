@@ -302,12 +302,18 @@ class CollectsController extends Controller
             {
                 $collect = $this->repository->find($id);
                 $id_user = Auth::user()->id;
+
                 Log::channel('mysql')->info(Auth::user()->name . ' ATUALIZOU a coleta: ' . $collect);
                 // UPDATE DATA
                 $this->validator->with($request->all())->passesOrFail(ValidatorInterface::RULE_UPDATE);
                 $collect = $this->repository->update($request->except('cancellationType_id', 'site'), $id);
 
                 Log::channel('mysql')->info('Para: ' . $collect);
+
+                $response = [
+                    'message' => 'Coleta reservada',
+                    'type'    => 'info'
+                ];
 
                 // CANCELLATION COLLECT
                 if($request->has('cancellationType_id'))
@@ -360,6 +366,9 @@ class CollectsController extends Controller
         else
         {
             $id_collect       = $request->get('infoCollect');
+            // if hour not selected
+            if($id_collect == "Selecione") return redirect()->route('collect.index')->withErrors(['Selecione um horário']);
+
             $id_neighborhood = $request->get('neighborhood_id');
             $id_origin       = Auth::user()->id;
             // Reservada
@@ -411,6 +420,11 @@ class CollectsController extends Controller
             $collect = $this->repository->find($id);
             $id_user = Auth::user()->id;
 
+            $response = [
+                'message' => 'Coleta ' . $collect->id . ' confirmada',
+                'type'    => 'info'
+            ];
+
             if($collect->status > 3)
             {
                 $response = [
@@ -426,6 +440,20 @@ class CollectsController extends Controller
                 {
                     // 4 = CONFIRMADA
                     $this->repository->update(['status' => 4, 'user_id_confirmed' => $id_user, 'confirmed_at' =>  Util::dateNowForDB()], $collect->id);
+
+                    $response_send_email = [
+                        'message'   => 'Agendamento para coleta domiciliar CONFIRMADO',
+                        'text'      => 'Anote o número da sua solicitação: Nº ' . $collect->id,
+                        'describe'  => count($collect->people) . ' paciente(s) na data: ' . $collect->formatted_date . ' às ' . $collect->hour . ' no seguinte endereço: ' . $collect->address . ', ' . $collect->numberAddress . ', ' . $collect->neighborhood->name . ' ' . $collect->cep,
+                        'type'      => 'confirmed'
+                    ];
+                    // send email
+                    foreach ($collect->people as $person) {
+                        session()->flash('return', $response_send_email);
+                        Mail::to($person->email)->queue(new SendMailSchedule());
+                        Log::channel('mysql')->info("E-mail CONFIRMAÇÃO enviado para: " . $person->email);
+                    }
+
                 }
                 catch (Exception $e)
                 {
@@ -434,17 +462,6 @@ class CollectsController extends Controller
                         'type'    => 'error'
                     ];
                     Log::channel('mysql')->error($e->getMessage());
-                }
-                $response = [
-                    'message'   => 'Agendamento para coleta domiciliar CONFIRMADO',
-                    'text'      => 'Anote o número da sua solicitação: Nº ' . $collect->id,
-                    'describe'  => count($collect->people) . ' paciente(s) na data: ' . $collect->formatted_date . ' às ' . $collect->hour . ' no seguinte endereço: ' . $collect->address . ', ' . $collect->numberAddress . ', ' . $collect->neighborhood->name . ' ' . $collect->cep,
-                    'type'      => 'confirmed'
-                ];
-                // send email
-                foreach ($collect->people as $person) {
-                    session()->flash('return', $response);
-                    Mail::to($person->email)->queue(new SendMailSchedule());
                 }
 
                 session()->flash('return', $response);

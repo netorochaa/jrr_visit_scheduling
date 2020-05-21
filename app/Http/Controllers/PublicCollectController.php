@@ -73,7 +73,7 @@ class PublicCollectController extends Controller
             for ($i=0; $i < count($freeDay_list); $i++)
                 $collect_list = $collect_list->whereNotBetween('date', [$freeDay_list[$i]['dateStart'], $freeDay_list[$i]['dateEnd']]);
 
-            Log::channel('mysql')->info('Get Api available: ' . $dateOfCollect . " - Bairro: " . $neighborhood_id);
+            // Log::channel('mysql')->info('Get Api available: ' . $dateOfCollect . " - Bairro: " . $neighborhood_id);
 
             return $collect_list->get()->toJson();
         }
@@ -116,7 +116,7 @@ class PublicCollectController extends Controller
                             unset($arrayCollect['id']);
                             // insert new releasing, available for schedule
                             $this->repository->insert($arrayCollect);
-                            Log::channel('mysql')->info('Get Api release: ' . $collect->date . ' - Tempo: ' . $diff_date->i);
+                            Log::channel('mysql')->info('Get Api release: ' . $collect->date . ' reset - time diff: ' . $diff_date->i);
                         }
                     }
                 }
@@ -225,6 +225,7 @@ class PublicCollectController extends Controller
         try
         {
             $id_collect      = $request->get('infoCollect');
+            if($id_collect == "Selecione") return redirect()->route('public.index')->withErrors(['Selecione um horário']);
             $id_neighborhood = $request->get('neighborhood_id');
             $id_origin       = 2;
             $id_status       = 2;

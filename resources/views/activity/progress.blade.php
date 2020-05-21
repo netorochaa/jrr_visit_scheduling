@@ -32,8 +32,18 @@
                     @endif
                     <hr>
                     {{-- MOSTRA PACIENTES --}}
-                    <h5 class="lead">Taxa: {{ $collect->formatted_payment }} <b>R$ {{ (string) count($collect->people) * $collect->neighborhood->displacementRate }}</b>
-                        @if($collect->payment == 1) - Troco: R$ {{ $collect->changePayment ?? "0.00" }} @endif</h5>
+                    <h5 class="lead">Taxa: {{ $collect->formatted_payment }}
+                        <b>
+                            R$
+                            @if(count($collect->people) <= 2)
+                                {{ (string) $collect->neighborhood->displacementRate }}
+                            @elseif(count($collect->people) > 2)
+                                {{ (string)(count($collect->people)-1) * $collect->neighborhood->displacementRate }}
+                            @endif
+
+                        </b>
+                        @if($collect->payment == 1) - Troco: R$ {{ $collect->changePayment ?? "0.00" }} @endif
+                    </h5>
                     <?php $count = 1; ?>
                     @foreach ($collect->people as $person)
                         <p>{{ $count++ }}. {{ $person->name }} | {{ $person->patientType->name }}

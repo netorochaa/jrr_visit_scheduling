@@ -135,9 +135,10 @@ class UsersController extends Controller
         {
             try
             {
-                $request->all()['password'] != null ? $userRequest = $request->all() : $userRequest = $request->except('password');
-                $this->validator->with($userRequest)->passesOrFail(ValidatorInterface::RULE_UPDATE);
-                User::update($userRequest, $id);
+                $request->all()['password'] != null ? $user_request = $request->all() : $user_request = $request->except('password');
+                $this->validator->with($user_request)->passesOrFail(ValidatorInterface::RULE_UPDATE);
+                $user = User::find($id);
+                $user->update($user_request);
 
                 $response = [
                     'message' => 'Usuário atualizado',
