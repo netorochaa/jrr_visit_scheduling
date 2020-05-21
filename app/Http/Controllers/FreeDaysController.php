@@ -127,10 +127,10 @@ class FreeDaysController extends Controller
                 else
                     return redirect()->route('auth.home')->withErrors(['Você não tem permissão para esta ação, entre em contato com seu superior.']);
             }
-            catch (ValidatorException $e)
+            catch (Exception $e)
             {
                 $response = [
-                    'message' =>  $e->getMessageBag(),
+                    'message' =>  Util::getException($e),
                     'type'    => 'error'
                 ];
             }
@@ -164,7 +164,7 @@ class FreeDaysController extends Controller
             catch (Exception $e)
             {
                 $response = [
-                    'message' => $e->getMessage(),
+                    'message' => Util::getException($e),
                     'type'   => 'error',
                 ];
             }

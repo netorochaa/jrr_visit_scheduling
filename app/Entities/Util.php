@@ -2,6 +2,10 @@
 
 namespace App\Entities;
 
+use Illuminate\Database\QueryException;
+use Prettus\Validator\Exceptions\ValidatorException;
+use Exception;
+
 date_default_timezone_set('America/Recife');
 
 class Util
@@ -35,4 +39,17 @@ class Util
         return date("Y-m-d H:i");
     }
 
+    public static function getException($e)
+    {
+        switch (get_class($e)) {
+            case QueryException::class      : return $e->getMessage();
+                break;
+            case ValidatorException::class  : return $e->getMessageBag();
+                break;
+            case Exception::class           : return $e->getMessage();
+                break;
+            default                         : return $e->getMessage();
+                break;
+        }
+    }
 }

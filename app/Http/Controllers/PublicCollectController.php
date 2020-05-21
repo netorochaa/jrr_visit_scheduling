@@ -79,7 +79,7 @@ class PublicCollectController extends Controller
         }
         catch(Exception $e)
         {
-            Log::channel('mysql')->info('Erro api available: ' . $e->getMessage());
+            Log::channel('mysql')->info('Erro api available: ' . Util::getException($e));
         }
     }
 
@@ -122,7 +122,7 @@ class PublicCollectController extends Controller
                 }
                 catch(Exception $e)
                 {
-                    Log::channel('mysql')->info('Erro api release: ' . $e->getMessage());
+                    Log::channel('mysql')->info('Erro api release: ' . Util::getException($e));
 
                     return false;
                 }
@@ -175,7 +175,8 @@ class PublicCollectController extends Controller
                     session()->flash('return', $response);
                     return redirect()->route('public.index');
                 }
-            }else return redirect()->route('public.index');
+            }
+            else return redirect()->route('public.index');
 
             $cancellationType_list  = $this->cancellationTypeRepository->where('active', 'on')->pluck('name', 'id');
             $patientType_list       = $this->patientTypeRepository->patientTypeWithResponsible_list();
@@ -210,9 +211,10 @@ class PublicCollectController extends Controller
         catch(Exception $e)
         {
             $response = [
-                'message' =>  $e->getMessage(),
+                'message' =>  'Ocorreu um erro. Nossos técnicos foram avisados. Pedimos desculpas pelo transtorno.',
                 'type'    => 'error'
             ];
+            Log::channel('mysql')->info('Agendamento público: ' . Util::getException($e));
             session()->flash('return', $response);
             return redirect()->route('public.index');
         }
@@ -275,7 +277,7 @@ class PublicCollectController extends Controller
         catch (Exception $e)
         {
             $response = [
-                'message' => $e->getMessage(),
+                'message' => Util::getException($e),
                 'type'    => 'erro'
             ];
             session()->flash('return', $response);
@@ -348,10 +350,10 @@ class PublicCollectController extends Controller
         catch (Exception $e)
         {
             $response = [
-                'message' => $e->getMessage(),
+                'message' => Util::getException($e),
                 'type'    => 'error'
             ];
-            Log::channel('mysql')->error($e->getMessage());
+            Log::channel('mysql')->info('Reservar Agendamento público: ' . Util::getException($e));
             session()->flash('return', $response);
             return redirect()->route('public.index');
         }

@@ -17,6 +17,7 @@ use App\Repositories\CollectorRepository;
 use App\Repositories\CancellationTypeRepository;
 use App\Validators\ActivityValidator;
 use Auth;
+use Exception;
 
 date_default_timezone_set('America/Recife');
 
@@ -113,10 +114,10 @@ class ActivitiesController extends Controller
                     'type'   => 'info',
                 ];
             }
-            catch (ValidatorException $e)
+            catch (Exception $e)
             {
                 $response = [
-                    'message' =>  $e->getMessageBag(),
+                    'message' =>  Util::getException($e),
                     'type'    => 'error'
                 ];
             }
@@ -144,10 +145,10 @@ class ActivitiesController extends Controller
                     'type'    => 'info'
                 ];
             }
-            catch (\Exception $e)
+            catch (Exception $e)
             {
                 $response = [
-                    'message' => $e->getMessage(),
+                    'message' => Util::getException($e),
                     'type'    => 'erro'
                 ];
             }

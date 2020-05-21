@@ -3,7 +3,9 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Auth;
+use Log;
 
+use App\Entities\Util;
 use Prettus\Validator\Contracts\ValidatorInterface;
 use Prettus\Validator\Exceptions\ValidatorException;
 use App\Http\Requests\CollectorCreateRequest;
@@ -13,6 +15,7 @@ use App\Repositories\UserRepository;
 use App\Repositories\NeighborhoodRepository;
 use App\Repositories\CollectRepository;
 use App\Validators\CollectorValidator;
+use Exception;
 
 date_default_timezone_set('America/Recife');
 
@@ -102,6 +105,8 @@ class CollectorsController extends Controller
                     $this->validator->with($request->all())->passesOrFail(ValidatorInterface::RULE_CREATE);
                     $collector = $this->repository->create($request->all());
 
+                    Log::channel('mysql')->info(Auth::user()->name . ' CADASTROU a coletador: ' . $collector);
+
                     $this->repository->setAvailableCollects($arrayMondayToFriday, $arraySaturday, $arraySunday, $request->get('dateStart'), $collector->id);
 
                     $response = [
@@ -112,10 +117,10 @@ class CollectorsController extends Controller
                 else
                     return redirect()->route('auth.home')->withErrors(['Você não tem permissão para esta ação, entre em contato com seu superior.']);
             }
-            catch (ValidatorException $e)
+            catch (Exception $e)
             {
                 $response = [
-                    'message' =>  $e->getMessageBag(),
+                    'message' =>  Util::getException($e),
                     'type'    => 'error'
                 ];
             }
@@ -151,8 +156,10 @@ class CollectorsController extends Controller
                     else
                     {
                         for ($i=0; $i < count($neighborhoods); $i++)
+                        {
                             $collector->neighborhoods()->attach($neighborhoods[$i]);
-
+                            Log::channel('mysql')->info(Auth::user()->name . ' RELACIONOU a bairro: ' . $neighborhoods[$i] . ' ao coletador ' . $collector->name);
+                        }
                         $response = [
                             'message' => 'Bairros relacionados',
                             'type'   => 'info',
@@ -162,10 +169,10 @@ class CollectorsController extends Controller
                 else
                     return redirect()->route('auth.home')->withErrors(['Você não tem permissão para esta ação, entre em contato com seu superior.']);
             }
-            catch (ValidatorException $e)
+            catch (Exception $e)
             {
                 $response = [
-                    'message' =>  $e->getMessageBag(),
+                    'message' =>  Util::getException($e),
                     'type'    => 'error'
                 ];
             }
@@ -295,6 +302,8 @@ class CollectorsController extends Controller
                     foreach($collects as $collect)
                         if($collect->status < 2) $this->collectRepository->destroy($collect->id);
 
+                    Log::channel('mysql')->info(Auth::user()->name . ' ATUALIZOU a coletador: ' . $collector);
+
                     $this->repository->setAvailableCollects($arrayMondayToFriday, $arraySaturday, $arraySunday, $request->get('dateStart'), $collector->id);
 
                     $response = [
@@ -305,10 +314,10 @@ class CollectorsController extends Controller
                 else
                     return redirect()->route('auth.home')->withErrors(['Você não tem permissão para esta ação, entre em contato com seu superior.']);
             }
-            catch (ValidatorException $e)
+            catch (Exception $e)
             {
                 $response = [
-                    'message' =>  $e->getMessageBag(),
+                    'message' =>  Util::getException($e),
                     'type'    => 'error'
                 ];
             }
@@ -333,7 +342,8 @@ class CollectorsController extends Controller
                     $collector = $this->repository->find($collector_id);
                     $neighborhood = $collector->neighborhoods()->where('neighborhood_id', $neighborhood_id)->get();
 
-                    $detach = $collector->neighborhoods()->detach($neighborhood);
+                    $collector->neighborhoods()->detach($neighborhood);
+                    Log::channel('mysql')->info(Auth::user()->name . ' REMOVEU a bairro: ' . $neighborhood . ' do coletador ' . $collector->name);
 
                     $response = [
                         'message' => 'Coletador atualizado',
@@ -343,10 +353,10 @@ class CollectorsController extends Controller
                 else
                     return redirect()->route('auth.home')->withErrors(['Você não tem permissão para esta ação, entre em contato com seu superior.']);
             }
-            catch (ValidatorException $e)
+            catch (Exception $e)
             {
                 $response = [
-                    'message' =>  $e->getMessageBag(),
+                    'message' =>  Util::getException($e),
                     'type'    => 'error'
                 ];
             }
@@ -385,10 +395,10 @@ class CollectorsController extends Controller
                 else
                     return redirect()->route('auth.home')->withErrors(['Você não tem permissão para esta ação, entre em contato com seu superior.']);
             }
-            catch (ValidatorException $e)
+            catch (Exception $e)
             {
                 $response = [
-                    'message' =>  $e->getMessageBag(),
+                    'message' =>  Util::getException($e),
                     'type'    => 'error'
                 ];
             }

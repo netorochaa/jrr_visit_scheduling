@@ -7,7 +7,7 @@
 @endsection
 
 @section('content')
-  @include('templates.content.header') 
+  @include('templates.content.header')
   @include('templates.content.content1col', ['contentbody' => 'collector.collector_neighborhood.list_collector_neighborhoods'])
   @include('templates.content.modallarge',  ['titlemodal' => $titlemodal , 'contentmodal' => 'collector.collector_neighborhood.register_collector_neighborhood'])
 @endsection
@@ -23,8 +23,8 @@
 
       $('#table-collector_neighborhood').DataTable({
         "paging": true,
-        "lengthChange": false,
-        "searching": false,
+        "lengthChange": true,
+        "searching": true,
         "ordering": true,
         "info": true,
         "autoWidth": false,

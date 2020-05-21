@@ -130,7 +130,7 @@ class CollectsController extends Controller
             catch(Exception $e)
             {
                 $response = [
-                    'message' =>  $e->getMessage(),
+                    'message' =>  Util::getException($e),
                     'type'    => 'error'
                 ];
                 session()->flash('return', $response);
@@ -162,10 +162,10 @@ class CollectsController extends Controller
                     'type'   => 'info',
                 ];
             }
-            catch (ValidatorException $e)
+            catch(Exception $e)
             {
                 $response = [
-                    'message' =>  $e->getMessageBag(),
+                    'message' =>  Util::getException($e),
                     'type'    => 'error'
                 ];
             }
@@ -280,7 +280,7 @@ class CollectsController extends Controller
             catch(Exception $e)
             {
                 $response = [
-                    'message' =>  $e->getMessage(),
+                    'message' =>  Util::getException($e),
                     'type'    => 'error'
                 ];
                 session()->flash('return', $response);
@@ -302,10 +302,12 @@ class CollectsController extends Controller
             {
                 $collect = $this->repository->find($id);
                 $id_user = Auth::user()->id;
-
+                Log::channel('mysql')->info(Auth::user()->name . ' ATUALIZOU a coleta: ' . $collect);
                 // UPDATE DATA
                 $this->validator->with($request->all())->passesOrFail(ValidatorInterface::RULE_UPDATE);
                 $collect = $this->repository->update($request->except('cancellationType_id', 'site'), $id);
+
+                Log::channel('mysql')->info('Para: ' . $collect);
 
                 // CANCELLATION COLLECT
                 if($request->has('cancellationType_id'))
@@ -330,14 +332,16 @@ class CollectsController extends Controller
                         'type'    => 'info'
                     ];
 
+                    Log::channel('mysql')->info(Auth::user()->name . ' CANCELOU a coleta: ' . $collect);
+
                     session()->flash('return', $response);
                     return redirect()->route('collect.index') ;
                 }
             }
-            catch (ValidatorException $e)
+            catch (Exception $e)
             {
                 $response = [
-                    'message' => $e->getMessageBag(),
+                    'message' => Util::getException($e),
                     'type'    => 'error'
                 ];
             }
@@ -385,7 +389,7 @@ class CollectsController extends Controller
                 catch (Exception $e)
                 {
                     $response = [
-                        'message' => $e->getMessage(),
+                        'message' => Util::getException($e),
                         'type'    => 'erro'
                     ];
                 }
@@ -426,7 +430,7 @@ class CollectsController extends Controller
                 catch (Exception $e)
                 {
                     $response = [
-                        'message' => $e->getMessage(),
+                        'message' => Util::getException($e),
                         'type'    => 'error'
                     ];
                     Log::channel('mysql')->error($e->getMessage());
@@ -481,7 +485,7 @@ class CollectsController extends Controller
             catch (Exception $e)
             {
                 $response = [
-                    'message' => $e->getMessage(),
+                    'message' => Util::getException($e),
                     'type'    => 'error'
                 ];
             }

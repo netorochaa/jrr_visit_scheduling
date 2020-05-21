@@ -4,14 +4,15 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 
+use App\Entities\Util;
 use Prettus\Validator\Contracts\ValidatorInterface;
-use Prettus\Validator\Exceptions\ValidatorException;
 use App\Http\Requests\NeighborhoodCreateRequest;
 use App\Http\Requests\NeighborhoodUpdateRequest;
 use App\Repositories\NeighborhoodRepository;
 use App\Repositories\CityRepository;
 use App\Validators\NeighborhoodValidator;
 use Auth;
+use Exception;
 
 date_default_timezone_set('America/Recife');
 
@@ -94,10 +95,10 @@ class NeighborhoodsController extends Controller
                 else
                     return redirect()->route('auth.home')->withErrors(['Você não tem permissão para esta ação, entre em contato com seu superior.']);
             }
-            catch (ValidatorException $e)
+            catch (Exception $e)
             {
                 $response = [
-                    'message' =>  $e->getMessageBag(),
+                    'message' =>  Util::getException($e),
                     'type'    => 'error'
                 ];
             }
@@ -166,10 +167,10 @@ class NeighborhoodsController extends Controller
                 else
                     return redirect()->route('auth.home')->withErrors(['Você não tem permissão para esta ação, entre em contato com seu superior.']);
             }
-            catch (ValidatorException $e)
+            catch (Exception $e)
             {
                 $response = [
-                    'message' =>  $e->getMessageBag(),
+                    'message' =>  Util::getException($e),
                     'type'    => 'error'
                 ];
             }
@@ -203,7 +204,7 @@ class NeighborhoodsController extends Controller
             catch (Exception $e)
             {
                 $response = [
-                    'message' => $e->getMessage(),
+                    'message' => Util::getException($e),
                     'type'   => 'error',
                 ];
             }

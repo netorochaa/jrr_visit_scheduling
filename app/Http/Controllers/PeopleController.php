@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 
-use App\Http\Requests;
 use Prettus\Validator\Contracts\ValidatorInterface;
 use Prettus\Validator\Exceptions\ValidatorException;
 use App\Http\Requests\PersonCreateRequest;
@@ -13,9 +12,9 @@ use App\Repositories\PersonRepository;
 use App\Repositories\PatientTypeRepository;
 use App\Repositories\CollectRepository;
 use App\Validators\PersonValidator;
-use DateTime;
 use App\Entities\Util;
 use Auth;
+use Exception;
 
 date_default_timezone_set('America/Recife');
 
@@ -57,10 +56,10 @@ class PeopleController extends Controller
                     'type'   => 'info',
                 ];
             }
-            catch (ValidatorException $e)
+            catch (Exception $e)
             {
                 $response = [
-                    'message' =>  $e->getMessageBag(),
+                    'message' =>  Util::getException($e),
                     'type'    => 'error'
                 ];
             }
@@ -128,10 +127,10 @@ class PeopleController extends Controller
                     'type'   => 'info',
                 ];
             }
-            catch (ValidatorException $e)
+            catch (Exception $e)
             {
                 $response = [
-                    'message' =>  $e->getMessageBag(),
+                    'message' =>  Util::getException($e),
                     'type'    => 'error'
                 ];
             }
@@ -163,7 +162,7 @@ class PeopleController extends Controller
             catch(Exception $e)
             {
                 $response = [
-                    'message' =>  $e->getMessage(),
+                    'message' =>  Util::getException($e),
                     'type'    => 'error'
                 ];
             }
@@ -194,7 +193,7 @@ class PeopleController extends Controller
             catch(Exception $e)
             {
                 $response = [
-                    'message' =>  $e->getMessage(),
+                    'message' =>  Util::getException($e),
                     'type'    => 'error'
                 ];
             }
