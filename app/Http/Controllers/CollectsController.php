@@ -459,7 +459,7 @@ class CollectsController extends Controller
         }
         else
         {
-            $id_collect       = $request->get('infoCollect');
+            $id_collect      = $request->get('infoCollect');
             $id_neighborhood = $request->get('neighborhood_id');
             $id_origin       = Auth::user()->id;
             // Reservada
