@@ -16,19 +16,19 @@
             </h5>
             <div class="row">
                 <div class="col-12">
-                    @include('collect.person.list')
+                    @include('person.list')
                 </div>
             </div>
             <hr>
             <div class="row">
                 @include('templates.components.input', ['label' => 'CEP',       'col' => '2', 'input'  => 'cep',            'value' => $collect->cep ?? null,           'attributes' => ['id' => 'cep', 'size' => '10', 'maxlength' => '9', 'class' => 'form-control', 'data-inputmask' => "'mask': '99999-999'", 'data-cep', 'im-insert' => 'true']])
-                @include('templates.components.input', ['label' => 'Endereço',  'col' => '6', 'input'  => 'address',        'value' => $collect->address ?? null,       'attributes' => ['required' => 'true', 'id' => 'rua', 'class' => 'form-control', 'placeholder' => 'rua, conjunto, avenida, favela...']])
+                @include('templates.components.input', ['label' => 'Endereço',  'col' => '6', 'input'  => 'address',        'value' => $collect->address ?? null,       'attributes' => ['required' => 'true', 'id' => 'rua', 'class' => 'form-control', 'placeholder' => 'rua, conjunto, avenida, favela...', 'maxlength' => 140]])
                 @include('templates.components.input', ['label' => 'Bairro',    'col' => '2', 'input'  => '',                                                           'attributes' => ['id' => 'bairro', 'class' => 'form-control', 'disabled' => 'true']])
-                @include('templates.components.input', ['label' => 'Nº',        'col' => '2', 'input'  => 'numberAddress',  'value' => $collect->numberAddress ?? null, 'attributes' => ['required' => 'true', 'class' => 'form-control']])
+                @include('templates.components.input', ['label' => 'Nº',        'col' => '2', 'input'  => 'numberAddress',  'value' => $collect->numberAddress ?? null, 'attributes' => ['required' => 'true', 'class' => 'form-control', 'maxlength' => 14]])
             </div>
             <div class="row">
-                @include('templates.components.input', ['label' => 'Complemento',         'col' => '6', 'input' => 'complementAddress', 'value' => $collect->complementAddress ?? null, 'attributes' => ['required' => 'true', 'class' => 'form-control', 'placeholder' => 'bloco, apartamento, casa...']])
-                @include('templates.components.input', ['label' => 'Ponto de referência', 'col' => '6', 'input' => 'referenceAddress',  'value' => $collect->referenceAddress ?? null,  'attributes' => ['required' => 'true', 'class' => 'form-control']])
+                @include('templates.components.input', ['label' => 'Complemento',         'col' => '6', 'input' => 'complementAddress', 'value' => $collect->complementAddress ?? null, 'attributes' => ['required' => 'true', 'class' => 'form-control', 'placeholder' => 'bloco, apartamento, casa...', 'maxlength' => 45]])
+                @include('templates.components.input', ['label' => 'Ponto de referência', 'col' => '6', 'input' => 'referenceAddress',  'value' => $collect->referenceAddress ?? null,  'attributes' => ['required' => 'true', 'class' => 'form-control', 'maxlength' => 140]])
             </div>
             <hr>
             <div class="row">
@@ -38,7 +38,7 @@
             </div>
             <hr>
             <div class="row">
-                @include('templates.components.textarea', ['label' => 'Observações', 'col' => '12', 'input' => 'observationCollect', 'value' => $collect->observationCollect ?? null, 'attributes' => ['class' => 'form-control', 'rows' => 2]])
+                @include('templates.components.textarea', ['label' => 'Observações', 'col' => '12', 'input' => 'observationCollect', 'value' => $collect->observationCollect ?? null, 'attributes' => ['class' => 'form-control', 'rows' => 2, 'maxlength' => 500]])
             </div>
             <hr>
             <div class="row">

@@ -23,15 +23,22 @@ class Util
     }
 
     public static function setDateLocalBRToDb($value, $full){
-        $date = explode(' ', $value);
-        $dateSplit = explode('/', $date[0]);
+        try
+        {
+            $date = explode(' ', $value);
+            $dateSplit = explode('/', $date[0]);
 
-        $day    = $dateSplit[0];
-        $month  = $dateSplit[1];
-        $year   = $dateSplit[2];
-        if(isset($date[1])) $hour = $full ? $date[1] : ""; else $hour = $full ? '00:00:00' : "";
+            $day    = $dateSplit[0];
+            $month  = $dateSplit[1];
+            $year   = $dateSplit[2];
+            if(isset($date[1])) $hour = $full ? $date[1] : ""; else $hour = $full ? '00:00:00' : "";
 
-        return $year . "-" . $month . "-" . $day . " " . $hour;
+            return $year . "-" . $month . "-" . $day . " " . $hour;
+        }
+        catch(Exception $e)
+        {
+            return false;
+        }
     }
 
     public static function dateNowForDB()

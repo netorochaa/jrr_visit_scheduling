@@ -130,7 +130,7 @@ class CollectsController extends Controller
             catch(Exception $e)
             {
                 $response = [
-                    'message' =>  Util::getException($e),
+                    'message' =>  $e->getMessage(),
                     'type'    => 'error'
                 ];
                 session()->flash('return', $response);
@@ -162,10 +162,10 @@ class CollectsController extends Controller
                     'type'   => 'info',
                 ];
             }
-            catch(Exception $e)
+            catch (ValidatorException $e)
             {
                 $response = [
-                    'message' =>  Util::getException($e),
+                    'message' =>  $e->getMessageBag(),
                     'type'    => 'error'
                 ];
             }
@@ -175,6 +175,29 @@ class CollectsController extends Controller
     }
 
     // LIST PAGES - DEIXAR APENAS UM MÉTODO
+        public function listAll()
+        {
+            if(!Auth::check() || Auth::user()->type < 99)
+            {
+                session()->flash('return');
+                return view('auth.login');
+            }
+            else
+            {
+                $collect_list = $this->repository->where('neighborhood_id', '!=', null)
+                                                    ->where([['status', '>', 2], ['status', '<', 7]])->get();
+                return view('collect.template_table', [
+                    'namepage'   => 'Todas coletas',
+                    'threeview'  => 'Coletas',
+                    'titlespage' => ['Todas coletas'],
+                    'titlecard'  => 'Lista de todas coletas',
+                    //Info of entitie
+                    'table'               => $this->repository->getTable(),
+                    'thead_for_datatable' => ['Data/Hora', 'Código', 'Paciente', 'Pagamento Taxa', 'Bairro', 'Endereço', 'Coletador', 'Status'],
+                    'collect_list'        => $collect_list
+                ]);
+            }
+        }
         public function listReserved()
         {
             if(!Auth::check())
@@ -185,13 +208,85 @@ class CollectsController extends Controller
             else
             {
                 $collect_list = $this->repository->where('neighborhood_id', '!=', null)
-                                                    ->where([['status', '>', 1], ['status', '<', 7]])->get();
+                                                    ->where('status', 3)->get();
 
-                return view('collect.reserved', [
+                return view('collect.template_table', [
                     'namepage'   => 'Coletas reservadas',
                     'threeview'  => 'Coletas',
                     'titlespage' => ['Coletas reservadas'],
                     'titlecard'  => 'Lista de coletas reservadas',
+                    //Info of entitie
+                    'table'               => $this->repository->getTable(),
+                    'thead_for_datatable' => ['Data/Hora', 'Código', 'Paciente', 'Pagamento Taxa', 'Bairro', 'Endereço', 'Coletador', 'Status'],
+                    'collect_list'        => $collect_list
+                ]);
+            }
+        }
+        public function listConfirmed()
+        {
+            if(!Auth::check())
+            {
+                session()->flash('return');
+                return view('auth.login');
+            }
+            else
+            {
+                $collect_list = $this->repository->where('neighborhood_id', '!=', null)
+                                                    ->where('status', 4)->get();
+
+                return view('collect.template_table', [
+                    'namepage'   => 'Coletas confirmadas',
+                    'threeview'  => 'Coletas',
+                    'titlespage' => ['Coletas confirmadas'],
+                    'titlecard'  => 'Lista de coletas confirmadas',
+                    //Info of entitie
+                    'table'               => $this->repository->getTable(),
+                    'thead_for_datatable' => ['Data/Hora', 'Código', 'Paciente', 'Pagamento Taxa', 'Bairro', 'Endereço', 'Coletador', 'Status'],
+                    'collect_list'        => $collect_list
+                ]);
+            }
+        }
+        public function listProgress()
+        {
+            if(!Auth::check())
+            {
+                session()->flash('return');
+                return view('auth.login');
+            }
+            else
+            {
+                $collect_list = $this->repository->where('neighborhood_id', '!=', null)
+                                                    ->where('status', 5)->get();
+
+                return view('collect.template_table', [
+                    'namepage'   => 'Coletas em andamento',
+                    'threeview'  => 'Coletas',
+                    'titlespage' => ['Coletas em andamento'],
+                    'titlecard'  => 'Lista de coletas em andamento',
+                    //Info of entitie
+                    'table'               => $this->repository->getTable(),
+                    'thead_for_datatable' => ['Data/Hora', 'Código', 'Paciente', 'Pagamento Taxa', 'Bairro', 'Endereço', 'Coletador', 'Status'],
+                    'collect_list'        => $collect_list
+                ]);
+            }
+        }
+        public function listDone()
+        {
+            if(!Auth::check())
+            {
+                session()->flash('return');
+                return view('auth.login');
+            }
+            else
+            {
+                $collect_list = $this->repository->where('neighborhood_id', '!=', null)
+                                                    ->where('status', 6)->get();
+
+                return view('collect.template_table', [
+                    'namepage'   => 'Coletas concluídas',
+                    'threeview'  => 'Coletas',
+                    'titlespage' => ['Coletas concluídas'],
+                    'titlecard'  => 'Lista de concluídas',
                     //Info of entitie
                     'table'               => $this->repository->getTable(),
                     'thead_for_datatable' => ['Data/Hora', 'Código', 'Paciente', 'Pagamento Taxa', 'Bairro', 'Endereço', 'Coletador', 'Status'],
@@ -211,7 +306,7 @@ class CollectsController extends Controller
                 $collect_list = $this->repository->where('neighborhood_id', '!=', null)
                                                     ->where('status', '>', 6)->get();
 
-                return view('collect.reserved', [
+                return view('collect.template_table', [
                     'namepage'   => 'Coletas canceladas',
                     'threeview'  => 'Coletas',
                     'titlespage' => ['Coletas canceladas'],
@@ -280,7 +375,7 @@ class CollectsController extends Controller
             catch(Exception $e)
             {
                 $response = [
-                    'message' =>  Util::getException($e),
+                    'message' =>  $e->getMessage(),
                     'type'    => 'error'
                 ];
                 session()->flash('return', $response);
@@ -304,6 +399,7 @@ class CollectsController extends Controller
                 $id_user = Auth::user()->id;
 
                 Log::channel('mysql')->info(Auth::user()->name . ' ATUALIZOU a coleta: ' . $collect);
+
                 // UPDATE DATA
                 $this->validator->with($request->all())->passesOrFail(ValidatorInterface::RULE_UPDATE);
                 $collect = $this->repository->update($request->except('cancellationType_id', 'site'), $id);
@@ -311,7 +407,7 @@ class CollectsController extends Controller
                 Log::channel('mysql')->info('Para: ' . $collect);
 
                 $response = [
-                    'message' => 'Coleta reservada',
+                    'message' => 'Coleta reservada e atualizada',
                     'type'    => 'info'
                 ];
 
@@ -338,16 +434,14 @@ class CollectsController extends Controller
                         'type'    => 'info'
                     ];
 
-                    Log::channel('mysql')->info(Auth::user()->name . ' CANCELOU a coleta: ' . $collect);
-
                     session()->flash('return', $response);
                     return redirect()->route('collect.index') ;
                 }
             }
-            catch (Exception $e)
+            catch (ValidatorException $e)
             {
                 $response = [
-                    'message' => Util::getException($e),
+                    'message' => $e->getMessageBag(),
                     'type'    => 'error'
                 ];
             }
@@ -366,17 +460,28 @@ class CollectsController extends Controller
         else
         {
             $id_collect       = $request->get('infoCollect');
-            // if hour not selected
-            if($id_collect == "Selecione") return redirect()->route('collect.index')->withErrors(['Selecione um horário']);
-
             $id_neighborhood = $request->get('neighborhood_id');
             $id_origin       = Auth::user()->id;
             // Reservada
             $status          = 3;
-            $collect         = $this->repository->find($id_collect);
+            $collect = $this->repository->find($id_collect);
 
-            if($collect->neighborhood != null && $collect->status > 1)
+            if($collect->status > 1 || isset($collect->cancellationType_id) || isset($collect->neighborhood) || isset($collect->reserved_at))
             {
+                $response = [
+                    'message' => 'Este horário já estava ou acabou de ser reservado! Escolha outro horário disponível na lista abaixo.',
+                    'type'    => 'error'
+                ];
+                session()->flash('return', $response);
+                return redirect()->route('collect.index');
+            }
+            else if($this->repository->where([['collector_id', $collect->collector_id],
+                                            ['date', $collect->date],
+                                            ['id', '!=', $collect->id]
+                                            ])
+                                    ->whereBetween('status', [2, 6])->count() > 0)
+            {
+                Log::channel('mysql')->info('Erro duplicação: ' . $collect);
                 $response = [
                     'message' => 'Este horário já estava ou acabou de ser reservado! Escolha outro horário disponível na lista abaixo.',
                     'type'    => 'error'
@@ -398,7 +503,7 @@ class CollectsController extends Controller
                 catch (Exception $e)
                 {
                     $response = [
-                        'message' => Util::getException($e),
+                        'message' => $e->getMessage(),
                         'type'    => 'erro'
                     ];
                 }
@@ -420,11 +525,6 @@ class CollectsController extends Controller
             $collect = $this->repository->find($id);
             $id_user = Auth::user()->id;
 
-            $response = [
-                'message' => 'Coleta ' . $collect->id . ' confirmada',
-                'type'    => 'info'
-            ];
-
             if($collect->status > 3)
             {
                 $response = [
@@ -432,7 +532,7 @@ class CollectsController extends Controller
                     'type'    => 'error'
                 ];
                 session()->flash('return', $response);
-                return redirect()->route('collect.index');
+                return redirect()->route('collect.list.reserved');
             }
             else
             {
@@ -440,32 +540,31 @@ class CollectsController extends Controller
                 {
                     // 4 = CONFIRMADA
                     $this->repository->update(['status' => 4, 'user_id_confirmed' => $id_user, 'confirmed_at' =>  Util::dateNowForDB()], $collect->id);
-
-                    $response_send_email = [
-                        'message'   => 'Agendamento para coleta domiciliar CONFIRMADO',
-                        'text'      => 'Anote o número da sua solicitação: Nº ' . $collect->id,
-                        'describe'  => count($collect->people) . ' paciente(s) na data: ' . $collect->formatted_date . ' às ' . $collect->hour . ' no seguinte endereço: ' . $collect->address . ', ' . $collect->numberAddress . ', ' . $collect->neighborhood->name . ' ' . $collect->cep,
-                        'type'      => 'confirmed'
-                    ];
-                    // send email
-                    foreach ($collect->people as $person) {
-                        session()->flash('return', $response_send_email);
-                        Mail::to($person->email)->queue(new SendMailSchedule());
-                        Log::channel('mysql')->info("E-mail CONFIRMAÇÃO enviado para: " . $person->email);
-                    }
-
                 }
                 catch (Exception $e)
                 {
                     $response = [
-                        'message' => Util::getException($e),
+                        'message' => $e->getMessage(),
                         'type'    => 'error'
                     ];
                     Log::channel('mysql')->error($e->getMessage());
                 }
+                $response = [
+                    'message'   => 'Agendamento para coleta domiciliar CONFIRMADO',
+                    'text'      => 'Anote o número da sua solicitação: Nº ' . $collect->id,
+                    'describe'  => count($collect->people) . ' paciente(s) na data: ' . $collect->formatted_date . ' às ' . $collect->hour . ' no seguinte endereço: ' . $collect->address . ', ' . $collect->numberAddress . ', ' . $collect->neighborhood->name . ' ' . $collect->cep,
+                    'type'      => 'confirmed'
+                ];
+                // send email
+                foreach ($collect->people as $person) {
+                    if($person->email != null){
+                        session()->flash('return', $response);
+                        Mail::to($person->email)->queue(new SendMailSchedule());
+                    }
+                }
 
                 session()->flash('return', $response);
-                return redirect()->route('collect.index');
+                return redirect()->route('collect.list.reserved');
             }
         }
     }
@@ -502,7 +601,7 @@ class CollectsController extends Controller
             catch (Exception $e)
             {
                 $response = [
-                    'message' => Util::getException($e),
+                    'message' => $e->getMessage(),
                     'type'    => 'error'
                 ];
             }
@@ -514,7 +613,7 @@ class CollectsController extends Controller
     /**
      * Methods not used
      */
-    public function destroy($id){}
-    public function edit($id){}
-    public function show($id){}
+    //public function destroy($id){}
+    //public function edit($id){}
+    //public function show($id){}
 }

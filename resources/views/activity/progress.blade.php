@@ -1,7 +1,7 @@
 @foreach ($collect_list->all() as $collect)
     <div>
         {{-- ÍCONE DA AMOSTRA --}}
-        <i class="fas fa-vial @if($collect->status == '5') bg-blue
+        <i class="fas fa-vial @if($collect->status == '4' || $collect->status == '5') bg-blue
                               @elseif($collect->status == '6') bg-gray
                               @else bg-red
                               @endif }}">
@@ -15,16 +15,16 @@
             </h3>
             <div class="timeline-body">
                 {{-- VERIFICA SE ESTA EM ANDAMENTO --}}
-                @if($collect->status == '5')
+                @if($collect->status == '4' || $collect->status == '5')
                     {{-- MOSTRA ENDEREÇO SE NÃO NULO--}}
                     @if($collect->address != null)
                         <small>
                             Endereço: {{ $collect->address }}, {{ $collect->numberAddress }}, {{ $collect->neighborhood->name }} {{ $collect->cep }}<br>
                             <span class="text-muted">Complemento: {{ $collect->complementAddress }} <br>
                             Referência: {{ $collect->referenceAddress }}</span><br>
-                            @if($collect->status == '5')
+                            {{--@if($collect->status == '4' || $collect->status == '5')--}}
                                 <a target="_blank" href="https://www.google.com.br/maps/place/{{ str_replace(' ', '+', $collect->address . ', ' . $collect->numberAddress . ', ' . $collect->neighborhood->name . ', ' . $collect->neighborhood->city->name) }}" class="btn btn-info btn-sm" style="color: white"><i class="fas fa-map-marked-alt"></i> Ir para mapa</a>
-                            @endif
+                            {{--@endif--}}
                         </small>
                     {{-- SE ENDEREÇO NULO --}}
                     @else
@@ -56,7 +56,7 @@
                     <h5 class="lead">{{ $collect->formatted_status }} em {{ $collect->formatted_closed_at }}</h5>
                 @endif
             </div>
-            @if($collect->status == '5')
+            @if($collect->status == '4' || $collect->status == '5')
                 <div class="row">
                     <div class="col-12">
                 {!! Form::open(['route' => ['collect.close', $collect->id], 'method' => 'get', 'role' => 'form', 'class' => 'form-horizontal']) !!}

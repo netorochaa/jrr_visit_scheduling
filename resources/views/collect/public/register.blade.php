@@ -25,7 +25,7 @@
                 @include('templates.components.select', ['label' => 'Selecione um horário e o tipo de coletador', 'col' => '12', 'select' => 'infoCollect', 'data' => [], 'attributes' => ['id' => 'infoCollectSel', 'class' => 'form-control select2bs4', 'disabled' => 'true']])
             </div>
             <p>Prezado cliente, este agendamento será avaliado de acordo com a disponibilidade do laboratório e estará sujeito a alterações.</p>
-            <p><b>ANTEÇÃO: Para coleta em domicilio do exame de detecção do COVID-19 você deve entrar em contato com o laboratório pela central telefônica ou Whatsapp.</b></p>
+            <p><b>ATENÇÃO: Para coleta em domicilio do exame de detecção do COVID-19 você deve entrar em contato com o laboratório pela central telefônica ou Whatsapp.</b></p>
         </div>
     </div>
     <div class="card-footer">

@@ -76,13 +76,13 @@ class CollectorRepositoryEloquent extends BaseRepository implements CollectorRep
             {
                 if($arrayMondayToFriday)
                 {
-                    // dd($arraySunday);
+
                     for($i = 0; $i < count($arrayMondayToFriday); $i++)
                     {
                         if(DB::table('collects')
-                                ->where(['collector_id' => $collector_id, 'status' => 1])
+                                ->where('collector_id', $collector_id)
                                 ->whereDate('date', $date)
-                                ->whereTime('date', $arrayMondayToFriday[$i])->count() == 0)
+                                ->whereTime('date', $arrayMondayToFriday[$i] . ':00')->count() == 0)
                         {
                             DB::table('collects')->insert(
                                 ['date' => $date . " " . $arrayMondayToFriday[$i], 'hour' => $arrayMondayToFriday[$i], 'collector_id' => $collector_id, 'created_at' => Util::dateNowForDB()]
@@ -98,9 +98,9 @@ class CollectorRepositoryEloquent extends BaseRepository implements CollectorRep
                     for($i = 0; $i < count($arraySaturday); $i++)
                     {
                         if(DB::table('collects')
-                                ->where(['collector_id' => $collector_id, 'status' => 1])
+                                ->where('collector_id', $collector_id)
                                 ->whereDate('date', $date)
-                                ->whereTime('date', $arrayMondayToFriday[$i])->count() == 0)
+                                ->whereTime('date', $arrayMondayToFriday[$i] . ':00')->count() == 0)
                         {
                             DB::table('collects')->insert(
                                 ['date' => $date . " " . $arraySaturday[$i], 'hour' => $arraySaturday[$i], 'collector_id' => $collector_id, 'created_at' => Util::dateNowForDB()]
@@ -116,9 +116,9 @@ class CollectorRepositoryEloquent extends BaseRepository implements CollectorRep
                     for($i = 0; $i < count($arraySunday); $i++)
                     {
                         if(DB::table('collects')
-                                ->where(['collector_id' => $collector_id, 'status' => 1])
+                                ->where('collector_id', $collector_id)
                                 ->whereDate('date', $date)
-                                ->whereTime('date', $arrayMondayToFriday[$i])->count() == 0)
+                                ->whereTime('date', $arrayMondayToFriday[$i] . ':00')->count() == 0)
                         {
                             DB::table('collects')->insert(
                                 ['date' => $date . " " . $arraySunday[$i], 'hour' => $arraySunday[$i], 'collector_id' => $collector_id, 'created_at' => Util::dateNowForDB()]
@@ -133,31 +133,31 @@ class CollectorRepositoryEloquent extends BaseRepository implements CollectorRep
     public function schedules()
     {
         $list = [
-            '6:00' =>  '6:00' ,
-            '6:10' =>  '6:10' ,
-            '6:20' =>  '6:20' ,
-            '6:30' =>  '6:30' ,
-            '6:40' =>  '6:40' ,
-            '6:50' =>  '6:50' ,
-            '7:00' =>  '7:00' ,
-            '7:10' =>  '7:10' ,
-            '7:20' =>  '7:20' ,
-            '7:30' =>  '7:30' ,
-            '7:40' =>  '7:40' ,
-            '7:50' =>  '7:50' ,
-            '8:00' =>  '8:00' ,
-            '8:10' =>  '8:10' ,
-            '8:20' =>  '8:20' ,
-            '8:30' =>  '8:30' ,
-            '8:40' =>  '8:40' ,
-            '8:50' =>  '8:50' ,
-            '8:00' =>  '8:00' ,
-            '9:00' =>  '9:00' ,
-            '9:10' =>  '9:10' ,
-            '9:20' =>  '9:20' ,
-            '9:30' =>  '9:30' ,
-            '9:40' =>  '9:40' ,
-            '9:50' =>  '9:50' ,
+            '06:00' =>  '06:00' ,
+            '06:10' =>  '06:10' ,
+            '06:20' =>  '06:20' ,
+            '06:30' =>  '06:30' ,
+            '06:40' =>  '06:40' ,
+            '06:50' =>  '06:50' ,
+            '07:00' =>  '07:00' ,
+            '07:10' =>  '07:10' ,
+            '07:20' =>  '07:20' ,
+            '07:30' =>  '07:30' ,
+            '07:40' =>  '07:40' ,
+            '07:50' =>  '07:50' ,
+            '08:00' =>  '08:00' ,
+            '08:10' =>  '08:10' ,
+            '08:20' =>  '08:20' ,
+            '08:30' =>  '08:30' ,
+            '08:40' =>  '08:40' ,
+            '08:50' =>  '08:50' ,
+            '08:00' =>  '08:00' ,
+            '09:00' =>  '09:00' ,
+            '09:10' =>  '09:10' ,
+            '09:20' =>  '09:20' ,
+            '09:30' =>  '09:30' ,
+            '09:40' =>  '09:40' ,
+            '09:50' =>  '09:50' ,
             '10:00' => '10:00',
             '10:10' => '10:10',
             '10:20' => '10:20',

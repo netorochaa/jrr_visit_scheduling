@@ -41,7 +41,7 @@ class ReportController extends Controller
             }
             // list collector for select
             $collectors = $this->collectorRepository->where('active', 'on')->pluck('name', 'id');
-
+            
             return view('report.index', [
                 'report'        => 'cash',
                 'namepage'      => 'Caixa',

@@ -48,9 +48,9 @@ class PatientTypeRepositoryEloquent extends BaseRepository implements PatientTyp
 
     public function patientTypeWithResponsible_list()
     {
-        return DB::table('patienttypes')
+        return DB::table('patientTypes')
                     ->select(DB::raw('concat(name, " ", case
-                                        when needResponsible = "on" then "[RESPONSÁVEL]"
+                                        when needResponsible = "on" then "[COM RESPONSÁVEL]"
                                         when needResponsible = "off" then "" END, "") as nameFull'), 'id')
                     ->where('active', '=', 'on');
     }

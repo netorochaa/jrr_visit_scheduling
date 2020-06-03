@@ -20,7 +20,7 @@ date_default_timezone_set('America/Recife');
 
 class PeopleController extends Controller
 {
-    protected $repository, $patientTypeRepository;
+    protected $repository, $patientTypeRepository, $collectRepository;
     protected $validator;
 
     public function __construct(PersonRepository $repository, PersonValidator $validator, PatientTypeRepository $patientTypeRepository,
@@ -46,6 +46,20 @@ class PeopleController extends Controller
         {
             try
             {
+                if($site)
+                {
+                    $collect = $this->collectRepository->find($collect_id);
+                    if($collect->status > 2)
+                    {
+                        $request->session()->flush();
+                        $response = [
+                            'message' => 'O horário acabou de ser reservado por outra pessoa. A sessão foi encerrada. Por gentileza, realize uma nova solicitação em outro horário ou data.',
+                            'type'    => 'info'
+                        ];
+                        session()->flash('return', $response);
+                        return redirect()->route('public.index');
+                    }
+                }
                 $this->validator->with($request->all())->passesOrFail(ValidatorInterface::RULE_CREATE);
                 $person = $this->repository->create($request->all());
 
@@ -86,7 +100,7 @@ class PeopleController extends Controller
             $peopleCollects         = $person->with('collects')->get();
             $personHasCollect       = $peopleCollects->find($person->id)->collects->find($collect->id)->pivot;
 
-            return view('collect.person.edit', [
+            return view('person.edit', [
                 'namepage'              => 'Coletas',
                 'threeview'             => null,
                 'titlespage'            => ['Cadastro de pessoas'],
@@ -204,7 +218,7 @@ class PeopleController extends Controller
 
 
     //Methods not used
-    public function show($id){}
-    public function index(){}
-    public function destroy($id){}
+    //public function show($id){}
+    //public function index(){}
+    //public function destroy($id){}
 }

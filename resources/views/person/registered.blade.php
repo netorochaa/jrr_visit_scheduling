@@ -1,6 +1,6 @@
 <div class="card">
     <div class="card-body">
-    {!! Form::open(['route' => 'person.collect.attach' , 'method' => 'post', 'role' => 'form', 'class' => 'form-horizontal']) !!}
+    {!! Form::open(['route' => 'person.collect.attach', 'method' => 'post', 'role' => 'form', 'class' => 'form-horizontal']) !!}
         @include('templates.components.hidden', ['hidden' => 'idCollect', 'value' => $collect->id])
         <div class="row">
             <div class="col-sm-12">

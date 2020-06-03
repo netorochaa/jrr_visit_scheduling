@@ -15,7 +15,7 @@
             <img src="{{ asset('img/1.png') }}" alt="">
         </div>
         <section id="conteudo-view">
-            <img src="http://roseannedore.com.br/img/logo_roseanelab.png" alt="" width="100%">
+            <img src="../public/img/logo_roseanelab.png" alt="" width="100%">
             <h1>RDomiciliar</h1>
             <h3>Sistema gerenciador de colestas domiciliares</h3>
 

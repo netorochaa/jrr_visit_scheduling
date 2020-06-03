@@ -36,39 +36,48 @@ class ActivitiesController extends Controller
         $this->cancellationTypeRepository = $cancellationTypeRepository;
     }
 
-    public function index()
+    public function index(Request $request)
     {
         if(Auth::check())
         {
-            if(Auth::user()->type == 2)
+            //if(Auth::user()->type == 2)
+            if(Auth::user()->type > 1)
             {
                 $dateNow    = date("Y-m-d");
                 $cancellationType_list = $this->cancellationTypeRepository->pluck('name', 'id');
-                $collector  = $this->collectorRepository->where('user_id', Auth::user()->id)->first();
-                $activity   = $this->repository->whereDate('start', $dateNow)
-                                                ->where([['user_id', Auth::user()->id],
-                                                    ['collector_id', $collector->id]])
+                if(Auth::user()->type > 2)
+                {
+                    $collector_list = $this->collectorRepository->where('active', 'on');
+                    $all_collectors = $collector_list->get();
+                    $collector = $request->has('collector') ? $collector_list->where('id', $request->get('collector'))->first() : $collector_list->first();
+                    if($request->has('dateConsult')) $dateNow = trim(Util::setDateLocalBRToDb($request->get('dateConsult'), false));
+                }
+                else
+                    $collector  = $this->collectorRepository->where('user_id', Auth::user()->id)->first();
+
+                $activity   = $this->repository->whereDate('start', $dateNow == false ? date("Y-m-d") : $dateNow)
+                                                ->where('collector_id', $collector->id)
                                                 ->first();
-                $collect_list   = $this->collectRepository->whereDate('date', $dateNow)
+                
+                $collect_list   = $this->collectRepository->whereDate('date', $dateNow == false ? date("Y-m-d") : $dateNow)
                                                             ->where([['collector_id', $collector->id],
-                                                                    ['status', '>', 3]])
+                                                                    ['status', '>', 3],
+                                                                    ['status', '!=', 7]])
                                                             ->orderBy('date')->get();
-                                                            // dd($activity);
                 // IF ALL COLLECTS DONE
-                if($activity)
+                if($activity && Auth::user()->type == 2)
                 {
                     if($activity->end == null){
                         if(count($collect_list->whereIn('status', [4, 5])) == 0)
                             $this->repository->update(['status' => 2, 'end' => Util::dateNowForDB()], $activity->id);
                     }
                 }
+
                 return view('activity.index', [
                     'namepage'      => 'Rota do dia',
                     'threeview'     => null,
-                    'numberModal'   => 2,
-                    'titlespage'    => [$activity != null ? "Rota " .  $activity->id . " | " . $collector->name . " (" . Auth::user()->name . ")" : null],
+                    'titlespage'    => [$activity != null ? "Rota " .  $activity->id . " | " . $collector->name . " (" . $collector->user->name . ")" : null],
                     'titlemodal'    => 'Cancelar rota',
-                    'titlemodal2'   => 'Cancelar coleta',
                     'titlecard'     => $activity != null ? "INÍCIO: " . Util::setDate($activity->start, true) : null,
                     'collector'     => $collector,
                     'date'          => Util::setDate($dateNow, false),
@@ -76,11 +85,13 @@ class ActivitiesController extends Controller
                     //List for select
                     'collect_list'          => $collect_list,
                     'cancellationType_list' => $cancellationType_list,
+                    'collector_list'        => $all_collectors ?? null,
                     //Info of entitie
                     'table'         => $this->repository->getTable(),
                     'activity'      => $activity
                 ]);
-            }else return redirect()->route('auth.home');
+            }
+            else return redirect()->route('auth.home');
         }
         else return view('auth.login');
     }
@@ -107,7 +118,7 @@ class ActivitiesController extends Controller
                 $this->validator->with($data)->passesOrFail(ValidatorInterface::RULE_CREATE);
                 $activity = $this->repository->create($data);
                 $ok = Collect::whereDate('date', $dateNowShort)->where([['collector_id', $request->get('collector_id')],
-                                                                        ['status', '>', 3]])
+                                                                        ['status', 4]])
                                                                 ->update(['status' => '5']);
                 $response = [
                     'message' => 'Rota iniciada!',

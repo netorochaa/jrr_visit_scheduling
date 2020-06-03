@@ -4,7 +4,6 @@
             @foreach ($thead_for_datatable as $ths)
                 <th>{{ $ths }}</th>
             @endforeach
-            <th class='sorting_desc_disabled sorting_asc_disabled'></th>
         </tr>
     </thead>
     <tbody>
@@ -20,7 +19,7 @@
             </td>
             {{-- CÓDIGO --}}
             <td>
-                <p><span class="lead">{{ $collectMarked->id }}</span></p>
+                <a href="{{ route('collect.schedule', $collectMarked->id) }}"><u><span class="lead">{{ $collectMarked->id }}</span></u> <small><i class='fas fa-pen'></i></small></a>
             </td>
             {{-- PACIENTES --}}
             <td>
@@ -36,7 +35,7 @@
                         Pacientes: {{ count($collectMarked->people) }}
                     </span><br>
                 @endif
-                {{ $collectMarked->formatted_payment }} <br>
+                {{ $collectMarked->formatted_payment ?? null }} <br>
                 @if($collectMarked->payment == "1")
                     <span class="text-muted">Troco: R$</span> {{ $collectMarked->changePayment ?? "0.00"}}
                 @elseif($collectMarked->payment == "4")
@@ -45,8 +44,8 @@
             </td>
             {{-- BAIRRO --}}
             <td>
-                <b>{{ $collectMarked->neighborhood->getNeighborhoodZone() }}</b><br>
-                <small>{{ $collectMarked->neighborhood->city->name }}</small>
+                <b>{{ $collectMarked->neighborhood->getNeighborhoodZone() ?? null }}</b><br>
+                <small>{{ $collectMarked->neighborhood->city->name ?? null }}</small>
             </td>
             {{-- ENDEREÇO --}}
             <td>@if($collectMarked->address != null)
@@ -81,14 +80,9 @@
                 @if($collectMarked->status == 4)
                     <br><small>Via: {{ $collectMarked->confirmed->name ?? null }}</small>
                 @elseif($collectMarked->status > 6)
-                    <br><small>Via: {{ $collectMarked->cancelled->name ?? null }} - {{ $collectMarked->cancellationtype->name }}</small>
+                    <br><small>Via: {{ $collectMarked->cancelled->name ?? null }} - {{ $collectMarked->cancellationtype->name ?? null }}</small>
                 @endif
             </td>
-            <td>
-                <div class="btn-group">
-                    <button type="button" onclick="location.href='{{ route('collect.schedule', $collectMarked->id) }}'" class="btn btn-info btn-sm"  ><i class='fas fa-pen'></i></button>
-                </div>
-              </td>
         </tr>
         @endforeach
     </tbody>

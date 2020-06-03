@@ -38,6 +38,47 @@ class Person extends Model implements Transformable
             case "4":
                 return "CORTESIA";
                 break;
+            case "5":
+                return "AMIL SAÚDE";
+                break;
+            case "6":
+                return "ASSEFAZ";
+                break;
+            case "7":
+                return "BANCO DO BRASIL";
+                break;
+            case "8":
+                return "CAMED VIDA";
+                break;
+            case "9":
+                return "CAPESAUDE";
+                break;
+            case "10":
+                return "CAPESEP";
+                break;
+            case "11":
+                return "CONSEDER";
+                break;
+            case "12":
+                return "CORREIOS";
+                break;
+            case "13":
+                return "FUNASA";
+                break;
+            case "14":
+                return "FUNCEF";
+                break;
+            case "15":
+                return "GEAP";
+                break;
+            case "16":
+                return "SAÚDE CAIXA";
+                break;
+            case "17":
+                return "SAÚDE EXCELSIOR";
+                break;
+            case "18":
+                return "OUTROS";
             default:
                 return $covenant;
                 break;

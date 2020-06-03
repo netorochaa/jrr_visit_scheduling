@@ -13,7 +13,7 @@
         @foreach ($collect->people as $person)
         <tr>
             <td>
-                <b>{{ $person->name }}</b><br>
+                <a href="{{ route('collect.person.edit', [$collect->id, $person->id]) }}" style="color: black"><b><u>{{ $person->name }}</b></u> <i class='fas fa-pen'></i></a><br>
                 <small class="text-muted">{{ $person->patientType->name }} @if($person->typeResponsible) | {{ $person->formatted_TypeResponsible }} {{ $person->nameResponsible }} @endif</small>
             </td>
             <td>
@@ -25,10 +25,7 @@
             <td>{{ $person->pivot->exams ?? "NÃO INFORMADO" }}</td>
             <td>
                 @if($collect->status < 7)
-                    <div class="btn-group">
-                        @if($collect->status != 2) <button type="button" onclick="location.href='{{ route('collect.person.edit', [$collect->id, $person->id]) }}'" class="btn btn-info btn-sm"  ><i class='fas fa-pen'></i></button> @endif
-                        <button type="button" onclick="location.href='{{ route('person.collect.detach', [$person->id, $collect->id]) }}'" class="btn btn-danger btn-sm"  ><i class="fas fa-trash"></i></button>
-                    </div>
+                    <button type="button" onclick="location.href='{{ route('person.collect.detach', [$person->id, $collect->id]) }}'" class="btn btn-danger btn-sm"  ><i class="fas fa-trash"></i></button>
                 @endif
             </td>
         </tr>

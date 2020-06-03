@@ -7,7 +7,7 @@
         <div class="card-body">
             @if ($collect ?? null)
                 <h4 class="lead">Nº {{ $collect->id }} | Status: <b>{{ $collect->formatted_status }}</b> | Coletador: {{ $collect->collector->name }}
-                    @if($collect->status < 4)
+                    @if($collect->status < 4 && $collect->address != null)
                         <button type="button" onclick="location.href='{{ route('collect.confirmed', $collect->id) }}'" id="buttonConfirmed" class="btn btn-success float-right" disabled>Confirmar</button>@endif
                 </h4>
             @endif
@@ -36,20 +36,20 @@
                 </h5>
                 <div class="row">
                     <div class="col-12">
-                        @include('collect.person.list')
+                        @include('person.list')
                     </div>
                 </div>
                 <hr>
             @endif
             <div class="row">
-                @include('templates.components.input', ['label' => 'CEP',       'col' => '2', 'input'  => 'cep',            'value' => $collect->cep ?? null,           'attributes' => ['id' => 'cep', 'size' => '10', 'maxlength' => '9', 'class' => 'form-control', 'data-inputmask' => "'mask': '99999-999'", 'data-cep', 'im-insert' => 'true']])
-                @include('templates.components.input', ['label' => 'Endereço',  'col' => '6', 'input'  => 'address',        'value' => $collect->address ?? null,       'attributes' => ['id' => 'rua', 'class' => 'form-control', 'placeholder' => 'rua, conjunto, avenida, favela...']])
-                @include('templates.components.input', ['label' => 'Bairro',    'col' => '2', 'input'  => '',                                                           'attributes' => ['id' => 'bairro', 'class' => 'form-control', 'disabled' => 'true']])
-                @include('templates.components.input', ['label' => 'Nº',        'col' => '2', 'input'  => 'numberAddress',  'value' => $collect->numberAddress ?? null, 'attributes' => ['class' => 'form-control']])
+                @include('templates.components.input', ['label' => 'CEP',       'col' => '2', 'input'  => 'cep',        'value' => $collect->cep ?? null,           'attributes' => ['id' => 'cep', 'size' => '10', 'maxlength' => '9', 'class' => 'form-control', 'data-inputmask' => "'mask': '99999-999'", 'data-cep', 'im-insert' => 'true']])
+                @include('templates.components.input', ['label' => 'Endereço',  'col' => '6', 'input'  => 'address',    'value' => $collect->address ?? null,       'attributes' => ['id' => 'rua', 'class' => 'form-control', 'placeholder' => 'rua, conjunto, avenida, favela...', 'maxlength' => 140]])
+                @include('templates.components.input', ['label' => 'Bairro',    'col' => '2', 'input'  => '', 'attributes' => ['id' => 'bairro', 'class' => 'form-control', 'disabled' => 'true']])
+                @include('templates.components.input', ['label' => 'Nº',        'col' => '2', 'input'  => 'numberAddress', 'value' => $collect->numberAddress ?? null, 'attributes' => ['class' => 'form-control', 'maxlength' => 14]])
             </div>
             <div class="row">
-                @include('templates.components.input', ['label' => 'Complemento',         'col' => '6', 'input' => 'complementAddress', 'value' => $collect->complementAddress ?? null, 'attributes' => ['class' => 'form-control', 'placeholder' => 'bloco, apartamento, casa...']])
-                @include('templates.components.input', ['label' => 'Ponto de referência', 'col' => '6', 'input' => 'referenceAddress',  'value' => $collect->referenceAddress ?? null,  'attributes' => ['class' => 'form-control']])
+                @include('templates.components.input', ['label' => 'Complemento',         'col' => '6', 'input' => 'complementAddress', 'value' => $collect->complementAddress ?? null, 'attributes' => ['class' => 'form-control', 'placeholder' => 'bloco, apartamento, casa...', 'maxlength' => 45]])
+                @include('templates.components.input', ['label' => 'Ponto de referência', 'col' => '6', 'input' => 'referenceAddress',  'value' => $collect->referenceAddress ?? null,  'attributes' => ['class' => 'form-control', 'maxlength' => 140]])
             </div>
             <hr>
             @if ($collect ?? null)
@@ -71,7 +71,7 @@
                 <hr>
             @endif
             <div class="row">
-                @include('templates.components.textarea', ['label' => 'Observações da coleta', 'col' => '12', 'input' => 'observationCollect', 'value' => $collect->observationCollect ?? null, 'attributes' => ['class' => 'form-control', 'rows' => 2]])
+                @include('templates.components.textarea', ['label' => 'Observações da coleta', 'col' => '12', 'input' => 'observationCollect', 'value' => $collect->observationCollect ?? null, 'attributes' => ['class' => 'form-control', 'rows' => 2, 'maxlength' => 20000]])
             </div>
             <hr>
             <div class="row">

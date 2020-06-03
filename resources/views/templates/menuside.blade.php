@@ -2,7 +2,7 @@
 <aside class="main-sidebar elevation-4 sidebar-light-warning">
     <!-- Brand Logo -->
     <a href="" class="brand-link navbar-light">
-        <img src="http://roseannedore.com.br/img/logo_roseanelab.png"
+        <img src="{{ asset('img/logo_roseanelab.png') }}"
             alt="Laboratório Roseanne Dore"
             class="brand-image">
         <span class="brand-text font-weight-light"><strong>RD</strong>omiciliar</span>
@@ -31,7 +31,7 @@
                         <p>Home</p>
                     </a>
                 </li>
-                @if(Auth::user()->type == 2 || Auth::user()->type == 99)
+                @if(Auth::user()->type > 1)
                     <li class="nav-item">
                         <a href="{{ route('activity.index') }}" class="nav-link @if($namepage == 'Rota do dia') active @endif">
                             <i class="nav-icon fas fa-tasks"></i>
@@ -62,13 +62,31 @@
                         </li>
                         <li class="nav-item">
                             <a href="{{ route('collect.list.reserved') }}" class="nav-link @if($namepage == 'Coletas reservadas') active @endif">
-                                <i class="far fa-circle nav-icon"></i>
+                                <i class="far fa-circle nav-icon text-warning"></i>
                                 <p>Reservadas</p>
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a href="{{ route('collect.list.cancelled') }}" class="nav-link @if($namepage == 'Coletas canceladas') active @endif">
+                            <a href="{{ route('collect.list.confirmedlist') }}" class="nav-link @if($namepage == 'Coletas confirmadas') active @endif">
+                                <i class="far fa-circle nav-icon text-success"></i>
+                                <p>Confirmadas</p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="{{ route('collect.list.inprogress') }}" class="nav-link @if($namepage == 'Coletas em andamento') active @endif">
                                 <i class="far fa-circle nav-icon"></i>
+                                <p>Em andamento</p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="{{ route('collect.list.done') }}" class="nav-link @if($namepage == 'Coletas concluídas') active @endif">
+                                <b><i class="fas fa-circle nav-icon"></i></b>
+                                <p>Concluídas</p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="{{ route('collect.list.cancelled') }}" class="nav-link @if($namepage == 'Coletas canceladas') active @endif">
+                                <i class="far fa-circle nav-icon text-danger"></i>
                                 <p>Canceladas</p>
                             </a>
                         </li>

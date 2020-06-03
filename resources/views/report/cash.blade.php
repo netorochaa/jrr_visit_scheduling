@@ -22,7 +22,7 @@
                         {{ $person->ra }}</small>
                     @endforeach
                 </td>
-                <td>{{ $collect->neighborhood->name }}</td>
+                <td>{{ $collect->neighborhood->name ?? null }}</td>
                 <td>
                     {{ $collect->collector->name }}<br>
                     <small>{{ $collect->collector->user->name }}</small>
@@ -34,11 +34,13 @@
                         <br><small>{{ $collect->AuthCourtesy }}</small>
                     @endif
                 </td>
-                <?php $valor = count($collect->people) > 2 ? number_format((count($collect->people)-1) * $collect->neighborhood->displacementRate, 2, '.', '')
-                                : $collect->neighborhood->displacementRate;
-                    $collect->payment != 4 ? $sum_collects += $valor : 0;
+                <?php
+                    $quant  = count($collect->people);
+                    $price  = $quant == 0   ? 0 : $collect->neighborhood->displacementRate;
+                    $price  = $quant  > 2   ? number_format(($quant-1) * $collect->neighborhood->displacementRate, 2, '.', '') : $collect->neighborhood->displacementRate;
+                    $collect->payment != 4 ? $sum_collects += $price : 0;
                 ?>
-                <td>{{$collect->payment == 4 ? 0.00 : $valor }}</td>
+                <td>{{$collect->payment == 4 ? 0.00 : $price }}</td>
             </tr>
             @endforeach
             <tr>

@@ -5,13 +5,11 @@
 
 @section('content')
   @include('templates.content.header')
-  @if($activity ?? null)
+  @if($activity ?? null || Auth::user()->type > 2)
     @include('templates.content.timeline', ['contentbody' => 'activity.progress']) 
     @include('templates.content.modallarge', [
     'titlemodal'    => $titlemodal , 
-    'contentmodal'  => 'activity.close',
-    'titlemodal2'   => $titlemodal2, 
-    'contentmodal2' => 'activity.cancellation'
+    'contentmodal'  => 'activity.close'
     ])
   @else
     @include('templates.content.content1col', ['contentbody' => 'activity.start'])

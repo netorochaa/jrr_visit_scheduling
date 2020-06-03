@@ -11,9 +11,9 @@
   @include('templates.content.content1col', ['contentbody' => 'collect.schedule'])
   @include('templates.content.modallarge',  [
     'titlemodal' => $titlemodal ,
-    'contentmodal' => 'collect.person.register',
+    'contentmodal' => 'person.register',
     'titlemodal2' => $titlemodal,
-    'contentmodal2' => 'collect.person.registered'
+    'contentmodal2' => 'person.registered'
     ])
 @endsection
 
@@ -79,7 +79,7 @@
       var inputName = document.getElementById('inputName');
       var inputFone = document.getElementById('inputFone');
 
-      if(sel.options[sel.selectedIndex].text.includes('[RESPONSÁVEL]'))
+      if(sel.options[sel.selectedIndex].text.includes('[COM RESPONSÁVEL]'))
         selectType.disabled = false;
       else
       {
@@ -114,6 +114,7 @@
     function checkAge(input)
     {
         var age = document.getElementById('age');
+        var exams = document.getElementById('textExams');
         var dateSplit = input.value.split('/');
         var day = dateSplit[0];
         var month = dateSplit[1];
@@ -126,12 +127,14 @@
             return;
         }
         if(dateMomment.diff(dateNow, 'years') > -8){
-            input.value = "";
+            textExams.value = "Teste do pezinho";
+            textExams.readOnly = true;
             age.style.color = "red";
         }else{
+            textExams.value = "";
+            textExams.readOnly = false;
             age.style.color = "black";
         }
-
     }
 
     function activeButton(){

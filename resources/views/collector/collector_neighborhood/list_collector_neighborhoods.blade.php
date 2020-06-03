@@ -1,4 +1,4 @@
-<table id="table-collector_neighborhood" class="table table-bordered table-striped">
+<table id="table-collector_neighborhood" class="table table-striped table-sm">
     <thead>
         <tr>
             <th>Bairro</th>

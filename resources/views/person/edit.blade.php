@@ -2,7 +2,7 @@
 
 @section('content')
   @include('templates.content.header')
-  @include('templates.content.content1col', ['contentbody' => 'collect.person.register'])
+  @include('templates.content.content1col', ['contentbody' => 'person.register'])
 @endsection
 
 @section('footer-distinct')
@@ -13,7 +13,7 @@
         var inputName = document.getElementById('inputName');
         var inputFone = document.getElementById('inputFone');
 
-        if(sel.options[sel.selectedIndex].text.includes('[RESPONSÁVEL]'))
+        if(sel.options[sel.selectedIndex].text.includes('[COM RESPONSÁVEL]'))
           selectType.disabled = false;
         else
         {

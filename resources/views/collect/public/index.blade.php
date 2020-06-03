@@ -28,10 +28,11 @@
       $('.select2bs4').select2({
         theme: 'bootstrap4'
       })
-
+      
+      var dateNow = moment().day();
       //Initialize daterangepicker Elements
       $('input[id="schedulingDate"]').daterangepicker({
-        "minDate": moment().add('2', 'days'),
+        "minDate": dateNow == 6 ? moment().add('3', 'days') : moment().add('2', 'days'),
         "singleDatePicker": true,
         locale: {
           "format": "DD/MM/YYYY",

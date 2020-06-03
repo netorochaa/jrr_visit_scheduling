@@ -9,6 +9,8 @@ use App\Repositories\CollectRepository;
 use App\Entities\Collect;
 use App\Validators\CollectValidator;
 
+date_default_timezone_set('America/Recife');
+
 /**
  * Class CollectRepositoryEloquent.
  *
@@ -106,6 +108,8 @@ class CollectRepositoryEloquent extends BaseRepository implements CollectReposit
         $collect['cancellationType_id'] = null;
         $collect['neighborhood_id'] = null;
         $collect['user_id'] = null;
+        $collect['user_id_cancelled'] = null;
+        $collect['user_id_confirmed'] = null;
         $collect['reserved_at'] = null;
         $collect['confirmed_at'] = null;
         $collect['closed_at'] = null;

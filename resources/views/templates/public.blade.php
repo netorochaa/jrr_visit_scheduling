@@ -32,6 +32,5 @@
     <div class="wrapper">
         {{-- @include('templates.navbar') --}}
         @yield('content')
-        @include('templates.bottom')
     </div>
 @include('footer')
