@@ -20,7 +20,7 @@ class Collect extends Model implements Transformable
     public $timestamps = true;
     protected $table = 'collects';
     protected $fillable = ['id','date','hour','collectType','status','payment','changePayment','cep','address','numberAddress','complementAddress','referenceAddress',
-                            'linkMaps','courtesy','unityCreated','observationCollect','attachment','cancellationType_id','collector_id', 'neighborhood_id','user_id',
+                            'linkMaps','courtesy','unityCreated','observationCollect','attachment','extra','cancellationType_id','collector_id', 'neighborhood_id','user_id',
                             'user_id_confirmed','user_id_cancelled','reserved_at', 'confirmed_at', 'closed_at'];
 
     public function people()
@@ -79,7 +79,7 @@ class Collect extends Model implements Transformable
             $month = $dateSplit[1];
             $year = $dateSplit[0];
             $hour = $date[1];
-            
+
             return $day . "/" . $month . "/" . $year . " " . $hour;
         }
     }
@@ -94,7 +94,7 @@ class Collect extends Model implements Transformable
             $month = $dateSplit[1];
             $year = $dateSplit[0];
             $hour = $date[1];
-            
+
             return $day . "/" . $month . "/" . $year . " " . $hour;
         }
     }
@@ -109,11 +109,11 @@ class Collect extends Model implements Transformable
             $month = $dateSplit[1];
             $year = $dateSplit[0];
             $hour = $date[1];
-            
+
             return $day . "/" . $month . "/" . $year . " " . $hour;
         }
     }
-    
+
     public function getFormattedStatusAttribute(){
         switch ($this->attributes['status']) {
             case "1":
@@ -139,7 +139,7 @@ class Collect extends Model implements Transformable
                 break;
             case "8":
                 return "CANCELADA EM ROTA";
-                break;                
+                break;
             default:
                 return $this->attributes['status'];
                 break;

@@ -149,10 +149,12 @@ class CollectsController extends Controller
         {
             // RESERVED
             $status = 3;
+            $extra = 1;
             try
             {
-                $request->merge(['date' => Util::setDateLocalBRToDb($request->get('date') . " " . $request->get('hour'), true)]);
+                $request->merge(['date'   => Util::setDateLocalBRToDb($request->get('date') . " " . $request->get('hour'), true)]);
                 $request->merge(['status' => $status]);
+                $request->merge(['extra'  => $extra]);
 
                 $this->validator->with($request->all())->passesOrFail(ValidatorInterface::RULE_CREATE);
                 $collect = $this->repository->create($request->all());
@@ -332,7 +334,7 @@ class CollectsController extends Controller
             try
             {
                 $collect = $this->repository->find($id);
-                
+
                 $cancellationType_list  = $this->cancellationTypeRepository->where('active', 'on')->pluck('name', 'id');
                 $patientType_list       = $this->patientTypeRepository->patientTypeWithResponsible_list();
                 $collectType_list       = $this->repository->collectType_list();
@@ -345,7 +347,7 @@ class CollectsController extends Controller
                 $price                  = $quant == 0   ? 0 : $collect->neighborhood->displacementRate;
                 $price                  = $quant  > 2   ? ($quant-1) * $collect->neighborhood->displacementRate : $collect->neighborhood->displacementRate;
                 $priceString            = "R$ " . (string) $price;
-                
+
                 return view('collect.edit', [
                     'namepage'      => 'Agendar coleta',
                     'numberModal'   => '2',
@@ -397,13 +399,13 @@ class CollectsController extends Controller
             {
                 $collect = $this->repository->find($id);
                 $id_user = Auth::user()->id;
-                
+
                 Log::channel('mysql')->info(Auth::user()->name . ' ATUALIZOU a coleta: ' . $collect);
 
                 // UPDATE DATA
                 $this->validator->with($request->all())->passesOrFail(ValidatorInterface::RULE_UPDATE);
                 $collect = $this->repository->update($request->except('cancellationType_id', 'site'), $id);
-                
+
                 Log::channel('mysql')->info('Para: ' . $collect);
 
                 $response = [
@@ -421,13 +423,17 @@ class CollectsController extends Controller
 
                     // UPDATE DATA WITH TYPE CANCELLATION COLLECT
                     $this->repository->update($collect->toArray(), $collect->id);
-                    // Reset values for new releasing collect
-                    $collect = $this->repository->collectReset($collect);
-                    $arrayCollect = $collect->toArray();
-                    // remove id of array
-                    unset($arrayCollect['id']);
-                    // insert new releasing, available for schedule
-                    $this->repository->insert($arrayCollect);
+                    //IF NOT EXTRA COLLECT
+                    if($collect->extra != '1')
+                    {
+                        // Reset values for new releasing collect
+                        $collect = $this->repository->collectReset($collect);
+                        $arrayCollect = $collect->toArray();
+                        // remove id of array
+                        unset($arrayCollect['id']);
+                        // insert new releasing, available for schedule
+                        $this->repository->insert($arrayCollect);
+                    }
 
                     $response = [
                         'message' => 'Coleta cancelada',
@@ -465,7 +471,7 @@ class CollectsController extends Controller
             // Reservada
             $status          = 3;
             $collect = $this->repository->find($id_collect);
-            
+
             //collect used?
             if($collect->status > 1 || isset($collect->cancellationType_id) || isset($collect->neighborhood) || isset($collect->reserved_at))
             {
