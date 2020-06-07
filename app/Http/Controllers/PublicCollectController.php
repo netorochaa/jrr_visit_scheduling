@@ -146,7 +146,7 @@ class PublicCollectController extends Controller
 
         if(!$request->has('neighborhood')) $neighborhood_list = $this->neighborhoodRepository->where('active', 'on')->get();
         else $neighborhood_model = $this->neighborhoodRepository->find($request->get('neighborhood'));
-        
+
         return view('collect.public.index', [
             'titlespage' => ['Solicitação de Coleta Domiciliar'],
             'titlecard'  => 'Solicitar Agendamento',
@@ -187,9 +187,9 @@ class PublicCollectController extends Controller
             $covenant_list          = $this->peopleRepository->covenant_list();
             $quant                  = (int)count($collect->people);
             $price                  = $quant == 0   ? 0 : $collect->neighborhood->displacementRate;
-            if($quant > 2)          $price = ($quant-1) * $collect->neighborhood->displacementRate;
+            if($quant > 2) $price   = ($quant-1) * $collect->neighborhood->displacementRate;
             $priceString            = "R$ " . (string) $price;
-            
+
             return view('collect.public.edit', [
                 'titlespage' => ['Solicitação de Coleta Domiciliar'],
                 'titlecard'  => 'Dados da solicitação',
@@ -215,9 +215,9 @@ class PublicCollectController extends Controller
                 'message' =>  'Ocorreu um erro. Nossos técnicos foram avisados. Pedimos desculpas pelo transtorno. Você pode tentar novamente em outra data ou horário.',
                 'type'    => 'error'
             ];
-            
+
             Log::channel('mysql')->info('Agendamento público: ' . Util::getException($e));
-            
+
             session()->flash('return', $response);
             return redirect()->route('public.index');
         }
@@ -243,7 +243,7 @@ class PublicCollectController extends Controller
                 }
 
                 $collect = $this->repository->find($id_collect);
-                
+
                 //collect used?
                 if($collect->status > 1 || isset($collect->cancellationType_id) || isset($collect->neighborhood) || isset($collect->reserved_at))
                 {
@@ -359,7 +359,7 @@ class PublicCollectController extends Controller
                     'type'      => 'info'
                 ];
                 // send email
-                foreach ($collect->people as $person) 
+                foreach ($collect->people as $person)
                 {
                     if($person->email != null)
                     {
