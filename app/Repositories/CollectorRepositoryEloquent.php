@@ -76,7 +76,7 @@ class CollectorRepositoryEloquent extends BaseRepository implements CollectorRep
             {
                 if($arrayMondayToFriday)
                 {
-
+                    
                     for($i = 0; $i < count($arrayMondayToFriday); $i++)
                     {
                         if(DB::table('collects')

@@ -332,7 +332,7 @@ class CollectsController extends Controller
             try
             {
                 $collect = $this->repository->find($id);
-
+                
                 $cancellationType_list  = $this->cancellationTypeRepository->where('active', 'on')->pluck('name', 'id');
                 $patientType_list       = $this->patientTypeRepository->patientTypeWithResponsible_list();
                 $collectType_list       = $this->repository->collectType_list();
@@ -345,7 +345,7 @@ class CollectsController extends Controller
                 $price                  = $quant == 0   ? 0 : $collect->neighborhood->displacementRate;
                 $price                  = $quant  > 2   ? ($quant-1) * $collect->neighborhood->displacementRate : $collect->neighborhood->displacementRate;
                 $priceString            = "R$ " . (string) $price;
-
+                
                 return view('collect.edit', [
                     'namepage'      => 'Agendar coleta',
                     'numberModal'   => '2',
@@ -397,13 +397,13 @@ class CollectsController extends Controller
             {
                 $collect = $this->repository->find($id);
                 $id_user = Auth::user()->id;
-
+                
                 Log::channel('mysql')->info(Auth::user()->name . ' ATUALIZOU a coleta: ' . $collect);
 
                 // UPDATE DATA
                 $this->validator->with($request->all())->passesOrFail(ValidatorInterface::RULE_UPDATE);
                 $collect = $this->repository->update($request->except('cancellationType_id', 'site'), $id);
-
+                
                 Log::channel('mysql')->info('Para: ' . $collect);
 
                 $response = [
@@ -459,13 +459,14 @@ class CollectsController extends Controller
         }
         else
         {
-            $id_collect      = $request->get('infoCollect');
+            $id_collect       = $request->get('infoCollect');
             $id_neighborhood = $request->get('neighborhood_id');
             $id_origin       = Auth::user()->id;
             // Reservada
             $status          = 3;
             $collect = $this->repository->find($id_collect);
-
+            
+            //collect used?
             if($collect->status > 1 || isset($collect->cancellationType_id) || isset($collect->neighborhood) || isset($collect->reserved_at))
             {
                 $response = [

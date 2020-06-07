@@ -146,7 +146,7 @@ class PublicCollectController extends Controller
 
         if(!$request->has('neighborhood')) $neighborhood_list = $this->neighborhoodRepository->where('active', 'on')->get();
         else $neighborhood_model = $this->neighborhoodRepository->find($request->get('neighborhood'));
-
+        
         return view('collect.public.index', [
             'titlespage' => ['Solicitação de Coleta Domiciliar'],
             'titlecard'  => 'Solicitar Agendamento',
@@ -162,7 +162,7 @@ class PublicCollectController extends Controller
         try
         {
             $collect = $this->repository->find($id);
-            if($request->session() != null && $request->session()->has('collect'))
+            if($request->session()->has('collect'))
             {
                 $sessionActive = $request->session()->get('collect');
                 $collect = $this->repository->find($sessionActive->id);
@@ -189,7 +189,7 @@ class PublicCollectController extends Controller
             $price                  = $quant == 0   ? 0 : $collect->neighborhood->displacementRate;
             if($quant > 2)          $price = ($quant-1) * $collect->neighborhood->displacementRate;
             $priceString            = "R$ " . (string) $price;
-
+            
             return view('collect.public.edit', [
                 'titlespage' => ['Solicitação de Coleta Domiciliar'],
                 'titlecard'  => 'Dados da solicitação',
@@ -212,10 +212,12 @@ class PublicCollectController extends Controller
         catch(Exception $e)
         {
             $response = [
-                'message' =>  'Ocorreu um erro. Nossos técnicos foram avisados. Pedimos desculpas pelo transtorno.',
+                'message' =>  'Ocorreu um erro. Nossos técnicos foram avisados. Pedimos desculpas pelo transtorno. Você pode tentar novamente em outra data ou horário.',
                 'type'    => 'error'
             ];
-            Log::channel('mysql')->info('Schedule Agendamento público: ' . Util::getException($e));
+            
+            Log::channel('mysql')->info('Agendamento público: ' . Util::getException($e));
+            
             session()->flash('return', $response);
             return redirect()->route('public.index');
         }
@@ -241,7 +243,8 @@ class PublicCollectController extends Controller
                 }
 
                 $collect = $this->repository->find($id_collect);
-
+                
+                //collect used?
                 if($collect->status > 1 || isset($collect->cancellationType_id) || isset($collect->neighborhood) || isset($collect->reserved_at))
                 {
                     $response = [
@@ -294,7 +297,7 @@ class PublicCollectController extends Controller
         catch (Exception $e)
         {
             $response = [
-                'message' =>  'Ocorreu um erro. Nossos técnicos foram avisados. Pedimos desculpas pelo transtorno.',
+                'message' =>  'Ocorreu um erro. Nossos técnicos foram avisados. Pedimos desculpas pelo transtorno. Você pode tentar novamente em outra data ou horário.',
                 'type'    => 'error'
             ];
             Log::channel('mysql')->info('Reservar agendamento público: ' . Util::getException($e));
@@ -315,12 +318,7 @@ class PublicCollectController extends Controller
                 if($collect->status > 2)
                 {
                     $request->session()->flush();
-                    $response = [
-                        'message' => 'O horário acabou de ser confirmado por outra pessoa. Sua sessão foi encerrada. Por gentileza, realize uma nova solicitação para outro horário ou data.',
-                        'type'    => 'info'
-                    ];
-                    session()->flash('return', $response);
-                    return redirect()->route('public.index');
+                    return redirect()->route('public.index')->withErrors(['O horário acabou de ser confirmado por outra pessoa. Sua sessão foi encerrada. Por gentileza, realize uma nova solicitação para outro horário ou data.']);
                 }
                 // USER SITE = 2
                 $id_user = 2;
@@ -361,9 +359,13 @@ class PublicCollectController extends Controller
                     'type'      => 'info'
                 ];
                 // send email
-                foreach ($collect->people as $person) {
-                    session()->flash('return', $response);
-                    Mail::to($person->email)->queue(new SendMailSchedule());
+                foreach ($collect->people as $person) 
+                {
+                    if($person->email != null)
+                    {
+                        session()->flash('return', $response);
+                        Mail::to($person->email)->queue(new SendMailSchedule());
+                    }
                 }
             }
             else
@@ -378,7 +380,7 @@ class PublicCollectController extends Controller
         }
         catch (Exception $e)
         {
-            $response = [
+             $response = [
                 'message' =>  'Ocorreu um erro. Nossos técnicos foram avisados. Pedimos desculpas pelo transtorno.',
                 'type'    => 'error'
             ];
@@ -395,17 +397,12 @@ class PublicCollectController extends Controller
     public function cancellation(Request $request, $id)
     {
         $collect = $this->repository->find($id);
+        // COLLECT STILL AVAILABLE? OTHER CLIENT TAKE?
         if($collect->status > 2)
         {
             $request->session()->flush();
-            $response = [
-                'message' => 'O horário acabou de ser confirmado por outra pessoa. Sua sessão foi encerrada. Por gentileza, realize uma nova solicitação para outro horário ou data.',
-                'type'    => 'info'
-            ];
-            session()->flash('return', $response);
-            return redirect()->route('public.index');
+            return redirect()->route('public.index')->withErrors(['O horário acabou de ser confirmado por outra pessoa. Sua sessão foi encerrada. Por gentileza, realize uma nova solicitação para outro horário ou data.']);
         }
-
         $request['cancellationType_id'] = 2;
         return $this->update($request, $id);
     }
