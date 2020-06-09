@@ -12,6 +12,10 @@
                         <i class="fas fa-plus"></i>
                     @endif
                 </button>
+            @elseif($transfer ?? null)
+                <button type="button" data-toggle="modal" data-target="#{{$idmodal}}" style="float: right!important" class="btn btn-outline-primary">
+                    <i class="fas fa-exchange-alt"></i>
+                </button>
             @endif
           </div>
           <div class="card-body">

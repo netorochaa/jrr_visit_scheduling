@@ -1,5 +1,5 @@
 <div class="card">
-    {!! Form::open(['route' => 'collect.reserve', 'method' => 'post', 'role' => 'form', 'class' => 'form-horizontal']) !!}
+    {!! Form::open(['route' => !$transfer ? 'collect.reserve' : ['collect.transfer', $collect->id], 'method' => !$transfer ? 'post' : 'get', 'role' => 'form', 'class' => 'form-horizontal']) !!}
     <div class="card-body">
         <h3 class="lead">{{ $neighborhood_model->name }}<small><p class="text-muted" id="describe-feedback"></p></small></h3>
         <div class="row">
@@ -18,5 +18,3 @@
     </div>
     {!! Form::close() !!}
 </div>
-
-

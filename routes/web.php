@@ -41,6 +41,7 @@ Route::get('/confirmedlist', ['as' => 'collect.list.confirmedlist', 'uses' => 'C
 Route::get('/done', ['as' => 'collect.list.done', 'uses' => 'CollectsController@listDone']);
 Route::get('/allcollects', ['uses' => 'CollectsController@listAll']);
 Route::get('/extra', ['as' => 'collect.extra', 'uses' => 'CollectsController@extra']);
+Route::get('/transfer/{id}', ['as' => 'collect.transfer', 'uses' => 'CollectsController@transfer']);
 Route::post('/reserve', ['as' => 'collect.reserve', 'uses' => 'CollectsController@reserve']);
 Route::get('/schedule/{id}', ['as' => 'collect.schedule', 'uses' => 'CollectsController@schedule']);
 Route::get('/confirmed/{id}', ['as' => 'collect.confirmed', 'uses' => 'CollectsController@confirmed']);

@@ -15,7 +15,7 @@
                 @if(count($collect->people) < 2)
                     <button type="button" data-toggle="modal" data-target="#modal-xl" class="btn btn-outline-success"><i class="fas fa-plus"></i></button>
                 @else
-                    <label> - Limite de dois pacientes por agendamento</label>
+                    <label> - Limite de 2 (dois) pacientes por agendamento</label>
                 @endif
             </h5>
             <div class="row">

@@ -70,6 +70,7 @@ class CollectsController extends Controller
                 'titlespage' => ['Coletas'],
                 'titlecard'  => 'Agendar coleta',
                 'goback'     => $goback,
+                'transfer'   => false,
                 //List for select
                 'neighborhood_list'  => $neighborhood_list  ?? null,
                 'neighborhood_model' => $neighborhood_model ?? null,
@@ -306,13 +307,13 @@ class CollectsController extends Controller
             else
             {
                 $collect_list = $this->repository->where('neighborhood_id', '!=', null)
-                                                    ->where('status', '>', 6)->get();
+                                                    ->where('status', '>', 6)->paginate(300);
 
                 return view('collect.template_table', [
                     'namepage'   => 'Coletas canceladas',
                     'threeview'  => 'Coletas',
                     'titlespage' => ['Coletas canceladas'],
-                    'titlecard'  => 'Lista de coletas canceladas',
+                    'titlecard'  => 'Lista das últimas 300 coletas canceladas',
                     //Info of entitie
                     'table'               => $this->repository->getTable(),
                     'thead_for_datatable' => ['Data/Hora', 'Código','Paciente', 'Pagamento Taxa', 'Bairro', 'Endereço', 'Coletador', 'Status'],
@@ -348,6 +349,8 @@ class CollectsController extends Controller
                 $price                  = $quant  > 2   ? ($quant-1) * $collect->neighborhood->displacementRate : $collect->neighborhood->displacementRate;
                 $priceString            = "R$ " . (string) $price;
 
+                if(Auth::user()->type > 2) $neighborhood_model = $this->neighborhoodRepository->find($collect->neighborhood_id);
+
                 return view('collect.edit', [
                     'namepage'      => 'Agendar coleta',
                     'numberModal'   => '2',
@@ -356,8 +359,10 @@ class CollectsController extends Controller
                     'titlecard'     => 'Agendamento de coleta',
                     'titlecard2'    => 'Adicionar paciente',
                     'titlemodal'    => 'Cadastrar paciente',
+                    'idmodal'       => Auth::user()->type > 2 ? 'tranfer' : null,
                     'goback'        => false,
                     'add'           => false,
+                    'transfer'      => Auth::user()->type > 2 ? true : false,
                     //Lists for select
                     'cancellationType_list' => $cancellationType_list,
                     'patientType_list'      => $patientType_list,
@@ -369,6 +374,7 @@ class CollectsController extends Controller
                     'covenant_list'         => $covenant_list,
                     'quant'                 => $quant,
                     'price'                 => $priceString,
+                    'neighborhood_model'    => $neighborhood_model ?? null,
                     //Info of entitie
                     'table' => $this->repository->getTable(),
                     'collect' => $collect
@@ -614,6 +620,59 @@ class CollectsController extends Controller
             }
             session()->flash('return', $response);
             return redirect()->route('activity.index');
+        }
+    }
+
+    public function transfer(Request $request, $id)
+    {
+        if(!Auth::check())
+        {
+            session()->flash('return');
+            return view('auth.login');
+        }
+        else
+        {
+            try
+            {
+                $id_new             = $request->get('infoCollect');
+                $collect_old        = $this->repository->find($id);
+                $array_collect_old  = $collect_old->toArray();
+                unset($array_collect_old['id'], $array_collect_old['date'], $array_collect_old['hour'], $array_collect_old['created_at']);
+
+                $collect_new = $this->repository->update($array_collect_old, $id_new);
+                Log::channel('mysql')->info(Auth::user()->name . ' TRANSFERIU a coleta: ' . $collect_old->id . ' - PARA: ' . $collect_new->id);
+
+                foreach ($collect_old->people as $person) {
+                    $collect_new->people()->attach($person->id);
+                    $collect_new->people()->updateExistingPivot($person->id, ['covenant' => $person->pivot->covenant, 'exams' => $person->pivot->exams]);
+                    $collect_old->people()->detach($person->id);
+                }
+
+                //IF NOT EXTRA COLLECT
+                if($collect_old->extra != '1')
+                {
+                    // Reset values for new releasing collect
+                    $collect = $this->repository->collectReset($collect_old);
+                    $arrayCollect = $collect->toArray();
+                    $this->repository->update($arrayCollect, $collect_old->id);
+                }
+                $response = [
+                    'message' => 'Coleta transferida para ' . $collect_new->id,
+                    'type'    => 'info'
+                ];
+
+                session()->flash('return', $response);
+                return redirect()->route('collect.schedule', $collect_new->id);
+            }
+            catch (Exception $e)
+            {
+                $response = [
+                    'message' => $e->getMessage(),
+                    'type'    => 'error'
+                ];
+                session()->flash('return', $response);
+                return redirect()->route('collect.schedule', $id);
+            }
         }
     }
 
