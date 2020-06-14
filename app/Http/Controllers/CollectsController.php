@@ -283,13 +283,14 @@ class CollectsController extends Controller
             else
             {
                 $collect_list = $this->repository->where('neighborhood_id', '!=', null)
-                                                    ->where('status', 6)->get();
+                                                    ->where('status', 6)->paginate(300)
+                                                    ->sortByDesc('closed_at');
 
                 return view('collect.template_table', [
                     'namepage'   => 'Coletas concluídas',
                     'threeview'  => 'Coletas',
                     'titlespage' => ['Coletas concluídas'],
-                    'titlecard'  => 'Lista de concluídas',
+                    'titlecard'  => 'Lista das últimas 300 coletas concluídas',
                     //Info of entitie
                     'table'               => $this->repository->getTable(),
                     'thead_for_datatable' => ['Data/Hora', 'Código', 'Paciente', 'Pagamento Taxa', 'Bairro', 'Endereço', 'Coletador', 'Status'],
@@ -307,13 +308,14 @@ class CollectsController extends Controller
             else
             {
                 $collect_list = $this->repository->where('neighborhood_id', '!=', null)
-                                                    ->where('status', '>', 6)->paginate(300);
+                                                    ->where('status', '>', 6)->paginate(500)
+                                                    ->sortByDesc('closed_at');
 
                 return view('collect.template_table', [
                     'namepage'   => 'Coletas canceladas',
                     'threeview'  => 'Coletas',
                     'titlespage' => ['Coletas canceladas'],
-                    'titlecard'  => 'Lista das últimas 300 coletas canceladas',
+                    'titlecard'  => 'Lista das últimas 500 coletas canceladas',
                     //Info of entitie
                     'table'               => $this->repository->getTable(),
                     'thead_for_datatable' => ['Data/Hora', 'Código','Paciente', 'Pagamento Taxa', 'Bairro', 'Endereço', 'Coletador', 'Status'],

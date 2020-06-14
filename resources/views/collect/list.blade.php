@@ -72,15 +72,23 @@
                 @elseif($collectMarked->status == 5)
                     <span class="badge badge-white rounded">
                 @elseif($collectMarked->status == 6)
+                    <span style="display:none">{{ $collectMarked->closed_at }}</span>
                     <span class="badge badge-secondary rounded">
                 @elseif($collectMarked->status > 6)
+                    <span style="display:none">{{ $collectMarked->closed_at }}</span>
                     <span class="badge badge-danger rounded">
                 @endif
-                {{ $collectMarked->formatted_status }}</span>
+                    {{ $collectMarked->formatted_status }}</span>
                 @if($collectMarked->status == 4)
                     <br><small>Via: {{ $collectMarked->confirmed->name ?? null }}</small>
+                @elseif($collectMarked->status == 6)
+                    <br><small class="text-muted">{{ $collectMarked->formatted_closedAt }}</small>
                 @elseif($collectMarked->status > 6)
-                    <br><small>Via: {{ $collectMarked->cancelled->name ?? null }} - {{ $collectMarked->cancellationtype->name ?? null }}</small>
+                    <br>
+                    <small>
+                        Via: {{ $collectMarked->cancelled->name ?? null }} - {{ $collectMarked->cancellationtype->name ?? null }} <br>
+                        <small class="text-muted">{{ $collectMarked->formatted_closedAt }}</small>
+                    </small>
                 @endif
             </td>
         </tr>
