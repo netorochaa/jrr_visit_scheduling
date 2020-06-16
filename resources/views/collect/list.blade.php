@@ -66,6 +66,7 @@
             {{-- STATUS --}}
             <td>
                 @if ($collectMarked->status == 3)
+                    <span style="display:none">{{ $collectMarked->reserved_at }}</span>
                     <span class="badge badge-warning rounded">
                 @elseif($collectMarked->status == 4)
                     <span class="badge badge-success rounded">
@@ -79,7 +80,9 @@
                     <span class="badge badge-danger rounded">
                 @endif
                     {{ $collectMarked->formatted_status }}</span>
-                @if($collectMarked->status == 4)
+                @if($collectMarked->status == 3)
+                    <br><small class="text-muted">{{ $collectMarked->formatted_reservedAt }}</small>
+                @elseif($collectMarked->status == 4)
                     <br><small>Via: {{ $collectMarked->confirmed->name ?? null }}</small>
                 @elseif($collectMarked->status == 6)
                     <br><small class="text-muted">{{ $collectMarked->formatted_closedAt }}</small>
@@ -87,7 +90,7 @@
                     <br>
                     <small>
                         Via: {{ $collectMarked->cancelled->name ?? null }} - {{ $collectMarked->cancellationtype->name ?? null }} <br>
-                        <small class="text-muted">{{ $collectMarked->formatted_closedAt }}</small>
+                        <span class="text-muted">{{ $collectMarked->formatted_closedAt }}</span>
                     </small>
                 @endif
             </td>

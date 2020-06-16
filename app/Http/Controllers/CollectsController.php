@@ -187,8 +187,8 @@ class CollectsController extends Controller
             }
             else
             {
-                $collect_list = $this->repository->where('neighborhood_id', '!=', null)
-                                                    ->where([['status', '>', 2], ['status', '<', 7]])->get();
+                $collect_list = $this->repository->where([['status', '>', 2], ['status', '<', 7]])->orderBy('date', 'desc')->paginate(400);
+
                 return view('collect.template_table', [
                     'namepage'   => 'Todas coletas',
                     'threeview'  => 'Coletas',
@@ -282,9 +282,7 @@ class CollectsController extends Controller
             }
             else
             {
-                $collect_list = $this->repository->where('neighborhood_id', '!=', null)
-                                                    ->where('status', 6)->paginate(300)
-                                                    ->sortByDesc('closed_at');
+                $collect_list = $this->repository->where('status', 6)->orderBy('closed_at', 'desc')->paginate(300);
 
                 return view('collect.template_table', [
                     'namepage'   => 'Coletas concluídas',
@@ -307,9 +305,7 @@ class CollectsController extends Controller
             }
             else
             {
-                $collect_list = $this->repository->where('neighborhood_id', '!=', null)
-                                                    ->where('status', '>', 6)->paginate(500)
-                                                    ->sortByDesc('closed_at');
+                $collect_list = $this->repository->where('status', '>', 6)->orderBy('closed_at', 'desc')->paginate(500);
 
                 return view('collect.template_table', [
                     'namepage'   => 'Coletas canceladas',
@@ -638,31 +634,59 @@ class CollectsController extends Controller
             {
                 $id_new             = $request->get('infoCollect');
                 $collect_old        = $this->repository->find($id);
+                $collect_new        = $this->repository->find($id_new);
+                //PREPARED COLLECTS TO TRANSFER
                 $array_collect_old  = $collect_old->toArray();
                 unset($array_collect_old['id'], $array_collect_old['date'], $array_collect_old['hour'], $array_collect_old['created_at']);
 
-                $collect_new = $this->repository->update($array_collect_old, $id_new);
-                Log::channel('mysql')->info(Auth::user()->name . ' TRANSFERIU a coleta: ' . $collect_old->id . ' - PARA: ' . $collect_new->id);
-
-                foreach ($collect_old->people as $person) {
-                    $collect_new->people()->attach($person->id);
-                    $collect_new->people()->updateExistingPivot($person->id, ['covenant' => $person->pivot->covenant, 'exams' => $person->pivot->exams]);
-                    $collect_old->people()->detach($person->id);
-                }
-
-                //IF NOT EXTRA COLLECT
-                if($collect_old->extra != '1')
+                //collects used?
+                if($collect_new->status > 1 || isset($collect_new->cancellationType_id) || isset($collect_new->neighborhood) || isset($collect_new->reserved_at))
                 {
-                    // Reset values for new releasing collect
-                    $collect = $this->repository->collectReset($collect_old);
-                    $arrayCollect = $collect->toArray();
-                    $this->repository->update($arrayCollect, $collect_old->id);
+                    $response = [
+                        'message' => 'Este horário já estava ou acabou de ser reservado! Escolha outro horário disponível na lista abaixo.',
+                        'type'    => 'error'
+                    ];
+                    session()->flash('return', $response);
+                    return redirect()->route('collect.schedule', $collect_old->id);
                 }
-                $response = [
-                    'message' => 'Coleta transferida para ' . $collect_new->id,
-                    'type'    => 'info'
-                ];
+                else if($this->repository->where([['collector_id', $collect_new->collector_id],
+                                                ['date', $collect_new->date],
+                                                ['id', '!=', $collect_new->id]
+                                                ])
+                                        ->whereBetween('status', [2, 6])->count() > 0)
+                {
+                    Log::channel('mysql')->info('Erro duplicação: ' . $collect_new);
+                    $response = [
+                        'message' => 'Este horário já estava ou acabou de ser reservado! Escolha outro horário disponível na lista abaixo.',
+                        'type'    => 'error'
+                    ];
+                    session()->flash('return', $response);
+                    return redirect()->route('collect.schedule', $collect_old->id);
+                }
+                else
+                {
+                    $collect_new = $this->repository->update($array_collect_old, $collect_new->id);
+                    Log::channel('mysql')->info(Auth::user()->name . ' TRANSFERIU a coleta: ' . $collect_old->id . ' - PARA: ' . $collect_new->id);
 
+                    foreach ($collect_old->people as $person) {
+                        $collect_new->people()->attach($person->id);
+                        $collect_new->people()->updateExistingPivot($person->id, ['covenant' => $person->pivot->covenant, 'exams' => $person->pivot->exams]);
+                        $collect_old->people()->detach($person->id);
+                    }
+
+                    //IF NOT EXTRA COLLECT
+                    if($collect_old->extra != '1')
+                    {
+                        // Reset values for new releasing collect
+                        $collect = $this->repository->collectReset($collect_old);
+                        $arrayCollect = $collect->toArray();
+                        $this->repository->update($arrayCollect, $collect_old->id);
+                    }
+                    $response = [
+                        'message' => 'Coleta transferida para ' . $collect_new->id,
+                        'type'    => 'info'
+                    ];
+                }
                 session()->flash('return', $response);
                 return redirect()->route('collect.schedule', $collect_new->id);
             }
