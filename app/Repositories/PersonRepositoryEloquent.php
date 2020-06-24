@@ -7,6 +7,7 @@ use Prettus\Repository\Criteria\RequestCriteria;
 use App\Repositories\PersonRepository;
 use App\Entities\Person;
 use App\Validators\PersonValidator;
+use DB;
 
 /**
  * Class PersonRepositoryEloquent.
@@ -74,4 +75,12 @@ class PersonRepositoryEloquent extends BaseRepository implements PersonRepositor
           return $list;
     }
 
+    public function person_collect($collect, $person)
+    {
+        return DB::table('people_has_collect')
+                    ->join('people', 'people_has_collect.people_id', '=', 'people.id')
+                    ->join('collects', 'people_has_collect.collect_id', '=', 'collects.id')
+                    ->where('people_has_collect.people_id', $person)
+                    ->where('people_has_collect.collect_id', $collect);
+    }
 }

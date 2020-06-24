@@ -637,7 +637,7 @@ class CollectsController extends Controller
                 $collect_new        = $this->repository->find($id_new);
                 //PREPARED COLLECTS TO TRANSFER
                 $array_collect_old  = $collect_old->toArray();
-                unset($array_collect_old['id'], $array_collect_old['date'], $array_collect_old['hour'], $array_collect_old['created_at']);
+                unset($array_collect_old['id'], $array_collect_old['date'], $array_collect_old['hour'], $array_collect_old['collector_id'], $array_collect_old['created_at']);
 
                 //collects used?
                 if($collect_new->status > 1 || isset($collect_new->cancellationType_id) || isset($collect_new->neighborhood) || isset($collect_new->reserved_at))

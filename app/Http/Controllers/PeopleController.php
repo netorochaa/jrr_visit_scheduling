@@ -83,8 +83,7 @@ class PeopleController extends Controller
             $covenant_list          = $this->repository->covenant_list();
             $typeResponsible_list   = $this->repository->typeResponsible_list();
             $collect                = $this->collectRepository->find($collect_id);
-            $peopleCollects         = $person->with('collects')->get();
-            $personHasCollect       = $peopleCollects->find($person->id)->collects->find($collect->id)->pivot;
+            $personHasCollect       = $this->repository->person_collect($collect_id, $person_id)->first();
 
             return view('person.edit', [
                 'namepage'              => 'Coletas',

@@ -51,8 +51,8 @@ class AuthController extends Controller
         if(Auth::attempt($credentials))
         {
             // IF COLLECTOR
-            //if(Auth::user()->type == 2)
-            //    $this->updateCollects(Auth::user()->id);
+            if(Auth::user()->type == 2)
+               $this->updateCollects(Auth::user()->id);
 
             return $this->dashboard();
         }
