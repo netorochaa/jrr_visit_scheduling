@@ -48,7 +48,7 @@ class CollectorRepositoryEloquent extends BaseRepository implements CollectorRep
             $day    = $data->format("l");
             $date   = $data->format("Y-m-d");
 
-            if($day == "Monday"     ||
+            if( $day == "Monday"    ||
                 $day == "Tuesday"   ||
                 $day == "Wednesday" ||
                 $day == "Thursday"  ||
@@ -81,7 +81,7 @@ class CollectorRepositoryEloquent extends BaseRepository implements CollectorRep
                         if(DB::table('collects')
                                 ->where('collector_id', $collector_id)
                                 ->whereDate('date', $date)
-                                ->whereTime('date', $arrayMondayToFriday[$i] . ':00')->count() == 0)
+                                ->whereTime('date', $arraySaturday[$i] . ':00')->count() == 0)
                         {
                             DB::table('collects')->insert(
                                 ['date' => $date . " " . $arraySaturday[$i], 'hour' => $arraySaturday[$i], 'collector_id' => $collector_id, 'created_at' => Util::dateNowForDB()]
@@ -99,7 +99,7 @@ class CollectorRepositoryEloquent extends BaseRepository implements CollectorRep
                         if(DB::table('collects')
                                 ->where('collector_id', $collector_id)
                                 ->whereDate('date', $date)
-                                ->whereTime('date', $arrayMondayToFriday[$i] . ':00')->count() == 0)
+                                ->whereTime('date', $arraySunday[$i] . ':00')->count() == 0)
                         {
                             DB::table('collects')->insert(
                                 ['date' => $date . " " . $arraySunday[$i], 'hour' => $arraySunday[$i], 'collector_id' => $collector_id, 'created_at' => Util::dateNowForDB()]
