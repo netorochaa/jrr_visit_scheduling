@@ -28,14 +28,16 @@ class AuthController extends Controller
     {
         if(Auth::check())
         {
-            $collects = $this->collectRepository->whereMonth('date', '=', date('m'))->get();
+            $collects   = $this->collectRepository->whereMonth('date', '=', '6')->get();
+            $users      = $this->repository->all();
 
             return view('home', [
                 'namepage'      => 'Home',
                 'threeview'     => null,
                 'titlespage'    => ['Dashboard'],
                 'titlecard'     => 'Bem vindo(a) ' . Auth::user()->name,
-                'collects'      => $collects
+                'collects'      => $collects,
+                'users'         => $users
             ]);
         }
         else return view('auth.login');

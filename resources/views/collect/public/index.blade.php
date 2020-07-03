@@ -9,12 +9,14 @@
 @endsection
 
 @section('content')
-  @include('templates.content.header')
-  @if($neighborhood_model)
-    @include('templates.content.content1col', ['contentbody' => 'collect.public.register'])
-  @else
-    @include('templates.content.content1col', ['contentbody' => 'collect.public.neighborhood'])
-  @endif
+    @include('templates.content.header')
+    <div class="container">
+        @if($neighborhood_model)
+            @include('templates.content.content1col', ['contentbody' => 'collect.public.register'])
+        @else
+            @include('templates.content.content1col', ['contentbody' => 'collect.public.neighborhood'])
+        @endif
+    </div>
 @endsection
 
 @section('footer-distinct')
@@ -28,7 +30,7 @@
       $('.select2bs4').select2({
         theme: 'bootstrap4'
       })
-      
+
       var dateNow = moment().day();
       //Initialize daterangepicker Elements
       $('input[id="schedulingDate"]').daterangepicker({

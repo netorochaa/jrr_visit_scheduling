@@ -148,8 +148,8 @@ class PublicCollectController extends Controller
         else $neighborhood_model = $this->neighborhoodRepository->find($request->get('neighborhood'));
 
         return view('collect.public.index', [
-            'titlespage' => ['Solicitação de Coleta Domiciliar'],
-            'titlecard'  => 'Solicitar Agendamento',
+            'titlespage' => null,
+            'titlecard'  => 'Solicitar agendamento de coleta domiciliar',
             'ambulancy'  => true,
             'sessionActive'         => $sessionActive,
             'neighborhood_list'     => $neighborhood_list ?? null,

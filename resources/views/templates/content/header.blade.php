@@ -12,7 +12,7 @@
                             @if ($goback ?? null)
                                 <a href={{ url()->previous() }}><i class="fas fa-arrow-left"></i></a>
                             @endif
-                            {{ $titles }}
+                            {{ $titles ?? null }}
                         </h1>
                     </div>
                 @endforeach
