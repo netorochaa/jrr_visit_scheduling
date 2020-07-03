@@ -28,7 +28,7 @@ class AuthController extends Controller
     {
         if(Auth::check())
         {
-            $collects   = $this->collectRepository->whereMonth('date', '=', '6')->get();
+            $collects   = $this->collectRepository->whereMonth('date', '=', date('m'))->get();
             $users      = $this->repository->all();
 
             return view('home', [
