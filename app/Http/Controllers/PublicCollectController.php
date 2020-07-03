@@ -191,7 +191,7 @@ class PublicCollectController extends Controller
             $priceString            = "R$ " . (string) $price;
 
             return view('collect.public.edit', [
-                'titlespage' => ['Solicitação de Coleta Domiciliar'],
+                'titlespage' => null,
                 'titlecard'  => 'Dados da solicitação',
                 'titlemodal' => 'Cadastrar paciente',
                 'ambulancy'  => true,

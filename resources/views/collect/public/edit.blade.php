@@ -8,8 +8,10 @@
 
 @section('content')
   @include('templates.content.header')
-  @include('templates.content.content1col', ['contentbody' => 'collect.public.schedule'])
-  @include('templates.content.modallarge',  ['titlemodal' => $titlemodal , 'contentmodal' => 'person.register',])
+  <div class="container">
+    @include('templates.content.content1col', ['contentbody' => 'collect.public.schedule'])
+    @include('templates.content.modallarge',  ['titlemodal' => $titlemodal , 'contentmodal' => 'person.register',])
+  </div>
 @endsection
 
 @section('footer-distinct')
