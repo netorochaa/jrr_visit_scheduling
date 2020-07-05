@@ -1,8 +1,9 @@
 @if ($collect ?? null)
-    {!! Form::model($collect, ['route' => ['collect.update', $collect->id], 'method' => 'put', 'role' => 'form', 'class' => 'form-horizontal']) !!}
+    {!! Form::model($collect, ['route' => ['collect.update', $collect->id], 'method' => 'put', 'enctype' => 'multipart/form-data', 'role' => 'form', 'class' => 'form-horizontal']) !!}
 @else
-    {!! Form::open(['route' => 'collect.store', 'method' => 'post', 'role' => 'form', 'class' => 'form-horizontal']) !!}
+    {!! Form::open(['route' => 'collect.store', 'method' => 'post', 'enctype' => 'multipart/form-data', 'role' => 'form', 'class' => 'form-horizontal']) !!}
 @endif
+    @csrf
     <div class="card">
         <div class="card-body">
             @if ($collect ?? null)
@@ -75,7 +76,7 @@
             </div>
             <hr>
             <div class="row">
-                @include('templates.components.file', ['label' => 'Anexos', 'col' => '6', 'input' => 'attachment', 'attributes' => ['class' => 'form-control', 'multiple' => 'true', 'disabled']])
+                @include('templates.components.file', ['label' => 'Anexos', 'col' => '6', 'input' => 'attachment[]', 'attributes' => ['class' => 'form-control', 'multiple' => 'true', 'disabled']])
             </div>
         </div>
 

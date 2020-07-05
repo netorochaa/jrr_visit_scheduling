@@ -15,6 +15,8 @@ use App\Validators\PersonValidator;
 use App\Entities\Util;
 use Auth;
 use Exception;
+use DB;
+use Log;
 
 date_default_timezone_set('America/Recife');
 
@@ -30,6 +32,27 @@ class PeopleController extends Controller
         $this->validator             = $validator;
         $this->patientTypeRepository = $patientTypeRepository;
         $this->collectRepository     = $collectRepository;
+    }
+
+    // API FIND PEOPLE
+    public function find(Request $request)
+    {
+        try
+        {
+            $param = $request->get('typeSearch');
+            $value = "%" . $request->get('value') . "%";
+
+            $people_list = DB::table('people')
+                                ->select('id', 'name', 'cpf', 'rg', 'birth', 'fone', 'email')
+                                ->where($param, 'like', $value)
+                                ->orderBy('created_at', 'DESC');
+
+            return $people_list->get()->toJson();
+        }
+        catch(Exception $e)
+        {
+            Log::channel('mysql')->info('Erro api findperson: ' . Util::getException($e));
+        }
     }
 
     public function store(PersonCreateRequest $request, $collect_id)
@@ -147,14 +170,20 @@ class PeopleController extends Controller
         }
         else
         {
-            $registeredPatient = $request->all()['registeredPatient'];
-            $collect = $request->all()['idCollect'];
+            $collect = $this->collectRepository->find($request->all()['idCollect']);
             try
             {
-                $person = $this->repository->find($registeredPatient);
-                $person->collects()->attach($collect);
+                $person = $this->repository->find($request->all()['registeredPatient']);
+
+                if(count($collect->people->where('CPF', $person->CPF)) == 0)
+                {
+                    $person->collects()->attach($collect);
+                    $text = 'Paciente adicionado';
+                }
+                else $text = 'Paciente já adicionado neste agendamento';
+
                 $response = [
-                    'message' => 'Paciente adicionado',
+                    'message' => $text,
                     'type'    => 'info'
                 ];
             }
@@ -166,7 +195,7 @@ class PeopleController extends Controller
                 ];
             }
             session()->flash('return', $response);
-            return redirect()->route('collect.schedule', $collect);
+            return redirect()->route('collect.schedule', $collect->id);
         }
     }
 
@@ -200,7 +229,6 @@ class PeopleController extends Controller
             return $site ? redirect()->route('collect.public.schedule', $collect_id) : redirect()->route('collect.schedule', $collect_id);
         }
     }
-
 
     //Methods not used
     //public function show($id){}

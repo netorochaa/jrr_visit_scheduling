@@ -15,7 +15,7 @@
     'titlemodal' => $titlemodal ,
     'contentmodal' => 'person.register',
     'titlemodal2' => $titlemodal,
-    'contentmodal2' => 'person.registered'
+    'contentmodal2' => 'person.find'
     ])
   @if(Auth::user()->type > 2 && $collect->status < 5)
     @include('templates.content.uniquemodal',  [
@@ -30,6 +30,7 @@
   <script src=" {{ asset('moment/moment.min.js') }}"></script>
   <script src=" {{ asset('daterangepicker/daterangepicker.js') }} "></script>
   <script>
+    // Iniciliza daterangepicker e select
     $(function ()
     {
       //Initialize Select2 Elements
@@ -228,6 +229,7 @@
     $(document).ready(function() {
       changeAuthUser();
       activeButton();
+
       function limpa_formulário_cep()
       {
           // Limpa valores do formulário de cep.
@@ -279,6 +281,7 @@
           }
       });
 
+      //Quando escolhe a data, procura os horários
       $("#schedulingDate").blur(function()
       {
         if(verificateDate())
@@ -289,7 +292,8 @@
           $("#describe-feedback").html("Carregando...");
 
           $.getJSON("../available?neighborhood_id=" + neighborhood + "&datecollect=" + date, function(dados) {
-            if(dados.length > 0){
+            if(dados.length > 0)
+            {
               var option = '<option>Selecione</option>';
               $.each(dados, function(i, obj){
                   option += '<option value="'+obj.id+'">' + obj.hour + " - " + obj.name + '</option>';
@@ -298,7 +302,9 @@
               $('#infoCollectSel').prop('disabled', false);
               $('#submitSelectNeighborhood').attr('disabled', false);
 
-            }else{
+            }
+            else
+            {
               $("#describe-feedback").html("Não há horários disponíveis para esta data!");
               $('#infoCollectSel').prop('disabled', true);
               $('#submitSelectNeighborhood').attr('disabled', true);
@@ -308,6 +314,46 @@
         }else{
           $("#describe-feedback").html("Você não pode marcar coletas para esta data!");
           $('#submitSelectNeighborhood').attr('disabled', true);
+        }
+      });
+
+      //Procura paciente já cadastrado
+      $("#search").on("input", function()
+      {
+        var typeSearch = $('#selTypeSearch').val();
+        var value = $(this).val();
+
+        if(value.length > 3)
+        {
+            $("#status-find-client").html("Carregando...");
+
+            $.getJSON("../findperson?typeSearch=" + typeSearch + "&value=" + value, function(dados)
+            {
+                if(dados.length > 0)
+                {
+                    var option = "";
+                    $.each(dados, function(i, obj)
+                    {
+                        var rg      = obj.rg    != null ? ", RG: "      + obj.rg    : "";
+                        var email   = obj.email != null ? ", E-mail: "  + obj.email : "";
+                        option += '<option value="'+obj.id+'">' + obj.name + ", CPF: " + obj.cpf + rg + ", Nasc: " + obj.birth  + ", Fone: " + obj.fone  + email +'</option>';
+                    })
+                    $("#status-find-client").html(dados.length + " pacientes encontrados");
+                    $('#registeredPatientSel').prop('disabled', false);
+                }
+                else
+                {
+                    $("#status-find-client").html("Nenhum paciente encontrado");
+                    $('#registeredPatientSel').prop('disabled', true);
+                }
+                $('#registeredPatientSel').html(option).show();
+            });
+        }
+        else
+        {
+            var option = "";
+            $('#registeredPatientSel').html(option).show();
+            $("#status-find-client").html("Digite mais de 3 caracteres para realizar a pesquisa");
         }
       });
     });

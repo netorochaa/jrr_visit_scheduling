@@ -61,6 +61,7 @@ Route::resource('collect.person', 'PeopleController');
 //Route::resource('person', 'PeopleController');
 Route::post('/people/collect', ['as' => 'person.collect.attach', 'uses' => 'PeopleController@attachPeopleCollect']);
 Route::get('/people/{people_id}/collect/{collect_id}', ['as' => 'person.collect.detach', 'uses' => 'PeopleController@detachPeopleCollect']);
+Route::get('/findperson', 'PeopleController@find');
 
 // Activity
 Route::resource('activity', 'ActivitiesController');

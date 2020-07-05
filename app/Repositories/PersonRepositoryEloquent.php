@@ -75,6 +75,20 @@ class PersonRepositoryEloquent extends BaseRepository implements PersonRepositor
           return $list;
     }
 
+    public function search_list()
+    {
+        $list = [
+            'name'  => 'NOME',
+            'cpf'   => 'CPF',
+            'rg'    => 'RG',
+            'birth' => 'DATA DE NASCIMENTO',
+            'fone'  => 'TELEFONE',
+            'email' => 'E-MAIL',
+          ];
+
+          return $list;
+    }
+
     public function person_collect($collect, $person)
     {
         return DB::table('people_has_collect')

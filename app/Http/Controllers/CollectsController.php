@@ -339,14 +339,15 @@ class CollectsController extends Controller
                 $collectType_list       = $this->repository->collectType_list();
                 $payment_list           = $this->repository->payment_list(false);
                 $userAuth_list          = $this->userRepository->where([['id', '>', 1], ['active', 'on']])->whereBetween('type', [3, 98])->pluck('name', 'name');
-                $people_list            = $this->peopleRepository->orderBy('created_at', 'desc')->distinct('cpf')->get();
+                $search_list            = $this->peopleRepository->search_list();
                 $typeResponsible_list   = $this->peopleRepository->typeResponsible_list();
                 $covenant_list          = $this->peopleRepository->covenant_list();
                 $quant                  = count($collect->people);
-                $price                  = $quant == 0   ? 0 : $collect->neighborhood->displacementRate;
-                $price                  = $quant  > 2   ? ($quant-1) * $collect->neighborhood->displacementRate : $collect->neighborhood->displacementRate;
+                $price                  = $quant == 0 ? 0 : $collect->neighborhood->displacementRate;
+                $price                  = $quant  > 2 ? ($quant-1) * $collect->neighborhood->displacementRate : $collect->neighborhood->displacementRate;
                 $priceString            = "R$ " . (string) $price;
-
+                // $attachments            = $collect->attachment != null ? explode('*', $collect->attachment) : null;
+                // dd($attachments);
                 if(Auth::user()->type > 2) $neighborhood_model = $this->neighborhoodRepository->find($collect->neighborhood_id);
 
                 return view('collect.edit', [
@@ -367,12 +368,13 @@ class CollectsController extends Controller
                     'collectType_list'      => $collectType_list,
                     'payment_list'          => $payment_list,
                     'userAuth_list'         => $userAuth_list,
-                    'people_list'           => $people_list,
+                    'search_list'           => $search_list,
                     'typeResponsible_list'  => $typeResponsible_list,
                     'covenant_list'         => $covenant_list,
                     'quant'                 => $quant,
                     'price'                 => $priceString,
                     'neighborhood_model'    => $neighborhood_model ?? null,
+                    // 'attachments'           => $attachments,
                     //Info of entitie
                     'table' => $this->repository->getTable(),
                     'collect' => $collect
@@ -408,7 +410,7 @@ class CollectsController extends Controller
 
                 // UPDATE DATA
                 $this->validator->with($request->all())->passesOrFail(ValidatorInterface::RULE_UPDATE);
-                $collect = $this->repository->update($request->except('cancellationType_id', 'site'), $id);
+                $collect = $this->repository->update($request->except('cancellationType_id', 'site', 'attachment'), $id);
 
                 Log::channel('mysql')->info('Para: ' . $collect);
 
