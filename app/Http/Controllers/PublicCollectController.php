@@ -324,7 +324,30 @@ class PublicCollectController extends Controller
                 $id_user = 2;
                 // UPDATE DATA
                 $request->merge(['status' => 3]);
-                $collect = $this->repository->update($request->except('cancellationType_id'), $id);
+                $collect = $this->repository->update($request->except('cancellationType_id', 'attachment'), $id);
+
+                if($request->has('attachment'))
+                {
+                    $i = 0;
+                    $attachment =  $collect->attachment;
+                    foreach ($request->allFiles()['attachment'] as $archives)
+                    {
+                        if( $archives->getMimeType() == "application/pdf" ||
+                            $archives->getMimeType() == "image/png" ||
+                            $archives->getMimeType() == "image/jpg" ||
+                            $archives->getMimeType() == "image/jpeg")
+                        {
+                            if($archives->getSize() < 3000000)
+                            {
+                                $i++;
+                                $name_archive = $collect->id . "_" . date('d-M-YHi') . "-" . $i . "." . $archives->extension();
+                                $archives->storeAs('anexos/' . $collect->id, $name_archive);
+                                $attachment = $attachment . "*" .$name_archive;
+                            }
+                        }
+                    }
+                    $this->repository->update(['attachment' => $attachment], $collect->id);
+                }
 
                 $request->session()->flush();
                 // CANCELLATION COLLECT

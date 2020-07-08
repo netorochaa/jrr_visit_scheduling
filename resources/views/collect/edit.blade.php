@@ -36,7 +36,16 @@
       //Initialize Select2 Elements
       $('.select2bs4').select2({
         theme: 'bootstrap4'
-      })
+      });
+
+      $("input[type='file']").change(function(e){
+        var $fileUpload = $("input[type='file']");
+        if (parseInt($fileUpload.get(0).files.length) > 2){
+         alert("Selecione apenas dois (2) arquivos e menores que três (3) mb.");
+         $fileUpload.get(0).value = "";
+        }
+        e.preventDefault();
+      });
 
       //Initialize daterangepicker Elements
       $('input[id="schedulingDate"]').daterangepicker({

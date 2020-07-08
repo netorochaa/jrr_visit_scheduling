@@ -46,6 +46,11 @@ class CollectsController extends Controller
         $this->activityRepository         = $activityRepository;
     }
 
+    public function download($id, $archive)
+    {
+        return response()->download(storage_path('app/public/anexos/' . $id . '/' . $archive));
+    }
+
     // CRUD AND MARK COLLECT
     public function index(Request $request)
     {
@@ -346,7 +351,7 @@ class CollectsController extends Controller
                 $price                  = $quant == 0 ? 0 : $collect->neighborhood->displacementRate;
                 $price                  = $quant  > 2 ? ($quant-1) * $collect->neighborhood->displacementRate : $collect->neighborhood->displacementRate;
                 $priceString            = "R$ " . (string) $price;
-                // $attachments            = $collect->attachment != null ? explode('*', $collect->attachment) : null;
+                $attachments            = $collect->attachment != null ? explode('*', $collect->attachment) : null;
                 // dd($attachments);
                 if(Auth::user()->type > 2) $neighborhood_model = $this->neighborhoodRepository->find($collect->neighborhood_id);
 
@@ -374,7 +379,7 @@ class CollectsController extends Controller
                     'quant'                 => $quant,
                     'price'                 => $priceString,
                     'neighborhood_model'    => $neighborhood_model ?? null,
-                    // 'attachments'           => $attachments,
+                    'attachments'           => $attachments,
                     //Info of entitie
                     'table' => $this->repository->getTable(),
                     'collect' => $collect
@@ -411,6 +416,29 @@ class CollectsController extends Controller
                 // UPDATE DATA
                 $this->validator->with($request->all())->passesOrFail(ValidatorInterface::RULE_UPDATE);
                 $collect = $this->repository->update($request->except('cancellationType_id', 'site', 'attachment'), $id);
+
+                if($request->has('attachment'))
+                {
+                    $i = 0;
+                    $attachment =  $collect->attachment;
+                    foreach ($request->allFiles()['attachment'] as $archives)
+                    {
+                        if( $archives->getMimeType() == "application/pdf" ||
+                            $archives->getMimeType() == "image/png" ||
+                            $archives->getMimeType() == "image/jpg" ||
+                            $archives->getMimeType() == "image/jpeg")
+                        {
+                            if($archives->getSize() < 3000000)
+                            {
+                                $i++;
+                                $name_archive = $collect->id . "_" . date('d-M-YHi') . "-" . $i . "." . $archives->extension();
+                                $archives->storeAs('anexos/' . $collect->id, $name_archive);
+                                $attachment = $attachment . "*" .$name_archive;
+                            }
+                        }
+                    }
+                    $this->repository->update(['attachment' => $attachment], $collect->id);
+                }
 
                 Log::channel('mysql')->info('Para: ' . $collect);
 

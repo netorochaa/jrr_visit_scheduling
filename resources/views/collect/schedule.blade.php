@@ -76,8 +76,21 @@
             </div>
             <hr>
             <div class="row">
-                @include('templates.components.file', ['label' => 'Anexos', 'col' => '6', 'input' => 'attachment[]', 'attributes' => ['class' => 'form-control', 'multiple' => 'true', 'disabled']])
+                @include('templates.components.file', ['label' => 'Anexos', 'col' => '12', 'input' => 'attachment[]', 'attributes' => ['class' => 'form-control', 'multiple' => 'true', 'accept' => 'image/png, image/jpeg, application/pdf']])
+                <p class="text-muted">Arquivos aceitáveis: Imagens (jpg, jpeg e png) e PDF - Limite de 2 arquivos de 3 mb</p>
             </div>
+            @if ($attachments ?? null)
+                <div class="row">
+                    <table>
+                        @foreach ($attachments as $archive)
+                            @if($archive == "") <?php continue; ?> @endif
+                            <tr>
+                                <td><a href="{{ route('collect.archive.download', [$collect->id, $archive]) }}" download> {{ $archive }}<a><br></td>
+                            </tr>
+                        @endforeach
+                    </table>
+                </div>
+            @endif
         </div>
 
         @if ($collect ?? null)

@@ -46,6 +46,7 @@ Route::post('/reserve', ['as' => 'collect.reserve', 'uses' => 'CollectsControlle
 Route::get('/schedule/{id}', ['as' => 'collect.schedule', 'uses' => 'CollectsController@schedule']);
 Route::get('/confirmed/{id}', ['as' => 'collect.confirmed', 'uses' => 'CollectsController@confirmed']);
 Route::get('/close/{id}', ['as' => 'collect.close', 'uses' => 'CollectsController@close']);
+Route::get('/download/{id}/{archive}', ['as' => 'collect.archive.download', 'uses' => 'CollectsController@download']);
 
 // Collect public
 Route::resource('public', 'PublicCollectController');
