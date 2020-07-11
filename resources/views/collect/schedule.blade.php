@@ -7,7 +7,9 @@
     <div class="card">
         <div class="card-body">
             @if ($collect ?? null)
-                <h4 class="lead">Nº {{ $collect->id }} | Status: <b>{{ $collect->formatted_status }}</b> | Coletador: {{ $collect->collector->name }}
+                <h4 class="lead">Nº {{ $collect->id }} |
+                Status: <b>{{ $collect->formatted_status }}</b>  @if($collect->status == '3')<a href="{{ route('collect.sendconfirmation', $collect->id) }}" class="btn btn-outline-success"> <i class="fas fa-envelope"></i> {{ $collect->sendconfirmation }}</a>@endif |
+                                Coletador: {{ $collect->collector->name }}
                     @if($collect->status < 4 && $collect->address != null)
                         <button type="button" onclick="location.href='{{ route('collect.confirmed', $collect->id) }}'" id="buttonConfirmed" class="btn btn-success float-right" disabled>Confirmar</button>@endif
                 </h4>
@@ -77,7 +79,7 @@
             <hr>
             <div class="row">
                 @include('templates.components.file', ['label' => 'Anexos', 'col' => '12', 'input' => 'attachment[]', 'attributes' => ['class' => 'form-control', 'multiple' => 'true', 'accept' => 'image/png, image/jpeg, application/pdf']])
-                <p class="text-muted">Arquivos aceitáveis: Imagens (jpg, jpeg e png) e PDF - Limite de 2 arquivos de 3 mb</p>
+                <p class="text-muted">Arquivos aceitáveis: Imagens (jpg, jpeg e png) e PDF</p>
             </div>
             @if ($attachments ?? null)
                 <div class="row">

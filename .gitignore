@@ -22,3 +22,4 @@ Homestead.json
 .phpunit.result.cache
 config/database.php
 .env
+database/migrations/2018_05_02_142200_create_logs_table.php

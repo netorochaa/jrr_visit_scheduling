@@ -23,8 +23,14 @@
                             </h3> --}}
                         @elseif(session('return')['type'] == 'confirmed')
                             <h1 style="color: darkblue">{{ session('return')['message'] }}</h1>
+                            <b><p>{{ session('return')['describe'] }}</p></b>
+                            <p>{{ session('return')['text'] }}</p>
+                        @elseif(session('return')['type'] == 'sendconfirmation')
+                            <h1>{{ session('return')['message'] }}</h1>
                             <p>{{ session('return')['describe'] }}</p>
                             <p>{{ session('return')['text'] }}</p>
+                            <p>Após clicar no link abaixo, você receberá um e-mail de confirmação.</p>
+                            <a href="{{ session('return')['link'] }}?confirmed_in_email" style="font-zize: large">Clique aqui para CONFIRMAR</a>
                         @endif
                     @endif
                 </div>

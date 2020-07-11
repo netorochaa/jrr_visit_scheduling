@@ -554,9 +554,9 @@ class CollectsController extends Controller
         }
     }
 
-    public function confirmed($id)
+    public function confirmed(Request $request, $id)
     {
-        if(!Auth::check())
+        if(!Auth::check() && !$request->has('confirmed_in_email'))
         {
             session()->flash('return');
             return view('auth.login');
@@ -564,7 +564,7 @@ class CollectsController extends Controller
         else
         {
             $collect = $this->repository->find($id);
-            $id_user = Auth::user()->id;
+            $id_user = !Auth::check() && $request->has('confirmed_in_email') ? 2 : Auth::user()->id;
 
             if($collect->status > 3)
             {
@@ -573,7 +573,7 @@ class CollectsController extends Controller
                     'type'    => 'error'
                 ];
                 session()->flash('return', $response);
-                return redirect()->route('collect.list.reserved');
+                return  $request->has('confirmed_in_email') ? "<script>window.close();</script>" : redirect()->route('collect.list.reserved');
             }
             else
             {
@@ -605,7 +605,7 @@ class CollectsController extends Controller
                 }
 
                 session()->flash('return', $response);
-                return redirect()->route('collect.list.reserved');
+                return $request->has('confirmed_in_email') ? "<script>window.close();</script>" : redirect()->route('collect.list.reserved');
             }
         }
     }
@@ -731,6 +731,39 @@ class CollectsController extends Controller
             }
         }
     }
+
+    public function sendconfirmation($id)
+    {
+        try
+        {
+            $collect = $this->repository->find($id);
+            $status = false;
+            $response = [
+                'message'   => 'Confirme seu agendamento de coleta domiciliar',
+                'text'      => 'Número da sua solicitação: Nº ' . $collect->id,
+                'describe'  => count($collect->people) . ' paciente(s) na data: ' . $collect->formatted_date . ' às ' . $collect->hour . ' no seguinte endereço: ' . $collect->address . ', ' . $collect->numberAddress . ', ' . $collect->neighborhood->name . ' ' . $collect->cep,
+                'link'      => route('collect.confirmed', $collect->id),
+                'type'      => 'sendconfirmation'
+            ];
+
+            // send email
+            foreach ($collect->people as $person)
+            {
+                if($person->email != null){
+                    session()->flash('return', $response);
+                    Mail::to($person->email)->queue(new SendMailSchedule());
+                }
+                $status = true;
+            }
+            if($status) $this->repository->update(['sendconfirmation' => $collect->sendconfirmation+1], $collect->id);
+        }
+        catch(Exception $e)
+        {
+            // dd(Util::getException($e));
+            Log::channel('mysql')->info('Erro ao enviar e-mail para confirmação: ' . Util::getException($e));
+        }
+        return redirect()->route('collect.schedule', $id);
+   }
 
     /**
      * Methods not used

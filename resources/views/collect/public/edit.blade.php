@@ -26,9 +26,23 @@
 
       $("input[type='file']").change(function(e){
         var $fileUpload = $("input[type='file']");
-        if (parseInt($fileUpload.get(0).files.length) > 2){
-         alert("Selecione apenas dois (2) arquivos e menores que três (3) mb.");
+        var msg = "Não foi possível enviar o(s) arquivo(s). Selecione apenas dois (2) e que possuam tamanho máximo de dois (2) mb.";
+        console.log($fileUpload.get(0).files[0].size);
+        if (parseInt($fileUpload.get(0).files.length) > 2)
+        {
+         alert(msg);
          $fileUpload.get(0).value = "";
+        }
+        else
+        {
+          for (index = 0; index < $fileUpload.get(0).files.length; index++)
+          {
+            if($fileUpload.get(0).files[index].size > 2000000)
+            {
+                alert(msg);
+                $fileUpload.get(0).value = "";
+            }
+          }
         }
         e.preventDefault();
       });
@@ -128,7 +142,8 @@
         }
     }
 
-    function activeButton(){
+    function activeButton()
+    {
       var submitSchedule = document.getElementById('submitSchedule');
       var labelValue = document.getElementById('labelValue');
 
@@ -138,7 +153,51 @@
         submitSchedule.disabled = true;
     }
 
-    $(document).ready(function() {
+    function checkEmail(input)
+    {
+        var usuario = input.value.substring(0, input.value.indexOf("@"));
+        var dominio = input.value.substring(input.value.indexOf("@")+ 1, input.value.length);
+
+        if ((usuario.length >=1) &&
+            (dominio.length >=3) &&
+            (usuario.search("@")==-1) &&
+            (dominio.search("@")==-1) &&
+            (usuario.search(" ")==-1) &&
+            (dominio.search(" ")==-1) &&
+            (dominio.search(".")!=-1) &&
+            (dominio.indexOf(".") >=1)&&
+            (dominio.lastIndexOf(".") < dominio.length - 1))
+        {
+            var email = input.value;
+            //GMAIL.COM
+            if( dominio == "gemail.com" ||
+                dominio == "gmail.com.br" ||
+                dominio == "gmali.com")
+                email = usuario + "@gmail.com";
+            //HOTMAIL.COM
+            else if( dominio == "hotmail.com.br" ||
+                     dominio == "hotmail.bom" ||
+                     dominio == "hotmail.bom" ||
+                     dominio == "hormail.com")
+                email = usuario + "@hotmail.com";
+            //YAHOO.COM.BR
+            else if( dominio == "yahho.com.br" ||
+                     dominio == "yaho.com.br" ||
+                     dominio == "yahou.com.br"
+                     )
+                email = usuario + "@yahoo.com.br";
+
+            input.value = email;
+        }
+        else
+        {
+            alert("E-mail " + input.value + " inválido");
+            input.value = "";
+        }
+    }
+
+    $(document).ready(function()
+    {
       activeButton();
       function limpa_formulário_cep()
       {
