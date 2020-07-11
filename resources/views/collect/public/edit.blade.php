@@ -158,7 +158,9 @@
         var usuario = input.value.substring(0, input.value.indexOf("@"));
         var dominio = input.value.substring(input.value.indexOf("@")+ 1, input.value.length);
 
-        if ((usuario.length >=1) &&
+        if(input.value == "")
+            return;
+        else if((usuario.length >=1) &&
             (dominio.length >=3) &&
             (usuario.search("@")==-1) &&
             (dominio.search("@")==-1) &&
