@@ -2,7 +2,7 @@
     @if ($person ?? null)
         {!! Form::model($person, ['route' => ['collect.person.update', $collect->id, $person->id], 'method' => 'put', 'role' => 'form', 'class' => 'form-horizontal']) !!}
     @else
-        {!! Form::open(['route' => ['collect.person.store', $collect->id] , 'method' => 'post', 'role' => 'form', 'class' => 'form-horizontal']) !!}
+        {!! Form::open(['route' => ['collect.person.store', $collect->id] , 'method' => 'post', 'role' => 'form', 'class' => 'form-horizontal', 'id' => 'form_person']) !!}
         @if($collect->status == 2) @include('templates.components.hidden', ['hidden' => 'site', 'value' => true]) @endif
     @endif
    <div class="card-body">
@@ -39,7 +39,7 @@
         </div>
     </div>
     <div class="card-footer">
-        @include('templates.components.submit', ['input' => 'Salvar', 'attributes' => ['class' => 'btn btn-outline-primary']])
+        @include('templates.components.submit', ['input' => 'Salvar', 'attributes' => ['id' => 'submit_person', 'class' => 'btn btn-outline-primary']])
     </div>
     {!! Form::close() !!}
 </div>

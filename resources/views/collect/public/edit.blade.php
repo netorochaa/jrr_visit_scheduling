@@ -18,6 +18,32 @@
   <script src=" {{ asset('select2/js/select2.full.min.js') }} "></script>
   <script src=" {{ asset('moment/moment.min.js') }}"></script>
   <script>
+    //SUBMIT PERSON
+    var form_person = document.getElementById("form_person");
+    var send_button = document.getElementById("submit_person");
+    function sendFormPersonCheked(event)
+    {
+      send_button.disabled = true;
+      send_button.value = "Adicionando...";
+      form_person.submit();
+      event.preventDefault();
+    }
+    form_person.addEventListener('submit', sendFormPersonCheked);
+
+    //SUBMIT SCHEDULE
+    var form = document.getElementById("form_schedule");
+    var cancelButton = document.getElementById("cancelSchedule");
+    var sendButton = document.getElementById("submitSchedule");
+    function sendFormCheked(event)
+    {
+      sendButton.disabled = true;
+      cancelButton.disabled = true;
+      sendButton.value = "Enviando solicitação...";
+      form.submit();
+      event.preventDefault();
+    }
+    form.addEventListener('submit', sendFormCheked);
+
     $(function () {
       //Initialize Select2 Elements
       $('.select2bs4').select2({

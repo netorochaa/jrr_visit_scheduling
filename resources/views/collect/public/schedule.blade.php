@@ -1,4 +1,4 @@
-{!! Form::model($collect, ['route' => ['public.update', $collect->id], 'method' => 'put', 'enctype' => 'multipart/form-data',  'role' => 'form', 'class' => 'form-horizontal']) !!}
+{!! Form::model($collect, ['route' => ['public.update', $collect->id], 'method' => 'put', 'enctype' => 'multipart/form-data',  'role' => 'form', 'class' => 'form-horizontal', 'id' => 'form_schedule']) !!}
     <div class="card">
         <div class="card-body">
             <h4 class="lead">Nº {{ $collect->id }} |
@@ -54,7 +54,7 @@
         </div>
         <div class="card-footer">
             @include('templates.components.submit', ['input' => 'Enviar', 'attributes' => ['id' => 'submitSchedule', 'class' => 'btn btn-outline-primary']])
-            <button type="button" onclick="location.href='{{ route('collect.public.cancellation', $collect->id) }}'" class="btn btn-danger float-right">Cancelar agendamento</button>
+            <button type="button" onclick="location.href='{{ route('collect.public.cancellation', $collect->id) }}'" id="cancelSchedule" class="btn btn-danger float-right">Cancelar agendamento</button>
         </div>
     </div>
 {!! Form::close() !!}
