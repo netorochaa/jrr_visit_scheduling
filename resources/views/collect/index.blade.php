@@ -71,7 +71,7 @@
 
     $(document).ready(function() {
 
-      $("#schedulingDate").blur(function()
+      $("#schedulingDate").change(function()
       {
         if(verificateDate())
         {

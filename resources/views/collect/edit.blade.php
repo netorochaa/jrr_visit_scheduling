@@ -353,7 +353,7 @@
       });
 
       //Quando escolhe a data, procura os horários
-      $("#schedulingDate").blur(function()
+      $("#schedulingDate").change(function()
       {
         if(verificateDate())
         {

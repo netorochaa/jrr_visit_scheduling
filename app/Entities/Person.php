@@ -23,7 +23,7 @@ class Person extends Model implements Transformable
     {
         return $this->belongsTo(PatientType::class, 'patientTypes_id');
     }
-    
+
     public function getCovenantAttribute($covenant){
         switch ($covenant) {
             case "1":
@@ -33,10 +33,10 @@ class Person extends Model implements Transformable
                 return "UNIMED";
                 break;
             case "3":
-                return "BRADESCO";
+                return "BRADESCO SAÚDE";
                 break;
             case "4":
-                return "CORTESIA";
+                return "AFRAFEP";
                 break;
             case "5":
                 return "AMIL SAÚDE";
@@ -45,10 +45,10 @@ class Person extends Model implements Transformable
                 return "ASSEFAZ";
                 break;
             case "7":
-                return "BANCO DO BRASIL";
+                return "CASSI";
                 break;
             case "8":
-                return "CAMED VIDA";
+                return "CAMED SAÚDE";
                 break;
             case "9":
                 return "CAPESAUDE";
@@ -79,6 +79,8 @@ class Person extends Model implements Transformable
                 break;
             case "18":
                 return "OUTROS";
+            case "19":
+                return "UNIMED INTERCÂMBIO";
             default:
                 return $covenant;
                 break;
@@ -113,6 +115,9 @@ class Person extends Model implements Transformable
                 return "PRIMO";
                 break;
             case "9":
+                return "CÔNJUGUE";
+                break;
+            case "10":
                 return "OUTROS";
                 break;
             default:

@@ -71,7 +71,12 @@ class PublicCollectController extends Controller
                                 ->orderBy('date')->orderBy('collector_id');
 
             for ($i=0; $i < count($freeDay_list); $i++)
-                $collect_list = $collect_list->whereNotBetween('date', [$freeDay_list[$i]['dateStart'], $freeDay_list[$i]['dateEnd']]);
+            {
+                $end = new DateTime($freeDay_list[$i]['dateEnd']);
+                $end->modify('+1 day');
+                $end = $site ? $end->format('Y-m-d H:i:s') : $freeDay_list[$i]['dateEnd'];
+                $collect_list = $collect_list->whereNotBetween('date', [$freeDay_list[$i]['dateStart'], $end]);
+            }
 
             // Log::channel('mysql')->info('Get Api available: ' . $dateOfCollect . " - Bairro: " . $neighborhood_id);
 
