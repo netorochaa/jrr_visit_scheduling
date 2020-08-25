@@ -48,11 +48,10 @@ class FreeDayRepositoryEloquent extends BaseRepository implements FreeDayReposit
     public function type_list()
     {
       $list = [
-        '1' => 'POR COLETADOR',
-        '2' => 'POR CIDADE',
+        '1' => 'POR COLETADOR'
       ];
 
       return $list;
     }
-    
+
 }

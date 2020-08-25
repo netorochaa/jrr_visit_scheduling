@@ -11,17 +11,17 @@
         @foreach ($freedays_list as $freedays)
         <tr>
             <td>{{ $freedays->name }}</td>
-            {{-- <td>{{ $freedays->formatted_type }}:<br>
-                @if ($freedays->type == 1 )
-                    @foreach ($freedays->collectors as $item)
-                        - {{ $item->name }}<br>
-                    @endforeach
-                @else
-                    @foreach ($freedays->cities as $item)
-                        - {{ $item->name }}<br>
-                    @endforeach
-                @endif
-             </td> --}}
+            <td>
+                <small>
+                    @if (count($freedays->collectors) > 0)
+                        @foreach ($freedays->collectors as $item)
+                            {{ $item->name }}<br>
+                        @endforeach
+                    @else
+                       Não informado
+                    @endif
+                </small>
+             </td>
             <td>{{ $freedays->getDateRange() }}</td>
             <td>
                 <div class="btn-group">

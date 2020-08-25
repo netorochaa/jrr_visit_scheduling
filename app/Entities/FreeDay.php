@@ -16,12 +16,6 @@ class FreeDay extends Model implements Transformable
     protected $table = 'freeDays';
     protected $fillable = ['name', 'type', 'dateStart', 'dateEnd'];
 
-
-    public function cities()
-    {
-        return $this->belongsToMany(City::class, 'city_has_freedays', 'freedays_id', 'city_id');
-    }
-
     public function collectors()
     {
         return $this->belongsToMany(Collector::class, 'collector_has_freedays', 'freedays_id', 'collector_id');
@@ -44,7 +38,7 @@ class FreeDay extends Model implements Transformable
 
     public function getDateRange()
     {
-        return date("d/m/Y H:i", strtotime($this->attributes['dateStart'])) . " - " . date("d/m/Y H:i", strtotime($this->attributes['dateEnd']));
+        return date("d/m/Y", strtotime($this->attributes['dateStart'])) . " - " . date("d/m/Y", strtotime($this->attributes['dateEnd']));
     }
 
 

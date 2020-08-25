@@ -352,39 +352,56 @@
           }
       });
 
+    function isEmpty(obj) 
+    {
+        for(var prop in obj) {
+            if(obj.hasOwnProperty(prop))
+                return false;
+        }    
+        return true;
+    }
+
       //Quando escolhe a data, procura os horários
       $("#schedulingDate").change(function()
       {
         if(verificateDate())
         {
-          var date = $(this).val();
-          var neighborhood = $('#inputNeighborhood').val();
+            var date = $(this).val();
+            var neighborhood = $('#inputNeighborhood').val();
 
-          $("#describe-feedback").html("Carregando...");
+            $("#describe-feedback").html("Carregando...");
 
-          $.getJSON("../available?neighborhood_id=" + neighborhood + "&datecollect=" + date, function(dados) {
-            if(dados.length > 0)
+            $.getJSON("../available?neighborhood_id=" + neighborhood + "&datecollect=" + date, function(dados) 
             {
-              var option = '<option>Selecione</option>';
-              $.each(dados, function(i, obj){
-                  option += '<option value="'+obj.id+'">' + obj.hour + " - " + obj.name + '</option>';
-              })
-              $("#describe-feedback").html(dados.length + " horários para agendamento nesta data");
-              $('#infoCollectSel').prop('disabled', false);
-              $('#submitSelectNeighborhood').attr('disabled', false);
-
-            }
-            else
-            {
-              $("#describe-feedback").html("Não há horários disponíveis para esta data!");
-              $('#infoCollectSel').prop('disabled', true);
-              $('#submitSelectNeighborhood').attr('disabled', true);
-            }
-            $('#infoCollectSel').html(option).show();
-          });
-        }else{
-          $("#describe-feedback").html("Você não pode marcar coletas para esta data!");
-          $('#submitSelectNeighborhood').attr('disabled', true);
+                var result = null;
+                if(!isEmpty(dados))
+                    result = Object.keys(dados).map(e=>dados[e]);
+                else result = dados;
+                
+                if(result.length > 0)
+                {
+                    var option = '<option>Selecione</option>';
+                    $.each(result, function(i, obj)
+                    {
+                        option += '<option value="'+obj.id+'">' + obj.hour + " - " + obj.name + '</option>';
+                    })
+                    $("#describe-feedback").html(result.length + " horários para agendamento nesta data");
+                    $('#infoCollectSel').prop('disabled', false);
+                    $('#submitSelectNeighborhood').attr('disabled', false);
+                }
+                else
+                {
+                    $("#describe-feedback").html("Não há horários disponíveis para esta data!");
+                    $('#infoCollectSel').prop('disabled', true);
+                    $('#submitSelectNeighborhood').attr('disabled', true);
+                }
+                $('#infoCollectSel').html(option).show();
+            });
+        }
+        else
+        {
+            $("#describe-feedback").html("Você não pode marcar coletas para esta data!");
+            $('#submitSelectNeighborhood').attr('disabled', true);
         }
       });
 

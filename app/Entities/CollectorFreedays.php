@@ -13,5 +13,4 @@ class CollectorFreedays extends Model
     protected $table = 'collector_has_freedays';
     protected $fillable = ['collector_id', 'freedays_id'];
 
-    
 }

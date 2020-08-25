@@ -50,37 +50,50 @@ class PublicCollectController extends Controller
             $where = $site ? ['active' => 'on', 'showInSite' => 'on'] : ['active' => 'on'];
 
             $neighborhood_id = $request->get('neighborhood_id');
-            $dateOfCollect   = Util::setDateLocalBRToDb($request->get('datecollect'), false);
+            $dateOfCollect   = trim(Util::setDateLocalBRToDb($request->get('datecollect'), false));
             $dateNow         = date("Y-m-d h:i");
             $collector_list  = $this->collectorRepository->where($where)->get();
+            $freeDay_list    = $this->freeDayRepository->where('dateStart', '>', $dateNow)->get();
 
+            // SEPARATES COLLECTORS ACCORDING TO THE NEIGHBORHOOD
             $array_collectors = [];
             foreach($collector_list as $collector)
             {
                 foreach($collector->neighborhoods as $neighborhood)
                     if($neighborhood->id == $neighborhood_id) array_push($array_collectors, $collector->id);
             }
-
-            $freeDay_list = $this->freeDayRepository->where('dateStart', '>', $dateNow)->get();
+            // GET AVAILABLES SCHEDULES
             $collect_list = DB::table('collects')
-                                ->select('collects.id', 'collects.date', 'collects.hour', 'collects.status', 'collectors.name')
+                                ->select('collects.id', 'collects.date', 'collects.hour', 'collects.status', 'collectors.name', 'collectors.id as collector_id')
                                 ->join('collectors', 'collects.collector_id', '=', 'collectors.id')
                                 ->whereDate('date', $dateOfCollect)
                                 ->whereIn('collector_id', $array_collectors)
                                 ->where([['status', '1'], ['cancellationType_id', null]])
-                                ->orderBy('date')->orderBy('collector_id');
+                                ->orderBy('date')->orderBy('collector_id')->get()->toArray();
 
-            for ($i=0; $i < count($freeDay_list); $i++)
+            // REMOVE SCHEDULES ACCORDING TO FREEDAYS
+            $collects_remove = [];
+            foreach ($freeDay_list as $freeday) 
             {
-                $end = new DateTime($freeDay_list[$i]['dateEnd']);
+                $end = new DateTime($freeday->dateEnd);
                 $end->modify('+1 day');
-                $end = $site ? $end->format('Y-m-d H:i:s') : $freeDay_list[$i]['dateEnd'];
-                $collect_list = $collect_list->whereNotBetween('date', [$freeDay_list[$i]['dateStart'], $end]);
+                $end = $site ? $end->format('Y-m-d H:i:s') : $freeday->dateEnd;
+
+                foreach ($freeday->collectors as $collector) 
+                {
+                    for ($i=0; $i < count($collect_list); $i++)
+                    {
+                        if((strtotime($collect_list[$i]->date) >= strtotime($freeday->dateStart)) && (strtotime($collect_list[$i]->date) <= strtotime($end)) && $collect_list[$i]->collector_id == $collector->id)
+                            array_push($collects_remove, $i);
+                        else 
+                            continue;
+                    }
+                }
             }
-
-            // Log::channel('mysql')->info('Get Api available: ' . $dateOfCollect . " - Bairro: " . $neighborhood_id);
-
-            return $collect_list->get()->toJson();
+            foreach ($collects_remove as $item)
+                unset($collect_list[$item]);
+           
+            return $collect_list;
         }
         catch(Exception $e)
         {

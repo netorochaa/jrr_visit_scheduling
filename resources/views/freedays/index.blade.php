@@ -34,10 +34,10 @@
           "responsive": true,
         });
         $('input[name="dateRange"]').daterangepicker({
-          "timePicker": true,
-          "timePicker24Hour": true,
+//          "timePicker": true,
+  //        "timePicker24Hour": true,
           locale: {
-            format: 'DD/MM/YYYY HH:mm'
+            format: 'DD/MM/YYYY'
           }
         });
       });
