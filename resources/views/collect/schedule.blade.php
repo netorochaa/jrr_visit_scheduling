@@ -11,8 +11,15 @@
                 Status: <b>{{ $collect->formatted_status }}</b>  @if($collect->status == '3')<a href="{{ route('collect.sendconfirmation', $collect->id) }}" class="btn btn-outline-success"> <i class="fas fa-envelope"></i> {{ $collect->sendconfirmation }}</a>@endif |
                                 Coletador: {{ $collect->collector->name }}
                     @if($collect->status < 4 && $collect->address != null)
-                        <button type="button" onclick="location.href='{{ route('collect.confirmed', $collect->id) }}'" id="buttonConfirmed" class="btn btn-success float-right" disabled>Confirmar</button>@endif
+                        <button type="button" onclick="location.href='{{ route('collect.confirmed', $collect->id) }}'" id="buttonConfirmed" class="btn btn-success float-right" disabled>Confirmar</button>
+                    @endif
                 </h4>
+                @if(Auth::user()->type > 2)
+                    <p class="text-muted">
+                        Reservada: <b>{{ $collect->user->name ?? null }}</b> {{ $collect->formatted_reservedAt ?? null }}<br>
+                        Confirmada: <b>{{ $collect->confirmed->name ?? null}}</b> {{ $collect->formatted_confirmedAt ?? null }}
+                    </p>
+                @endif
             @endif
             <div class="row">
                 @include('templates.components.select', ['label' => 'Tipo',   'col' => '2', 'select' => 'collectType',  'attributes' => ['class' => 'form-control'], 'data' => $collectType_list])
