@@ -33,8 +33,8 @@
                 @include('templates.components.input', ['label' => 'Nº',        'col' => '2', 'input'  => 'numberAddress',  'value' => $collect->numberAddress ?? null, 'attributes' => ['required' => 'true', 'class' => 'form-control', 'maxlength' => 14]])
             </div>
             <div class="row">
-                @include('templates.components.input', ['label' => 'Complemento',         'col' => '6', 'input' => 'complementAddress', 'value' => $collect->complementAddress ?? null, 'attributes' => ['required' => 'true', 'class' => 'form-control', 'placeholder' => 'bloco, apartamento, casa...', 'maxlength' => 45]])
-                @include('templates.components.input', ['label' => 'Ponto de referência', 'col' => '6', 'input' => 'referenceAddress',  'value' => $collect->referenceAddress ?? null,  'attributes' => ['required' => 'true', 'class' => 'form-control', 'maxlength' => 140]])
+                @include('templates.components.input', ['label' => 'Complemento',         'col' => '4', 'input' => 'complementAddress', 'value' => $collect->complementAddress ?? null, 'attributes' => ['required' => 'true', 'class' => 'form-control', 'placeholder' => 'bloco, apartamento, casa...', 'maxlength' => 45]])
+                @include('templates.components.input', ['label' => 'Ponto de referência', 'col' => '8', 'input' => 'referenceAddress',  'value' => $collect->referenceAddress ?? null,  'attributes' => ['required' => 'true', 'class' => 'form-control', 'maxlength' => 254]])
             </div>
             <hr>
             <div class="row">

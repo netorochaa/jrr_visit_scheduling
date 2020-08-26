@@ -22,7 +22,7 @@ class CreateCollectsTable extends Migration
 			$table->string('address', 140)->nullable();
 			$table->string('numberAddress', 14)->nullable();
 			$table->string('complementAddress', 45)->nullable();
-			$table->string('referenceAddress', 140)->nullable();
+			$table->string('referenceAddress', 254)->nullable();
 			$table->string('linkMaps', 254)->nullable();
 			$table->string('AuthCourtesy', 140)->nullable();
             $table->string('unityCreated', 45)->nullable();

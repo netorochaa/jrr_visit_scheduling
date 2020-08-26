@@ -51,8 +51,8 @@
                 @include('templates.components.input', ['label' => 'Nº',        'col' => '2', 'input'  => 'numberAddress', 'value' => $collect->numberAddress ?? null, 'attributes' => ['class' => 'form-control', 'maxlength' => 14]])
             </div>
             <div class="row">
-                @include('templates.components.input', ['label' => 'Complemento',         'col' => '6', 'input' => 'complementAddress', 'value' => $collect->complementAddress ?? null, 'attributes' => ['class' => 'form-control', 'placeholder' => 'bloco, apartamento, casa...', 'maxlength' => 45]])
-                @include('templates.components.input', ['label' => 'Ponto de referência', 'col' => '6', 'input' => 'referenceAddress',  'value' => $collect->referenceAddress ?? null,  'attributes' => ['class' => 'form-control', 'maxlength' => 140]])
+                @include('templates.components.input', ['label' => 'Complemento',         'col' => '4', 'input' => 'complementAddress', 'value' => $collect->complementAddress ?? null, 'attributes' => ['class' => 'form-control', 'placeholder' => 'bloco, apartamento, casa...', 'maxlength' => 45]])
+                @include('templates.components.input', ['label' => 'Ponto de referência', 'col' => '8', 'input' => 'referenceAddress',  'value' => $collect->referenceAddress ?? null,  'attributes' => ['class' => 'form-control', 'maxlength' => 254]])
             </div>
             <hr>
             @if ($collect ?? null)
@@ -74,7 +74,7 @@
                 <hr>
             @endif
             <div class="row">
-                @include('templates.components.textarea', ['label' => 'Observações da coleta', 'col' => '12', 'input' => 'observationCollect', 'value' => $collect->observationCollect ?? null, 'attributes' => ['class' => 'form-control', 'rows' => 2, 'maxlength' => 20000]])
+                @include('templates.components.textarea', ['label' => 'Observações da coleta', 'col' => '12', 'input' => 'observationCollect', 'value' => $collect->observationCollect ?? null, 'attributes' => ['class' => 'form-control', 'rows' => 5, 'maxlength' => 30000]])
             </div>
             <hr>
             <div class="row">
