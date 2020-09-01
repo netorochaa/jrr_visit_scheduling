@@ -53,7 +53,7 @@ class PublicCollectController extends Controller
             $dateOfCollect   = trim(Util::setDateLocalBRToDb($request->get('datecollect'), false));
             $dateNow         = date("Y-m-d h:i");
             $collector_list  = $this->collectorRepository->where($where)->get();
-            $freeDay_list    = $this->freeDayRepository->where('dateStart', '>', $dateNow)->get();
+            $freeDay_list    = $this->freeDayRepository->where('dateEnd', '>', $dateNow)->get();
 
             // SEPARATES COLLECTORS ACCORDING TO THE NEIGHBORHOOD
             $array_collectors = [];
@@ -73,26 +73,27 @@ class PublicCollectController extends Controller
 
             // REMOVE SCHEDULES ACCORDING TO FREEDAYS
             $collects_remove = [];
-            foreach ($freeDay_list as $freeday) 
+            foreach ($freeDay_list as $freeday)
             {
                 $end = new DateTime($freeday->dateEnd);
                 $end->modify('+1 day');
                 $end = $site ? $end->format('Y-m-d H:i:s') : $freeday->dateEnd;
 
-                foreach ($freeday->collectors as $collector) 
+                foreach ($freeday->collectors as $collector)
                 {
                     for ($i=0; $i < count($collect_list); $i++)
                     {
                         if((strtotime($collect_list[$i]->date) >= strtotime($freeday->dateStart)) && (strtotime($collect_list[$i]->date) <= strtotime($end)) && $collect_list[$i]->collector_id == $collector->id)
                             array_push($collects_remove, $i);
-                        else 
+                        else
                             continue;
                     }
                 }
             }
+
             foreach ($collects_remove as $item)
                 unset($collect_list[$item]);
-           
+
             return $collect_list;
         }
         catch(Exception $e)
