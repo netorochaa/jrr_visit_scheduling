@@ -61,6 +61,12 @@
                             </a>
                         </li>
                         <li class="nav-item">
+                            <a href="{{ route('collect.list.allcollects') }}" class="nav-link @if($namepage == 'Todas coletas') active @endif">
+                                <b><i class="fas fa-search nav-icon"></i></b>
+                                <p>Procurar coletas</p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
                             <a href="{{ route('collect.list.reserved') }}" class="nav-link @if($namepage == 'Coletas reservadas') active @endif">
                                 <i class="far fa-circle nav-icon text-warning"></i>
                                 <p>Reservadas</p>
@@ -78,18 +84,12 @@
                                 <p>Em andamento</p>
                             </a>
                         </li>
-                        <li class="nav-item">
-                            <a href="{{ route('collect.list.done') }}" class="nav-link @if($namepage == 'Coletas concluídas') active @endif">
-                                <b><i class="fas fa-circle nav-icon"></i></b>
-                                <p>Concluídas</p>
-                            </a>
-                        </li>
-                        <li class="nav-item">
+                        {{-- <li class="nav-item">
                             <a href="{{ route('collect.list.cancelled') }}" class="nav-link @if($namepage == 'Coletas canceladas') active @endif">
                                 <i class="far fa-circle nav-icon text-danger"></i>
                                 <p>Canceladas</p>
                             </a>
-                        </li>
+                        </li> --}}
                     </ul>
                 </li>
                 @if(Auth::user()->type > 2)

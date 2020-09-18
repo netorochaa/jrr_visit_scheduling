@@ -183,22 +183,29 @@ class CollectsController extends Controller
     }
 
     // LIST PAGES - DEIXAR APENAS UM MÉTODO
-        public function listAll()
+        public function listAll(Request $request)
         {
-            if(!Auth::check() || Auth::user()->type < 99)
+            if(!Auth::check())
             {
                 session()->flash('return');
                 return view('auth.login');
             }
             else
             {
-                $collect_list = $this->repository->where([['status', '>', 2], ['status', '<', 7]])->orderBy('date', 'desc')->paginate(400);
+                if(count($request->all()) > 0 && $request['value'])
+                {
+                    if($request->get('typeSearch') == 'collects.date') $request['value'] = Util::setDateLocalBRToDb($request->get('value'), false);
+                    $collect_list = $this->repository->collect_filter($request->get('typeSearch'), '%' . $request->get('value') . '%')->get();
+                }
+                else $collect_list = [];
 
                 return view('collect.template_table', [
                     'namepage'   => 'Todas coletas',
                     'threeview'  => 'Coletas',
                     'titlespage' => ['Todas coletas'],
                     'titlecard'  => 'Lista de todas coletas',
+                    'filter'     => true,
+                    'search_list' => $this->repository->search_type_collect(),
                     //Info of entitie
                     'table'               => $this->repository->getTable(),
                     'thead_for_datatable' => ['Data/Hora', 'Código', 'Paciente', 'Pagamento Taxa', 'Bairro', 'Endereço', 'Coletador', 'Status'],
@@ -278,52 +285,52 @@ class CollectsController extends Controller
                 ]);
             }
         }
-        public function listDone()
-        {
-            if(!Auth::check())
-            {
-                session()->flash('return');
-                return view('auth.login');
-            }
-            else
-            {
-                $collect_list = $this->repository->where('status', 6)->orderBy('closed_at', 'desc')->paginate(300);
+        // public function listDone()
+        // {
+        //     if(!Auth::check())
+        //     {
+        //         session()->flash('return');
+        //         return view('auth.login');
+        //     }
+        //     else
+        //     {
+        //         $collect_list = $this->repository->where('status', 6)->orderBy('closed_at', 'desc')->paginate(300);
 
-                return view('collect.template_table', [
-                    'namepage'   => 'Coletas concluídas',
-                    'threeview'  => 'Coletas',
-                    'titlespage' => ['Coletas concluídas'],
-                    'titlecard'  => 'Lista das últimas 300 coletas concluídas',
-                    //Info of entitie
-                    'table'               => $this->repository->getTable(),
-                    'thead_for_datatable' => ['Data/Hora', 'Código', 'Paciente', 'Pagamento Taxa', 'Bairro', 'Endereço', 'Coletador', 'Status'],
-                    'collect_list'        => $collect_list
-                ]);
-            }
-        }
-        public function listCancelled()
-        {
-            if(!Auth::check())
-            {
-                session()->flash('return');
-                return view('auth.login');
-            }
-            else
-            {
-                $collect_list = $this->repository->where('status', '>', 6)->orderBy('closed_at', 'desc')->paginate(500);
+        //         return view('collect.template_table', [
+        //             'namepage'   => 'Coletas concluídas',
+        //             'threeview'  => 'Coletas',
+        //             'titlespage' => ['Coletas concluídas'],
+        //             'titlecard'  => 'Lista das últimas 300 coletas concluídas',
+        //             //Info of entitie
+        //             'table'               => $this->repository->getTable(),
+        //             'thead_for_datatable' => ['Data/Hora', 'Código', 'Paciente', 'Pagamento Taxa', 'Bairro', 'Endereço', 'Coletador', 'Status'],
+        //             'collect_list'        => $collect_list
+        //         ]);
+        //     }
+        // }
+        // public function listCancelled()
+        // {
+        //     if(!Auth::check())
+        //     {
+        //         session()->flash('return');
+        //         return view('auth.login');
+        //     }
+        //     else
+        //     {
+        //         $collect_list = $this->repository->where('status', '>', 6)->orderBy('closed_at', 'desc')->paginate(500);
 
-                return view('collect.template_table', [
-                    'namepage'   => 'Coletas canceladas',
-                    'threeview'  => 'Coletas',
-                    'titlespage' => ['Coletas canceladas'],
-                    'titlecard'  => 'Lista das últimas 500 coletas canceladas',
-                    //Info of entitie
-                    'table'               => $this->repository->getTable(),
-                    'thead_for_datatable' => ['Data/Hora', 'Código','Paciente', 'Pagamento Taxa', 'Bairro', 'Endereço', 'Coletador', 'Status'],
-                    'collect_list'        => $collect_list
-                ]);
-            }
-        }
+        //         return view('collect.template_table', [
+        //             'namepage'   => 'Coletas canceladas',
+        //             'threeview'  => 'Coletas',
+        //             'titlespage' => ['Coletas canceladas'],
+        //             'titlecard'  => 'Lista das últimas 500 coletas canceladas',
+        //             //Info of entitie
+        //             'table'               => $this->repository->getTable(),
+        //             'thead_for_datatable' => ['Data/Hora', 'Código','Paciente', 'Pagamento Taxa', 'Bairro', 'Endereço', 'Coletador', 'Status'],
+        //             'collect_list'        => $collect_list
+        //         ]);
+        //     }
+        // }
     // END LIST PAGES
 
     public function schedule($id)

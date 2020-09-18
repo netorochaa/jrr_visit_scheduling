@@ -85,9 +85,9 @@ class PersonRepositoryEloquent extends BaseRepository implements PersonRepositor
             'birth' => 'DATA DE NASCIMENTO',
             'fone'  => 'TELEFONE',
             'email' => 'E-MAIL',
-          ];
+        ];
 
-          return $list;
+        return $list;
     }
 
     public function person_collect($collect, $person)

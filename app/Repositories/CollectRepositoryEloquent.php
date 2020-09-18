@@ -48,6 +48,21 @@ class CollectRepositoryEloquent extends BaseRepository implements CollectReposit
         $this->pushCriteria(app(RequestCriteria::class));
     }
 
+    public function search_type_collect()
+    {
+        $list = [
+            'people.name'       => 'NOME',
+            'people.cpf'        => 'CPF',
+            'people.rg'         => 'RG',
+            'people.email'      => 'E-MAIL',
+            'collects.date'     => 'DATA',
+            'collects.id'       => 'CÓDIGO',
+            'collects.address'  => 'RUA'
+        ];
+
+        return $list;
+    }
+
     public function statusCollects_list()
     {
         $list = [
@@ -88,6 +103,16 @@ class CollectRepositoryEloquent extends BaseRepository implements CollectReposit
           return $list;
     }
 
+    public function collect_filter($column, $value)
+    {
+        // dd($value);
+        return Collect::from('people_has_collect')
+                    ->join('people', 'people_has_collect.people_id', '=', 'people.id')
+                    ->join('collects', 'people_has_collect.collect_id', '=', 'collects.id')
+                    ->select(DB::raw('collects.*'))
+                    ->where('collects.status', '>', '1')
+                    ->where($column, 'like', $value);
+    }
 
     public function collectReset($collect)
     {

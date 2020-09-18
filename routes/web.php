@@ -35,11 +35,11 @@ Route::resource('cancellationtype', 'CancellationTypesController');
 // Collect
 Route::resource('collect', 'CollectsController');
 Route::get('/reserved', ['as' => 'collect.list.reserved', 'uses' => 'CollectsController@listReserved']);
-Route::get('/cancelled', ['as' => 'collect.list.cancelled', 'uses' => 'CollectsController@listCancelled']);
+// Route::get('/cancelled', ['as' => 'collect.list.cancelled', 'uses' => 'CollectsController@listCancelled']);
 Route::get('/inprogress', ['as' => 'collect.list.inprogress', 'uses' => 'CollectsController@listProgress']);
 Route::get('/confirmedlist', ['as' => 'collect.list.confirmedlist', 'uses' => 'CollectsController@listConfirmed']);
-Route::get('/done', ['as' => 'collect.list.done', 'uses' => 'CollectsController@listDone']);
-Route::get('/allcollects', ['uses' => 'CollectsController@listAll']);
+// Route::get('/done', ['as' => 'collect.list.done', 'uses' => 'CollectsController@listDone']);
+Route::get('/allcollects', ['as' => 'collect.list.allcollects', 'uses' => 'CollectsController@listAll']);
 Route::get('/extra', ['as' => 'collect.extra', 'uses' => 'CollectsController@extra']);
 Route::get('/transfer/{id}', ['as' => 'collect.transfer', 'uses' => 'CollectsController@transfer']);
 Route::post('/reserve', ['as' => 'collect.reserve', 'uses' => 'CollectsController@reserve']);
