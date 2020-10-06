@@ -195,7 +195,9 @@ class CollectsController extends Controller
                 if(count($request->all()) > 0 && $request['value'])
                 {
                     if($request->get('typeSearch') == 'collects.date') $request['value'] = Util::setDateLocalBRToDb($request->get('value'), false);
-                    $collect_list = $this->repository->collect_filter($request->get('typeSearch'), '%' . $request->get('value') . '%')->get();
+                    $table = explode('.', $request->get('typeSearch'));
+                    $table[0] == 'people' ? $collect_list = $this->repository->collect_filter($request->get('typeSearch'), '%' . $request->get('value') . '%')->get() : //pesquisa por paciente
+                                            $collect_list = $this->repository->where($request->get('typeSearch'), 'like',  '%' . $request->get('value') . '%')->where('collects.status', '>', '1')->get(); //pesquisa por coleta
                 }
                 else $collect_list = [];
 
