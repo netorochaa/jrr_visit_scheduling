@@ -31,7 +31,9 @@ class Util
             $day    = $dateSplit[0];
             $month  = $dateSplit[1];
             $year   = $dateSplit[2];
-            if(isset($date[1])) $hour = $full ? $date[1] : ""; else $hour = $full ? '00:00:00' : "";
+
+            if(isset($date[1])) $hour = $full ? $date[1] : ""; 
+            else                $hour = $full ? '00:00:00' : "";
 
             return $year . "-" . $month . "-" . $day . " " . $hour;
         }

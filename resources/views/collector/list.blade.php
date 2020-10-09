@@ -19,6 +19,7 @@
                 </small>
             </td>
             <td>
+                <small class="text-muted">{!! "Data inicial da última atualização nos horários: <b>" . $collector->formatted_dateStartLastModify . "</b>" ?? "-" !!}</small>
                 <table class="table table-striped table-sm">
                     @if($collector->mondayToFriday)
                         <tr>

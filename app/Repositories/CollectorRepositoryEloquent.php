@@ -45,33 +45,10 @@ class CollectorRepositoryEloquent extends BaseRepository implements CollectorRep
 
         foreach($periodo as $data)
         {
-            $day    = $data->format("l");
-            $date   = $data->format("Y-m-d");
+            $day  = $data->format("l");
+            $date = $data->format("Y-m-d");
 
-            if( $day == "Monday"    ||
-                $day == "Tuesday"   ||
-                $day == "Wednesday" ||
-                $day == "Thursday"  ||
-                $day == "Friday")
-            {
-                if($arrayMondayToFriday)
-                {
-
-                    for($i = 0; $i < count($arrayMondayToFriday); $i++)
-                    {
-                        if(DB::table('collects')
-                                ->where('collector_id', $collector_id)
-                                ->whereDate('date', $date)
-                                ->whereTime('date', $arrayMondayToFriday[$i] . ':00')->count() == 0)
-                        {
-                            DB::table('collects')->insert(
-                                ['date' => $date . " " . $arrayMondayToFriday[$i], 'hour' => $arrayMondayToFriday[$i], 'collector_id' => $collector_id, 'created_at' => Util::dateNowForDB()]
-                            );
-                        }
-                    }
-                }
-            }
-            else if ($day == "Saturday")
+            if ($day == "Saturday")
             {
                 if($arraySaturday)
                 {
@@ -102,6 +79,25 @@ class CollectorRepositoryEloquent extends BaseRepository implements CollectorRep
                         {
                             DB::table('collects')->insert(
                                 ['date' => $date . " " . $arraySunday[$i], 'hour' => $arraySunday[$i], 'collector_id' => $collector_id, 'created_at' => Util::dateNowForDB()]
+                            );
+                        }
+                    }
+                }
+            }
+            else
+            {
+                if($arrayMondayToFriday)
+                {
+
+                    for($i = 0; $i < count($arrayMondayToFriday); $i++)
+                    {
+                        if(DB::table('collects')
+                                ->where('collector_id', $collector_id)
+                                ->whereDate('date', $date)
+                                ->whereTime('date', $arrayMondayToFriday[$i] . ':00')->count() == 0)
+                        {
+                            DB::table('collects')->insert(
+                                ['date' => $date . " " . $arrayMondayToFriday[$i], 'hour' => $arrayMondayToFriday[$i], 'collector_id' => $collector_id, 'created_at' => Util::dateNowForDB()]
                             );
                         }
                     }

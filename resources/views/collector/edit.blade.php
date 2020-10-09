@@ -19,6 +19,29 @@
   <script src=" {{ asset('moment/moment.min.js') }}"></script>
   <script src=" {{ asset('daterangepicker/daterangepicker.js') }} "></script>
   <script>
+    function changeDateLast(check)
+    {
+      var input_date_last = document.getElementsByName("date_start_last_modify");
+      var select_mondayToFriday = document.getElementById("select_mondayToFriday");
+      var select_saturday = document.getElementById("select_saturday");
+      var select_sunday = document.getElementById("select_sunday");
+      
+      if(check.checked)
+      {
+        input_date_last[0].disabled = true;
+        select_mondayToFriday.disabled = true;
+        select_saturday.disabled = true;
+        select_sunday.disabled = true;
+      }
+      else
+      {
+        input_date_last[0].disabled = false;
+        select_mondayToFriday.disabled = false;
+        select_saturday.disabled = false;
+        select_sunday.disabled = false;
+      }
+    }
+
     $(function () {
       $('.select2bs4').select2({
         theme: 'bootstrap4'

@@ -10,6 +10,7 @@ use App\Repositories\CollectorRepository;
 use Illuminate\Support\Facades\Auth;
 use Log;
 use Exception;
+use App\Entities\Util;
 
 date_default_timezone_set('America/Recife');
 
@@ -102,7 +103,13 @@ class AuthController extends Controller
             if($collector->sunday)
                 $arraySunday = explode(',', $collector->sunday);
 
-            $this->collectorRepository->setAvailableCollects($arrayMondayToFriday, $arraySaturday, $arraySunday, date('d/m/Y'), $collector->id);
+            // Verify date start for set
+            if($collector->date_start_last_modify)
+                $date = $collector->date_start_last_modify > Util::dateNowForDB() ? Util::setDate($collector->date_start_last_modify, false) : date('d/m/Y');
+            else
+                $date = $collector->date_start > Util::dateNowForDB() ? Util::setDate($collector->date_start, false) : date('d/m/Y');
+
+            $this->collectorRepository->setAvailableCollects($arrayMondayToFriday, $arraySaturday, $arraySunday, $date, $collector->id);
         }
     }
 }

@@ -27,7 +27,7 @@ class CreateCollectsTable extends Migration
 			$table->string('AuthCourtesy', 140)->nullable();
             $table->string('unityCreated', 45)->nullable();
             $table->string('observationCollect', 254)->nullable();
-            $table->string('attachment', 254)->nullable();
+            $table->text('attachment')->nullable();
 
 			// FK
 			$table->unsignedInteger('cancellationType_id')->nullable();

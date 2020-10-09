@@ -18,15 +18,17 @@
         </div>
         <h3>Horários</h3>
         <div class="row">
-            @include('templates.components.input',  ['label' => 'Data de início/alteração', 'col' => '6', 'input' => 'dateStart', 'attributes' => ['id' => 'dateStart','require' => 'true', 'class' => 'form-control', 'autocomplete' => 'off']])
+            @include('templates.components.input',  ['label' => 'Data inicial das atividades', 'col' => '3', 'input' => 'date_start', 'attributes' => ['id' => ($collector ?? null ? '' : 'dateStart'),'require' => 'true', 'class' => 'form-control', 'autocomplete' => 'off', 'disabled' => ($collector ?? null ? true : false)]])
+            @include('templates.components.input',  ['label' => 'Data de início da alteração', 'col' => '3', 'input' => 'date_start_last_modify', 'value' => '','attributes' => ['id' => 'dateStart','require' => 'true', 'class' => 'form-control', 'autocomplete' => 'off', 'disabled' => ($collector ?? null ? false : true)]])
             @if($collector ?? null)
                 <div class="col-sm-6">
-                    <p class="lead text-muted">É importante haver planejamento no momento de editar horários do coletadores. Procure realizar alterações para datas que não hajam coletas confirmadas, pois poderá afetar a rota do coletador. COLETAS AGENDADAS NÃO TERÃO HORÁRIOS MODIFICADOS.</p>
+                    <p class="lead text-muted">É importante haver planejamento no momento de editar horários dos coletadores. Procure realizar alterações para datas que não hajam coletas confirmadas, pois poderá afetar a rota do coletador. COLETAS AGENDADAS NÃO TERÃO HORÁRIOS MODIFICADOS.</p>
                 </div>
+                @include('templates.components.checkbox', ['label' => 'Não atualizar horários', 'col' => '12', 'input' => 'not_update_hours', 'attributes' => ['id' => 'check_date_last', 'class' => 'form-check-input', 'onchange' => 'changeDateLast(this)']])
             @endif
-            @include('templates.components.select', ['label' => 'Segundas/sextas', 'listExists' => $collector->mondayToFriday ?? null, 'col' => '12', 'selected' => $collector->mondayToFriday ?? null, 'select' => 'mondayToFriday[]', 'data' => $schedules, 'attributes' => ['class' => 'form-control select2bs4', 'multiple' => 'multiple', 'style' => 'width: 100%;']])
-            @include('templates.components.select', ['label' => 'Sábados', 'listExists' =>  $collector->saturday ?? null, 'col' => '12', 'select' => 'saturday[]', 'data' => $schedules, 'attributes' => ['class' => 'form-control select2bs4', 'multiple' => 'multiple', 'style' => 'width: 100%;']])
-            @include('templates.components.select', ['label' => 'Domingos', 'listExists' => $collector->sunday ?? null, 'col' => '12', 'select' => 'sunday[]', 'data' => $schedules, 'attributes' => ['class' => 'form-control select2bs4', 'multiple' => 'multiple', 'style' => 'width: 100%;']])
+            @include('templates.components.select', ['label' => 'Segundas/sextas', 'listExists' => $collector->mondayToFriday ?? null, 'col' => '12', 'selected' => $collector->mondayToFriday ?? null, 'select' => 'mondayToFriday[]', 'data' => $schedules, 'attributes' => ['id' => 'select_mondayToFriday', 'class' => 'form-control select2bs4', 'multiple' => 'multiple', 'style' => 'width: 100%;']])
+            @include('templates.components.select', ['label' => 'Sábados', 'listExists' =>  $collector->saturday ?? null, 'col' => '12', 'select' => 'saturday[]', 'data' => $schedules, 'attributes' => ['id' => 'select_saturday','class' => 'form-control select2bs4', 'multiple' => 'multiple', 'style' => 'width: 100%;']])
+            @include('templates.components.select', ['label' => 'Domingos', 'listExists' => $collector->sunday ?? null, 'col' => '12', 'select' => 'sunday[]', 'data' => $schedules, 'attributes' => ['id' => 'select_sunday','class' => 'form-control select2bs4', 'multiple' => 'multiple', 'style' => 'width: 100%;']])
         </div>
     </div>
     <div class="card-footer">

@@ -14,7 +14,7 @@ class Collector extends Model implements Transformable
 
     public $timestamps = true;
     protected $table = 'collectors';
-    protected $fillable = ['name', 'mondayToFriday', 'saturday', 'sunday', 'startingAddress', 'active', 'showInSite', 'user_id'];
+    protected $fillable = ['name', 'date_start', 'date_start_last_modify', 'mondayToFriday', 'saturday', 'sunday', 'startingAddress', 'active', 'showInSite', 'user_id'];
 
     public function neighborhoods()
     {
@@ -77,6 +77,21 @@ class Collector extends Model implements Transformable
             $hour = $date[1];
 
             return $day . "/" . $month . "/" . $year . " " . $hour;
+        }
+    }
+
+    public function getFormattedDateStartLastModifyAttribute(){
+        if($this->attributes['date_start_last_modify'] != null)
+        {
+            $date = explode(' ', $this->attributes['date_start_last_modify']);
+            $dateSplit = explode('-', $date[0]);
+
+            $day = $dateSplit[2];
+            $month = $dateSplit[1];
+            $year = $dateSplit[0];
+            $hour = $date[1];
+
+            return $day . "/" . $month . "/" . $year;
         }
     }
 

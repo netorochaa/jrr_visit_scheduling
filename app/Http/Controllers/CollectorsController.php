@@ -22,7 +22,7 @@ date_default_timezone_set('America/Recife');
 class CollectorsController extends Controller
 {
 
-    protected $repository, $userRepository, $neighborhoodRepository;
+    protected $repository, $userRepository, $neighborhoodRepository, $collectRepository;
     protected $validator;
 
     public function __construct(CollectorRepository $repository, CollectorValidator $validator, UserRepository $userRepository, NeighborhoodRepository $neighborhoodRepository,
@@ -81,7 +81,6 @@ class CollectorsController extends Controller
                     $arrayMondayToFriday = null;
                     $arraySaturday = null;
                     $arraySunday = null;
-                    // dd($request->all());
                     //Send data to array
                     if($request->has('mondayToFriday'))
                     {
@@ -98,16 +97,17 @@ class CollectorsController extends Controller
                         $arraySunday = $request->get('sunday');
                         $request->merge(['sunday' => implode(',', $request->get('sunday'))]);
                     }
-
+                    
                     $request->merge(['showInSite' => $request->has('showInSite') ? 'on' : null]);
-
+                    $request->merge(['date_start' => Util::setDateLocalBRToDb($request->get('date_start'), true)]);
+                    
                     // UPDATE COLLECTOR
                     $this->validator->with($request->all())->passesOrFail(ValidatorInterface::RULE_CREATE);
                     $collector = $this->repository->create($request->all());
 
                     Log::channel('mysql')->info(Auth::user()->name . ' CADASTROU a coletador: ' . $collector);
 
-                    $this->repository->setAvailableCollects($arrayMondayToFriday, $arraySaturday, $arraySunday, $request->get('dateStart'), $collector->id);
+                    $this->repository->setAvailableCollects($arrayMondayToFriday, $arraySaturday, $arraySunday, $request->get('date_start'), $collector->id);
 
                     $response = [
                         'message' => 'Coletador criado',
@@ -225,7 +225,8 @@ class CollectorsController extends Controller
             {
                 $collector = $this->repository->find($id);
                 $user_list = $this->userRepository->where('type', 2)->pluck('name', 'id');
-                $schedules  = $this->repository->schedules();
+                $schedules = $this->repository->schedules();
+                $collector->date_start = Util::setDate($collector->date_start, false);
 
                 return view('collector.edit', [
                     'namepage'      => 'Coletador',
@@ -265,47 +266,56 @@ class CollectorsController extends Controller
                     $arraySaturday = null;
                     $arraySunday = null;
                     //Send data to array
-                    // SEG A SEX
-                    if($request->has('mondayToFriday'))
+                    if(!$request->has('not_update_hours'))
                     {
-                        $arrayMondayToFriday = $request->get('mondayToFriday');
-                        $request->merge(['mondayToFriday' => implode(',', $request->get('mondayToFriday'))]);
+                        // SEG A SEX
+                        if($request->has('mondayToFriday'))
+                        {
+                            $arrayMondayToFriday = $request->get('mondayToFriday');
+                            $request->merge(['mondayToFriday' => implode(',', $request->get('mondayToFriday'))]);
+                        }
+                        else
+                            $arrayMondayToFriday = $collector_old->mondayToFriday ? explode(',', $collector_old->mondayToFriday) : null;
+                        // SÁBADO
+                        if($request->has('saturday'))
+                        {
+                            $arraySaturday = $request->get('saturday');
+                            $request->merge(['saturday' => implode(',', $request->get('saturday'))]);
+                        }
+                        else
+                            $arraySaturday = $collector_old->saturday ? explode(',', $collector_old->saturday) : null;
+                        // DOMINGO
+                        if($request->has('sunday'))
+                        {
+                            $arraySunday = $request->get('sunday');
+                            $request->merge(['sunday' => implode(',', $request->get('sunday'))]);
+                        }
+                        else
+                            $arraySunday = $collector_old->sunday ? explode(',', $collector_old->sunday) : null;
                     }
-                    else
-                        $arrayMondayToFriday = $collector_old->mondayToFriday ? explode(',', $collector_old->mondayToFriday) : null;
-                    // SÁBADO
-                    if($request->has('saturday'))
-                    {
-                        $arraySaturday = $request->get('saturday');
-                        $request->merge(['saturday' => implode(',', $request->get('saturday'))]);
-                    }
-                    else
-                        $arraySaturday = $collector_old->saturday ? explode(',', $collector_old->saturday) : null;
-                    // DOMINGO
-                    if($request->has('sunday'))
-                    {
-                        $arraySunday = $request->get('sunday');
-                        $request->merge(['sunday' => implode(',', $request->get('sunday'))]);
-                    }
-                    else
-                        $arraySunday = $collector_old->sunday ? explode(',', $collector_old->sunday) : null;
 
                     // CHECK IF SITE
                     $request->merge(['showInSite' => $request->has('showInSite') ? 'on' : null]);
+                    if($request->has('date_start_last_modify')) $request->merge(['date_start_last_modify' => Util::setDateLocalBRToDb($request->get('date_start_last_modify'), true)]);
 
                     //UPDATE COLLECTOR
                     $this->validator->with($request->all())->passesOrFail(ValidatorInterface::RULE_UPDATE);
                     $collector = $this->repository->update($request->all(), $id);
 
-                    //REMOVE OLD DATES AVAILABLES
-                    $collects = $this->collectRepository->where('collector_id', $id)->get();
-                    foreach($collects as $collect)
-                        if($collect->status < 2) $this->collectRepository->destroy($collect->id);
-
+                    // UPDATE HOURS
+                    if(!$request->has('not_update_hours'))
+                    {
+                        //REMOVE OLD DATES AVAILABLES
+                        $collects = $this->collectRepository->where('date', '>', $collector->date_start_last_modify)->where('collector_id', $id)->get();
+                        
+                        foreach($collects as $collect)
+                            if($collect->status < 2) $this->collectRepository->destroy($collect->id);
+                            
+                        $this->repository->setAvailableCollects($arrayMondayToFriday, $arraySaturday, $arraySunday, $request->get('date_start_last_modify'), $collector->id, true);
+                    }
+                    
                     Log::channel('mysql')->info(Auth::user()->name . ' ATUALIZOU a coletador: ' . $collector);
-
-                    $this->repository->setAvailableCollects($arrayMondayToFriday, $arraySaturday, $arraySunday, $request->get('dateStart'), $collector->id);
-
+                    
                     $response = [
                         'message' => 'Coletador atualizado',
                         'type'   => 'info',

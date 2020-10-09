@@ -135,8 +135,8 @@ class PublicCollectController extends Controller
                             // remove id of array
                             unset($arrayCollect['id']);
                             // insert new releasing, available for schedule
-                            $this->repository->insert($arrayCollect);
-                            Log::channel('mysql')->info('Get Api release: ' . $idCancelled . ' - ' . $collect->date . ' reset - time diff: ' . $diff_date->i);
+                            $collectNew = $this->repository->create($arrayCollect);
+                            Log::channel('mysql')->info('Get Api release: ' . $idCancelled . ' - ' . $collect->date . ' reset - time diff: ' . $diff_date->i . ' | Novo agendamento ID: ' . $collectNew->id);
                         }
                     }
                 }

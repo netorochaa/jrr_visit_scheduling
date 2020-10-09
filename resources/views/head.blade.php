@@ -21,7 +21,7 @@
     </head>
     <body class="hold-transition sidebar-mini">
         @if (session('return'))
-            <input type="hidden" id="{{ session('return')['type'] }}" value="{{ session('return')['message'] }}" class="btn btn-info swalDefaultInfo"/>
+            <input type="hidden" id="{{ session('return')['type'] ?? null }}" value="{{ session('return')['message'] ?? null }}" class="btn btn-info swalDefaultInfo"/>
         @endif
         @if ($errors ?? null)
             @foreach ($errors->all() as $erro)
