@@ -76,7 +76,7 @@ class CollectorsController extends Controller
         {
             try
             {
-                if(Auth::user()->type > 2)
+                if(Auth::user()->type > 3)
                 {
                     $arrayMondayToFriday = null;
                     $arraySaturday = null;
@@ -140,7 +140,7 @@ class CollectorsController extends Controller
         {
             try
             {
-                if(Auth::user()->type > 2)
+                if(Auth::user()->type > 3)
                 {
                     $collector = $this->repository->find($collect_id);
                     $neighborhoods = $request->has('neighborhood_id') ? $request->all()['neighborhood_id'] : null;
@@ -190,7 +190,7 @@ class CollectorsController extends Controller
         }
         else
         {
-            if(Auth::user()->type > 2)
+            if(Auth::user()->type > 3)
             {
                 $collector = $this->repository->find($id);
                 $neighborhoods = $this->neighborhoodRepository->neighborhoodsCities_list()->pluck('name', 'id');
@@ -221,7 +221,7 @@ class CollectorsController extends Controller
         }
         else
         {
-            if(Auth::user()->type > 2)
+            if(Auth::user()->type > 3)
             {
                 $collector = $this->repository->find($id);
                 $user_list = $this->userRepository->where('type', 2)->pluck('name', 'id');
@@ -259,7 +259,7 @@ class CollectorsController extends Controller
         {
             try
             {
-                if(Auth::user()->type > 2)
+                if(Auth::user()->type > 3)
                 {
                     $collector_old = $this->repository->find($id);
                     $arrayMondayToFriday = null;
@@ -347,7 +347,7 @@ class CollectorsController extends Controller
         {
             try
             {
-                if(Auth::user()->type > 2)
+                if(Auth::user()->type > 3)
                 {
                     $collector = $this->repository->find($collector_id);
                     $neighborhood = $collector->neighborhoods()->where('neighborhood_id', $neighborhood_id)->get();
@@ -386,7 +386,7 @@ class CollectorsController extends Controller
         {
             try
             {
-                if(Auth::user()->type > 2)
+                if(Auth::user()->type > 3)
                 {
                     $deleted = $this->repository->update(['active' => 'off'], $id);
                     $collects = $this->collectRepository->where('collector_id', $id)->get();

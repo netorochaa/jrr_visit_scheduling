@@ -70,7 +70,7 @@ class UsersController extends Controller
         {
             try
             {
-                if(Auth::user()->type > 2)
+                if(Auth::user()->type > 3)
                 {
                     $this->validator->with($request->all())->passesOrFail(ValidatorInterface::RULE_CREATE);
                     User::create($request->all());
@@ -103,7 +103,7 @@ class UsersController extends Controller
         }
         else
         {
-            if(Auth::user()->type > 2 || Auth::user()->id == $id)
+            if(Auth::user()->type > 3 || Auth::user()->id == $id)
             {
                 $user = $this->repository->find($id);
                 $typeUsers_list = $this->repository->typeUser_list();
@@ -168,7 +168,7 @@ class UsersController extends Controller
         {
             try
             {
-                if(Auth::user()->type > 2)
+                if(Auth::user()->type > 3)
                 {
                     $user = $this->repository->find($id);
                     $user->update(['active' => 'off']);

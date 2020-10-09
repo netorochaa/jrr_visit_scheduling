@@ -78,28 +78,49 @@
         return true;
     }
 
-    $(document).ready(function() {
+    $(document).ready(function() 
+    {
         $("#schedulingDate").change(function()
         {
             if(verificateDate())
             {
                 var date = $(this).val();
                 var neighborhood = $('#inputNeighborhood').val();
+                var dateSplit = date.split('/');
+                var dateMomment = moment(dateSplit[2] + "-" + dateSplit[1] + "-" + dateSplit[0]);
+                var dayOfWeek = dateMomment.day();
 
                 $("#describe-feedback").html("Carregando...");
 
                 $.getJSON("../available?neighborhood_id=" + neighborhood + "&datecollect=" + date, function(dados) 
                 {
                     var result = null;
-                    if(!isEmpty(dados)) result = Object.keys(dados).map(e=>dados[e]);
-                    else result = dados;
+                    if(!isEmpty(dados)) 
+                      result = Object.keys(dados).map(e=>dados[e]);
+                    else 
+                      result = dados;
                     
                     if(result.length > 0)
                     {
                         var option = '<option>Selecione</option>';
                         $.each(result, function(i, obj)
                         {
-                            option += '<option value="'+obj.id+'">' + obj.hour + " - " + obj.name + '</option>';
+                          @if(Auth::user()->type > 2)
+                            option += '<option value="'+obj.id+'">' + obj.hour + " - " + obj.name  + ' - ' + obj.id + '</option>';
+                          @else
+                            var range = null;
+
+                            if(dayOfWeek > 0 && dayOfWeek < 6)
+                                var array = obj.mondayToFriday.split(',');
+                            else if(dayOfWeek == 6)
+                                var array = obj.saturday.split(',');
+                            else if(dayOfWeek == 0)
+                                var array = obj.sunday.split(',');
+
+                            range = "Entre " + array[0] + " e " + array[array.length - 1];
+                            option += '<option value="'+obj.id+'">' + obj.id + " - " + range + '</option>';
+                          @endif
+
                         })
                         $("#describe-feedback").html(result.length + " horários para agendamento nesta data");
                         $('#infoCollectSel').prop('disabled', false);
@@ -123,7 +144,8 @@
     });
 
     //Verified date to enable select
-    function verificateDate(){
+    function verificateDate()
+    {
       var date = document.getElementById('schedulingDate');
       var select = document.getElementById('infoCollectSel');
 

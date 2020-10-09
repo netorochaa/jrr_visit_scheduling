@@ -19,9 +19,14 @@ class Collect extends Model implements Transformable
 
     public $timestamps = true;
     protected $table = 'collects';
-    protected $fillable = ['id','date','hour','collectType','status','payment','changePayment','cep','address','numberAddress','complementAddress','referenceAddress',
+    protected $fillable = [ 'id','date','hour','collectType','status','payment','changePayment','cep','address','numberAddress','complementAddress','referenceAddress',
                             'linkMaps','courtesy','unityCreated','observationCollect','attachment','extra','sendconfirmation','cancellationType_id','collector_id', 'neighborhood_id',
-                            'user_id','user_id_confirmed','user_id_cancelled','reserved_at', 'confirmed_at', 'closed_at'];
+                            'user_id','user_id_confirmed','user_id_cancelled', 'collect_old', 'hour_new', 'user_id_modified', 'reserved_at', 'confirmed_at', 'closed_at'];
+
+    public function oldcollect()
+    {
+        return $this->belongsTo(Collect::class, 'collect_old');
+    }
 
     public function people()
     {
@@ -56,6 +61,11 @@ class Collect extends Model implements Transformable
     public function cancelled()
     {
         return $this->belongsTo(User::class, 'user_id_cancelled');
+    }
+
+    public function modified()
+    {
+        return $this->belongsTo(User::class, 'user_id_modified');
     }
 
     public function getFormattedDateAttribute(){
@@ -139,6 +149,9 @@ class Collect extends Model implements Transformable
                 break;
             case "8":
                 return "CANCELADA EM ROTA";
+                break;
+            case "9":
+                return "HORÁRIO MODIFICADO";
                 break;
             default:
                 return $this->attributes['status'];

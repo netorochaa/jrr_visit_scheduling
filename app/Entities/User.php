@@ -33,9 +33,12 @@ class User extends Authenticatable
                 return "COLETADOR";
                 break;
             case 3:
-                return "GERÊNCIA";
+                return "AGENDADOR";
                 break;
             case 4:
+                return "GERÊNCIA";
+                break;
+            case 5:
                 return "DIRETORIA";
                 break;
             case 99:

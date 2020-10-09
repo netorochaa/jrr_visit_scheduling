@@ -14,7 +14,7 @@
                         <button type="button" onclick="location.href='{{ route('collect.confirmed', $collect->id) }}'" id="buttonConfirmed" class="btn btn-success float-right" disabled>Confirmar</button>
                     @endif
                 </h4>
-                @if(Auth::user()->type > 2)
+                @if(Auth::user()->type > 3)
                     <p class="text-muted">
                         Reservada: <b>{{ $collect->user->name ?? null }}</b> {{ $collect->formatted_reservedAt ?? null }}<br>
                         Confirmada: <b>{{ $collect->confirmed->name ?? null}}</b> {{ $collect->formatted_confirmedAt ?? null }}

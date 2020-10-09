@@ -74,6 +74,7 @@ class CollectRepositoryEloquent extends BaseRepository implements CollectReposit
             '6' => 'CONCLUÍDA',
             '7' => 'CANCELADA',
             '8' => 'CANCELADA EM ROTA',
+            '9' => 'HORÁRIO MODIFICADO',
           ];
 
           return $list;
@@ -135,6 +136,9 @@ class CollectRepositoryEloquent extends BaseRepository implements CollectReposit
         $collect['user_id'] = null;
         $collect['user_id_cancelled'] = null;
         $collect['user_id_confirmed'] = null;
+        $collect['collect_old'] = null;
+        $collect['hour_new'] = null;
+        $collect['user_id_modified'] = null;
         $collect['reserved_at'] = null;
         $collect['confirmed_at'] = null;
         $collect['closed_at'] = null;

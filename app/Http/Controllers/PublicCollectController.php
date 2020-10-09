@@ -64,7 +64,7 @@ class PublicCollectController extends Controller
             }
             // GET AVAILABLES SCHEDULES
             $collect_list = DB::table('collects')
-                                ->select('collects.id', 'collects.date', 'collects.hour', 'collects.status', 'collectors.name', 'collectors.id as collector_id')
+                                ->select('collects.id', 'collects.date', 'collects.hour', 'collects.status', 'collectors.name', 'collectors.id as collector_id', 'collectors.mondayToFriday', 'collectors.saturday', 'collectors.sunday')
                                 ->join('collectors', 'collects.collector_id', '=', 'collectors.id')
                                 ->whereDate('date', $dateOfCollect)
                                 ->whereIn('collector_id', $array_collectors)
@@ -178,6 +178,7 @@ class PublicCollectController extends Controller
 
     public function schedule(Request $request, $id)
     {
+        dd($request->all());
         try
         {
             $collect = $this->repository->find($id);
@@ -397,7 +398,7 @@ class PublicCollectController extends Controller
                 $response = [
                     'message'   => 'Solicitação de agendamento enviada',
                     'text'      => 'Anote o número da sua solicitação: Nº ' . $collect->id,
-                    'describe'  => count($collect->people) . ' paciente(s) na data: ' . $collect->formatted_date . ' às ' . $collect->hour . ' no seguinte endereço: ' . $collect->address . ', ' . $collect->numberAddress . ', ' . $collect->neighborhood->name . ' ' . $collect->cep,
+                    'describe'  => count($collect->people) . ' paciente(s) na data: ' . $collect->formatted_date . ' no seguinte endereço: ' . $collect->address . ', ' . $collect->numberAddress . ', ' . $collect->neighborhood->name . ' ' . $collect->cep,
                     'type'      => 'info'
                 ];
                 // send email

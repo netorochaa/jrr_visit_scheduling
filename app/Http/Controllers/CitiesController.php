@@ -139,7 +139,7 @@ class CitiesController extends Controller
         {
             try
             {
-                if(Auth::user()->type > 2)
+                if(Auth::user()->type > 3)
                 {
                     $deleted = $this->repository->update(['active' => 'off'], $id);
                     $neighborhoods = $this->neighborhoodRepository->where('city_id', $id)->get();

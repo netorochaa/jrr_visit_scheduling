@@ -11,7 +11,7 @@
                 @include('templates.components.password', ['label' => 'Senha',  'col' => '4', 'input' => 'password', 'attributes' => ['require' => 'true', 'class' => 'form-control']])
             </div>
             @if($user ?? null)
-                @if(Auth::user()->type > 2)
+                @if(Auth::user()->type > 3)
                     <div class="row">
                         @include('templates.components.email',  ['label' => 'E-mail', 'col' => '6', 'input' => 'email', 'attributes' => ['require' => 'true', 'class' => 'form-control']])
                         @include('templates.components.select', ['label' => 'Tipo',   'col' => '6', 'select' => 'type', 'data' => $typeUsers_list, 'attributes' => ['require' => 'true', 'class' => 'form-control']])

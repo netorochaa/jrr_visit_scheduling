@@ -135,7 +135,7 @@ class FreeDaysController extends Controller
         {
             try
             {
-                if(Auth::user()->type > 2)
+                if(Auth::user()->type > 3)
                 {
                     $this->repository->destroy($id);
                     $response = [

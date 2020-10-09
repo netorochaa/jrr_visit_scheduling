@@ -40,7 +40,6 @@ class ActivitiesController extends Controller
     {
         if(Auth::check())
         {
-            //if(Auth::user()->type == 2)
             if(Auth::user()->type > 1)
             {
                 $dateNow    = date("Y-m-d");
@@ -62,7 +61,8 @@ class ActivitiesController extends Controller
                 $collect_list   = $this->collectRepository->whereDate('date', $dateNow == false ? date("Y-m-d") : $dateNow)
                                                             ->where([['collector_id', $collector->id],
                                                                     ['status', '>', 3],
-                                                                    ['status', '!=', 7]])
+                                                                    ['status', '!=', 7],
+                                                                    ['status', '!=', 9]])
                                                             ->orderBy('date')->get();
                 // IF ALL COLLECTS DONE
                 if($activity && Auth::user()->type == 2)
@@ -116,10 +116,10 @@ class ActivitiesController extends Controller
                     'user_id' => $request->get('user_id')
                 ];
                 $this->validator->with($data)->passesOrFail(ValidatorInterface::RULE_CREATE);
-                $activity = $this->repository->create($data);
-                $ok = Collect::whereDate('date', $dateNowShort)->where([['collector_id', $request->get('collector_id')],
-                                                                        ['status', 4]])
-                                                                ->update(['status' => '5']);
+                $this->repository->create($data);
+                Collect::whereDate('date', $dateNowShort)->where([['collector_id', $request->get('collector_id')],
+                                                                 ['status', 4]])
+                                                         ->update(['status' => '5']);
                 $response = [
                     'message' => 'Rota iniciada!',
                     'type'   => 'info',

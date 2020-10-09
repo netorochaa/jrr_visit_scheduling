@@ -39,8 +39,9 @@ class UserRepositoryEloquent extends BaseRepository implements UserRepository
       $list = [
         '1' => 'RECEPÇÃO',
         '2' => 'COLETADOR',
-        '3' => 'GERÊNCIA',
-        '4' => 'DIRETORIA',
+        '3' => 'AGENDADOR',
+        '4' => 'GERÊNCIA',
+        '5' => 'DIRETORIA',
         '99' => 'ADMIN',
       ];
 

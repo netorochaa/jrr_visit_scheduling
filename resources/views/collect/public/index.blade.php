@@ -81,29 +81,44 @@
         return true;
     }
 
-    $(document).ready(function() {
+    $(document).ready(function()
+    {
         $("#schedulingDate").change(function()
         {
             if(verificateDate())
             {
                 var date = $(this).val();
                 var neighborhood = $('#inputNeighborhood').val();
+                var dateSplit = date.split('/');
+                var dateMomment = moment(dateSplit[2] + "-" + dateSplit[1] + "-" + dateSplit[0]);
+                var dayOfWeek = dateMomment.day();
 
                 $("#describe-feedback").html("Carregando...");
 
-                $.getJSON("../available?site=true&neighborhood_id=" + neighborhood + "&datecollect=" + date, function(dados) 
+                $.getJSON("../available?site=true&neighborhood_id=" + neighborhood + "&datecollect=" + date, function(dados)
                 {
                     var result = null;
                     if(!isEmpty(dados))
                         result = Object.keys(dados).map(e=>dados[e]);
-                    else result = dados;
-                    
+                    else 
+                        result = dados;
+
                     if(result.length > 0)
                     {
                         var option = '<option>Selecione</option>';
                         $.each(result, function(i, obj)
                         {
-                            option += '<option value="'+obj.id+'">' + obj.hour + " - " + obj.name + '</option>';
+                            var range = null;
+
+                            if(dayOfWeek > 0 && dayOfWeek < 6)
+                                var array = obj.mondayToFriday.split(',');
+                            else if(dayOfWeek == 6)
+                                var array = obj.saturday.split(',');
+                            else if(dayOfWeek == 0)
+                                var array = obj.sunday.split(',');
+
+                            range = "Entre " + array[0] + " e " + array[array.length - 1];
+                            option += '<option value="'+obj.id+'">' + obj.id + " - " + range + '</option>';
                         })
                         $("#describe-feedback").html(result.length + " horários para agendamento nesta data");
                         $('#infoCollectSel').prop('disabled', false);
@@ -140,13 +155,13 @@
       var dateNow = moment().format("YYYY-MM-DD");
 
       if(dateMomment.isAfter(dateNow)){
-       select.disabled = false;
-       return true;
+        select.disabled = false;
+        return true;
       }
       else
       {
-       select.disabled = true;
-       return false;
+        select.disabled = true;
+        return false;
       }
     }
   </script>

@@ -48,6 +48,7 @@ Route::get('/confirmed/{id}', ['as' => 'collect.confirmed', 'uses' => 'CollectsC
 Route::get('/close/{id}', ['as' => 'collect.close', 'uses' => 'CollectsController@close']);
 Route::get('/sendconfirmation/{id}', ['as' => 'collect.sendconfirmation', 'uses' => 'CollectsController@sendconfirmation']);
 Route::get('/download/{id}/{archive}', ['as' => 'collect.archive.download', 'uses' => 'CollectsController@download']);
+Route::get('/modifyhour/{id}', ['as' => 'collect.modifyhour', 'uses' => 'CollectsController@modifyhour']);
 
 // Collect public
 Route::resource('public', 'PublicCollectController');
@@ -55,7 +56,7 @@ Route::post('/public/reserve', ['as' => 'collect.public.reserve', 'uses' => 'Pub
 Route::get('/public/schedule/{id}/edit', ['as' => 'collect.public.schedule', 'uses' => 'PublicCollectController@schedule']);
 Route::get('/public/schedule/{id}/cancellation', ['as' => 'collect.public.cancellation', 'uses' => 'PublicCollectController@cancellation']);
 Route::get('/available', 'PublicCollectController@available');
-Route::get('/release','PublicCollectController@release');
+Route::get('/release', 'PublicCollectController@release');
 
 
 // Person

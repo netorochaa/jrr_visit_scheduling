@@ -6,6 +6,8 @@
   <link rel="stylesheet" href="{{ asset('css/select2-bootstrap4-theme/select2-bootstrap4.min.css') }}">
   {{-- DateRange --}}
   <link rel="stylesheet" href="{{ asset('daterangepicker/daterangepicker.css') }} ">
+  {{--  tempus  --}}
+  <link rel="stylesheet" href="{{ asset('tempusdominus-bootstrap-4/css/tempusdominus-bootstrap-4.min.css') }}">
 @endsection
 
 @section('content')
@@ -22,6 +24,11 @@
         'titlemodal' => 'Transferir coleta' ,
         'contentmodal' => 'collect.register'
     ])
+    @include('templates.content.uniquemodal',  [
+      'titlemodal' => 'Mudar horário da coleta' ,
+      'contentmodal' => 'collect.modifyhour',
+      'idmodal' => 'modifyhour_' . $idmodal
+    ])
   @endif
 @endsection
 
@@ -29,10 +36,20 @@
   <script src=" {{ asset('select2/js/select2.full.min.js') }} "></script>
   <script src=" {{ asset('moment/moment.min.js') }}"></script>
   <script src=" {{ asset('daterangepicker/daterangepicker.js') }} "></script>
+  <script src=" {{ asset('tempusdominus-bootstrap-4/js/tempusdominus-bootstrap-4.min.js') }}"></script>
   <script>
     // Iniciliza daterangepicker e select
     $(function ()
     {
+      //Timepicker
+      $('#timepicker').datetimepicker({
+        timePicker: true,
+        timePicker24Hour: true,
+        timePickerIncrement: 1,
+        format: 'HH:mm'
+
+      });
+
       //Initialize Select2 Elements
       $('.select2bs4').select2({
         theme: 'bootstrap4'
@@ -352,57 +369,76 @@
           }
       });
 
-    function isEmpty(obj) 
-    {
-        for(var prop in obj) {
-            if(obj.hasOwnProperty(prop))
-                return false;
-        }    
-        return true;
-    }
+      function isEmpty(obj) 
+      {
+          for(var prop in obj) {
+              if(obj.hasOwnProperty(prop))
+                  return false;
+          }    
+          return true;
+      }
 
       //Quando escolhe a data, procura os horários
       $("#schedulingDate").change(function()
       {
-        if(verificateDate())
-        {
-            var date = $(this).val();
-            var neighborhood = $('#inputNeighborhood').val();
+          if(verificateDate())
+          {
+              var date = $(this).val();
+              var neighborhood = $('#inputNeighborhood').val();
+              var dateSplit = date.split('/');
+              var dateMomment = moment(dateSplit[2] + "-" + dateSplit[1] + "-" + dateSplit[0]);
+              var dayOfWeek = dateMomment.day();
 
-            $("#describe-feedback").html("Carregando...");
+              $("#describe-feedback").html("Carregando...");
 
-            $.getJSON("../available?neighborhood_id=" + neighborhood + "&datecollect=" + date, function(dados) 
-            {
-                var result = null;
-                if(!isEmpty(dados))
+              $.getJSON("../available?neighborhood_id=" + neighborhood + "&datecollect=" + date, function(dados) 
+              {
+                  var result = null;
+                  if(!isEmpty(dados)) 
                     result = Object.keys(dados).map(e=>dados[e]);
-                else result = dados;
-                
-                if(result.length > 0)
-                {
-                    var option = '<option>Selecione</option>';
-                    $.each(result, function(i, obj)
-                    {
-                        option += '<option value="'+obj.id+'">' + obj.hour + " - " + obj.name + '</option>';
-                    })
-                    $("#describe-feedback").html(result.length + " horários para agendamento nesta data");
-                    $('#infoCollectSel').prop('disabled', false);
-                    $('#submitSelectNeighborhood').attr('disabled', false);
-                }
-                else
-                {
-                    $("#describe-feedback").html("Não há horários disponíveis para esta data!");
-                    $('#infoCollectSel').prop('disabled', true);
-                    $('#submitSelectNeighborhood').attr('disabled', true);
-                }
-                $('#infoCollectSel').html(option).show();
-            });
-        }
-        else
-        {
-            $("#describe-feedback").html("Você não pode marcar coletas para esta data!");
-            $('#submitSelectNeighborhood').attr('disabled', true);
-        }
+                  else 
+                    result = dados;
+                  
+                  if(result.length > 0)
+                  {
+                      var option = '<option>Selecione</option>';
+                      $.each(result, function(i, obj)
+                      {
+                        @if(Auth::user()->type > 2)
+                          option += '<option value="'+obj.id+'">' + obj.hour + " - " + obj.name  + ' - ' + obj.id + '</option>';
+                        @else
+                          var range = null;
+
+                          if(dayOfWeek > 0 && dayOfWeek < 6)
+                              var array = obj.mondayToFriday.split(',');
+                          else if(dayOfWeek == 6)
+                              var array = obj.saturday.split(',');
+                          else if(dayOfWeek == 0)
+                              var array = obj.sunday.split(',');
+
+                          range = "Entre " + array[0] + " e " + array[array.length - 1];
+                          option += '<option value="'+obj.id+'">' + obj.id + " - " + range + '</option>';
+                        @endif
+
+                      })
+                      $("#describe-feedback").html(result.length + " horários para agendamento nesta data");
+                      $('#infoCollectSel').prop('disabled', false);
+                      $('#submitSelectNeighborhood').attr('disabled', false);
+                  }
+                  else
+                  {
+                      $("#describe-feedback").html("Não há horários disponíveis para esta data!");
+                      $('#infoCollectSel').prop('disabled', true);
+                      $('#submitSelectNeighborhood').attr('disabled', true);
+                  }
+                  $('#infoCollectSel').html(option).show();
+              });
+          }
+          else
+          {
+              $("#describe-feedback").html("Você não pode marcar coletas para esta data!");
+              $('#submitSelectNeighborhood').attr('disabled', true);
+          }
       });
 
       //Procura paciente já cadastrado

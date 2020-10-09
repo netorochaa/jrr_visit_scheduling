@@ -78,20 +78,25 @@
                 @elseif($collectMarked->status > 6)
                     <span style="display:none">{{ $collectMarked->closed_at }}</span>
                     <span class="badge badge-danger rounded">
+                @elseif($collectMarked->status > 8)
+                    <span style="display:none">{{ $collectMarked->closed_at }}</span>
+                    <span class="badge badge-indigo rounded">
                 @endif
-                    {{ $collectMarked->formatted_status }}</span>
+                    {{ $collectMarked->formatted_status }} {{ $collectMarked->hour_new ?? null }}</span>
                 @if($collectMarked->status == 3)
                     <br><small class="text-muted">{{ $collectMarked->formatted_reservedAt }}</small>
                 @elseif($collectMarked->status == 4)
                     <br><small>Via: {{ $collectMarked->confirmed->name ?? null }}</small>
                 @elseif($collectMarked->status == 6)
                     <br><small class="text-muted">{{ $collectMarked->formatted_closedAt }}</small>
-                @elseif($collectMarked->status > 6)
+                @elseif($collectMarked->status < 8)
                     <br>
                     <small>
                         Via: {{ $collectMarked->cancelled->name ?? null }} - {{ $collectMarked->cancellationtype->name ?? null }} <br>
                         <span class="text-muted">{{ $collectMarked->formatted_closedAt }}</span>
                     </small>
+                @elseif($collectMarked->status > 8)
+                    <br><small class="text-muted">Via: {{ $collectMarked->modified->name ?? null }}</small>
                 @endif
             </td>
         </tr>

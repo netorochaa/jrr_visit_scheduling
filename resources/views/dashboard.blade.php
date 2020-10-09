@@ -41,7 +41,7 @@
     </div>
 </div>
 
-@if(Auth::user()->type > 2)
+@if(Auth::user()->type > 3)
     <h4 class="lead">Estatísticas deste mês por <b>operadores</b></h4>
     <div class="row">
         @foreach ($users as $user)

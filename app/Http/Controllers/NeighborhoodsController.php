@@ -83,7 +83,7 @@ class NeighborhoodsController extends Controller
         {
             try
             {
-                if(Auth::user()->type > 2)
+                if(Auth::user()->type > 3)
                 {
                     $this->validator->with($request->all())->passesOrFail(ValidatorInterface::RULE_CREATE);
                     $this->repository->create($request->all());
@@ -116,7 +116,7 @@ class NeighborhoodsController extends Controller
         }
         else
         {
-            if(Auth::user()->type > 2)
+            if(Auth::user()->type > 3)
             {
                 $neighborhood = $this->repository->find($id);
                 $regions_list = $this->repository->regions_list();
@@ -154,7 +154,7 @@ class NeighborhoodsController extends Controller
         {
             try
             {
-                if(Auth::user()->type > 2)
+                if(Auth::user()->type > 3)
                 {
                     $this->validator->with($request->all())->passesOrFail(ValidatorInterface::RULE_UPDATE);
                     $this->repository->update($request->all(), $id);
@@ -190,7 +190,7 @@ class NeighborhoodsController extends Controller
         {
             try
             {
-                if(Auth::user()->type > 2)
+                if(Auth::user()->type > 3)
                 {
                     $this->repository->update(['active' => 'off'], $id);
                     $response = [

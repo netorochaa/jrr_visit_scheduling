@@ -100,9 +100,6 @@ class CollectsController extends Controller
                 $collectType_list       = $this->repository->collectType_list();
                 $payment_list           = $this->repository->payment_list(false);
                 $userAuth_list          = $this->userRepository->where([['id', '>', 1], ['active', 'on']])->whereBetween('type', [3, 98])->pluck('name', 'name');
-                $people_list            = $this->peopleRepository->all();
-                $typeResponsible_list   = $this->peopleRepository->typeResponsible_list();
-                $covenant_list          = $this->peopleRepository->covenant_list();
                 $collector_list         = $this->collectorRepository->where('active', 'on')->pluck('name', 'id');
                 $hour_list              = $this->collectorRepository->schedules();
                 $neighborhood_list      = $this->neighborhoodRepository->where('active', 'on')->pluck('name', 'id');
@@ -123,9 +120,6 @@ class CollectsController extends Controller
                     'collectType_list'      => $collectType_list,
                     'payment_list'          => $payment_list,
                     'userAuth_list'         => $userAuth_list,
-                    'people_list'           => $people_list,
-                    'typeResponsible_list'  => $typeResponsible_list,
-                    'covenant_list'         => $covenant_list,
                     'collector_list'        => $collector_list,
                     'hour_list'             => $hour_list,
                     'neighborhood_list'     => $neighborhood_list,
@@ -287,52 +281,6 @@ class CollectsController extends Controller
                 ]);
             }
         }
-        // public function listDone()
-        // {
-        //     if(!Auth::check())
-        //     {
-        //         session()->flash('return');
-        //         return view('auth.login');
-        //     }
-        //     else
-        //     {
-        //         $collect_list = $this->repository->where('status', 6)->orderBy('closed_at', 'desc')->paginate(300);
-
-        //         return view('collect.template_table', [
-        //             'namepage'   => 'Coletas concluídas',
-        //             'threeview'  => 'Coletas',
-        //             'titlespage' => ['Coletas concluídas'],
-        //             'titlecard'  => 'Lista das últimas 300 coletas concluídas',
-        //             //Info of entitie
-        //             'table'               => $this->repository->getTable(),
-        //             'thead_for_datatable' => ['Data/Hora', 'Código', 'Paciente', 'Pagamento Taxa', 'Bairro', 'Endereço', 'Coletador', 'Status'],
-        //             'collect_list'        => $collect_list
-        //         ]);
-        //     }
-        // }
-        // public function listCancelled()
-        // {
-        //     if(!Auth::check())
-        //     {
-        //         session()->flash('return');
-        //         return view('auth.login');
-        //     }
-        //     else
-        //     {
-        //         $collect_list = $this->repository->where('status', '>', 6)->orderBy('closed_at', 'desc')->paginate(500);
-
-        //         return view('collect.template_table', [
-        //             'namepage'   => 'Coletas canceladas',
-        //             'threeview'  => 'Coletas',
-        //             'titlespage' => ['Coletas canceladas'],
-        //             'titlecard'  => 'Lista das últimas 500 coletas canceladas',
-        //             //Info of entitie
-        //             'table'               => $this->repository->getTable(),
-        //             'thead_for_datatable' => ['Data/Hora', 'Código','Paciente', 'Pagamento Taxa', 'Bairro', 'Endereço', 'Coletador', 'Status'],
-        //             'collect_list'        => $collect_list
-        //         ]);
-        //     }
-        // }
     // END LIST PAGES
 
     public function schedule($id)
@@ -375,6 +323,7 @@ class CollectsController extends Controller
                     'idmodal'       => Auth::user()->type > 2 ? 'tranfer' : null,
                     'goback'        => false,
                     'add'           => false,
+                    'modifyhour'    => Auth::user()->type > 2 ? true : false,
                     'transfer'      => Auth::user()->type > 2 ? true : false,
                     //Lists for select
                     'cancellationType_list' => $cancellationType_list,
@@ -469,6 +418,12 @@ class CollectsController extends Controller
                     //IF NOT EXTRA COLLECT
                     if($collect->extra != '1')
                     {
+                        if($collect->collect_old)
+                        {
+                            $collect_initial = $this->repository->find($collect->collect_old);
+                            $collect->date = $collect_initial->date;
+                            $collect->hour = $collect_initial->hour;
+                        }
                         // Reset values for new releasing collect
                         $collect = $this->repository->collectReset($collect);
                         $arrayCollect = $collect->toArray();
@@ -772,7 +727,54 @@ class CollectsController extends Controller
             Log::channel('mysql')->info('Erro ao enviar e-mail para confirmação: ' . Util::getException($e));
         }
         return redirect()->route('collect.schedule', $id);
-   }
+    }
+
+    public function modifyHour(Request $request, $id)
+    {
+        $model      = $this->repository->find($id);
+        $collect    = $model->toArray();
+        $datetime   = explode(' ', $collect['date']);
+        $date       = $datetime[0];
+        $hour       = $request->get('hour');
+        unset($collect['id']);
+        
+        try
+        {
+            // VERIFICA SE EXISTE HORÁRIO IGUAL NESTA DATA PARA ESTE COLETADOR
+            if(count($this->repository->whereDate('date', $date)->whereTime('hour', $hour)->where('collector_id', $model->collector_id)->whereBetween('status', [1, 6])->get()) == 0)
+            {
+                $collect_old = $collect;
+                $collect_old['status'] = 9; //STATUS HORÁRIO MODIFICADO
+                $collect_old['user_id_modified'] = Auth::user()->id;
+                $collect_old['hour_new'] = $hour;
+                $collect_modified = $this->repository->create($collect_old); //GARANTE QUE HORÁRIO NÃO FICARÁ MAIS DISPONÍVEL
+                $collect_modified->people()->attach($model->people);
+
+                $this->repository->update([
+                    'date' => $date . " " . $hour . ":00", 
+                    'hour' => $hour, 
+                    'collect_old' => $collect_old['collect_old'] ? $collect_old['collect_old'] : $collect_modified->id
+                ], $id);
+
+                Log::channel('mysql')->info(Auth::user()->name . ' MODIFICOU O HORÁRIO da coleta: ' . $id. ' - DE ' . $model->date . ' PARA: ' . $date . " " . $hour . ":00");
+                
+                $msg = 'Horário alterado';
+            }
+            else
+                $msg = 'Não é possível alterar para  ' . $hour . 'h, já existe uma coleta disponível ou marcada para este horário.';
+
+            $response = [
+                'message' => $msg,
+                'type'    => 'info'
+            ];
+        }
+        catch (\Exception $e)
+        {
+            return $e->getMessage();
+        }
+        session()->flash('return', $response);
+        return redirect()->route('collect.schedule', $id);
+    }
 
     /**
      * Methods not used
