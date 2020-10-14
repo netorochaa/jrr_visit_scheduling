@@ -24,7 +24,7 @@ class CreateCollectorsTable extends Migration
 			$table->string('sunday', 140)->nullable();
 			$table->string('startingAddress', 140)->nullable();			
             $table->char('showInSite', 3)->nullable();
-            $table->char('active', 3)->default('on');
+            $table->char('active', 3)->nullable()->default('on');
 
 			//FK
 			$table->unsignedInteger('user_id')->unique();

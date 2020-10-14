@@ -296,6 +296,7 @@ class CollectsController extends Controller
             {
                 $collect = $this->repository->find($id);
 
+                $collector              = $this->collectorRepository->find($collect->collector->id);
                 $cancellationType_list  = $this->cancellationTypeRepository->where('active', 'on')->pluck('name', 'id');
                 $patientType_list       = $this->patientTypeRepository->patientTypeWithResponsible_list();
                 $collectType_list       = $this->repository->collectType_list();
@@ -309,8 +310,15 @@ class CollectsController extends Controller
                 $price                  = $quant  > 2 ? ($quant-1) * $collect->neighborhood->displacementRate : $collect->neighborhood->displacementRate;
                 $priceString            = "R$ " . (string) $price;
                 $attachments            = $collect->attachment != null ? explode('*', $collect->attachment) : null;
-                // dd($attachments);
+                
                 if(Auth::user()->type > 2) $neighborhood_model = $this->neighborhoodRepository->find($collect->neighborhood_id);
+
+                if(Auth::user()->type < 3) 
+                {
+                    $rangeArray = Util::getDayOfWeek($collect->date) == "Saturday" ? explode(",", $collector->saturday) : (Util::getDayOfWeek($collect->date) == "Sunday" ? explode(",", $collector->sunday) : explode(",", $collector->mondayToFriday));
+                    $range = "Entre " . $rangeArray[0] . " e " . end($rangeArray);
+                }
+
 
                 return view('collect.edit', [
                     'namepage'      => 'Agendar coleta',
@@ -336,6 +344,7 @@ class CollectsController extends Controller
                     'covenant_list'         => $covenant_list,
                     'quant'                 => $quant,
                     'price'                 => $priceString,
+                    'range'                 => $range ?? null,
                     'neighborhood_model'    => $neighborhood_model ?? null,
                     'attachments'           => $attachments,
                     //Info of entitie
@@ -414,7 +423,8 @@ class CollectsController extends Controller
                     $collect['status']              = 7;
 
                     // UPDATE DATA WITH TYPE CANCELLATION COLLECT
-                    $this->repository->update($collect->toArray(), $collect->id);
+                    $collect = $this->repository->update($collect->toArray(), $collect->id);
+                    Log::channel('mysql')->info(Auth::user()->name . ' CANCELOU a coleta: ' . $collect->id);
                     //IF NOT EXTRA COLLECT
                     if($collect->extra != '1')
                     {
@@ -423,14 +433,23 @@ class CollectsController extends Controller
                             $collect_initial = $this->repository->find($collect->collect_old);
                             $collect->date = $collect_initial->date;
                             $collect->hour = $collect_initial->hour;
+                            $reset = $collect_initial->status == "1" ? false : true;
                         }
-                        // Reset values for new releasing collect
-                        $collect = $this->repository->collectReset($collect);
-                        $arrayCollect = $collect->toArray();
-                        // remove id of array
-                        unset($arrayCollect['id']);
-                        // insert new releasing, available for schedule
-                        $this->repository->insert($arrayCollect);
+                        else $reset = true;
+
+                        if($reset)
+                        {
+                            // Reset values for new releasing collect
+                            $collect = $this->repository->collectReset($collect);
+                            Log::channel('mysql')->info('Coleta resetada: ' . $collect);
+                            $arrayCollect = $collect->toArray();
+                            // remove id of array
+                            unset($arrayCollect['id']);
+                            // insert new releasing, available for schedule
+                            $new_collect_reset = $this->repository->create($arrayCollect);
+                            Log::channel('mysql')->info('Nova coleta resetada: ' . $new_collect_reset);
+                        }
+                        else Log::channel('mysql')->info('Reset: false');
                     }
 
                     $response = [
@@ -463,7 +482,7 @@ class CollectsController extends Controller
         }
         else
         {
-            $id_collect       = $request->get('infoCollect');
+            $id_collect      = $request->get('infoCollect');
             $id_neighborhood = $request->get('neighborhood_id');
             $id_origin       = Auth::user()->id;
             // Reservada
@@ -483,10 +502,11 @@ class CollectsController extends Controller
             else if($this->repository->where([['collector_id', $collect->collector_id],
                                             ['date', $collect->date],
                                             ['id', '!=', $collect->id]
-                                            ])
-                                    ->whereBetween('status', [2, 6])->count() > 0)
+                                        ])
+                                        ->whereBetween('status', [2, 6])->count() > 0)
             {
                 Log::channel('mysql')->info('Erro duplicação: ' . $collect);
+
                 $response = [
                     'message' => 'Este horário já estava ou acabou de ser reservado! Escolha outro horário disponível na lista abaixo.',
                     'type'    => 'error'
@@ -643,10 +663,11 @@ class CollectsController extends Controller
                     session()->flash('return', $response);
                     return redirect()->route('collect.schedule', $collect_old->id);
                 }
-                else if($this->repository->where([['collector_id', $collect_new->collector_id],
-                                                ['date', $collect_new->date],
-                                                ['id', '!=', $collect_new->id]
-                                                ])
+                else if($this->repository->where([
+                                            ['collector_id', $collect_new->collector_id],
+                                            ['date', $collect_new->date],
+                                            ['id', '!=', $collect_new->id]
+                                        ])
                                         ->whereBetween('status', [2, 6])->count() > 0)
                 {
                     Log::channel('mysql')->info('Erro duplicação: ' . $collect_new);
@@ -662,7 +683,8 @@ class CollectsController extends Controller
                     $collect_new = $this->repository->update($array_collect_old, $collect_new->id);
                     Log::channel('mysql')->info(Auth::user()->name . ' TRANSFERIU a coleta: ' . $collect_old->id . ' - PARA: ' . $collect_new->id);
 
-                    foreach ($collect_old->people as $person) {
+                    foreach ($collect_old->people as $person) 
+                    {
                         $collect_new->people()->attach($person->id);
                         $collect_new->people()->updateExistingPivot($person->id, ['covenant' => $person->pivot->covenant, 'exams' => $person->pivot->exams]);
                         $collect_old->people()->detach($person->id);
@@ -673,8 +695,10 @@ class CollectsController extends Controller
                     {
                         // Reset values for new releasing collect
                         $collect = $this->repository->collectReset($collect_old);
+                        Log::channel('mysql')->info('Coleta resetada: ' . $collect);
                         $arrayCollect = $collect->toArray();
-                        $this->repository->update($arrayCollect, $collect_old->id);
+                        $new_collect_reset = $this->repository->update($arrayCollect, $collect->id);
+                        Log::channel('mysql')->info('Nova coleta resetada: ' . $new_collect_reset);
                     }
                     $response = [
                         'message' => 'Coleta transferida para ' . $collect_new->id,

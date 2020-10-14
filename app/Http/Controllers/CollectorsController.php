@@ -25,8 +25,8 @@ class CollectorsController extends Controller
     protected $repository, $userRepository, $neighborhoodRepository, $collectRepository;
     protected $validator;
 
-    public function __construct(CollectorRepository $repository, CollectorValidator $validator, UserRepository $userRepository, NeighborhoodRepository $neighborhoodRepository,
-                                CollectRepository $collectRepository)
+    public function __construct(CollectorRepository $repository, CollectorValidator $validator, UserRepository $userRepository, 
+                                NeighborhoodRepository $neighborhoodRepository, CollectRepository $collectRepository)
     {
         $this->repository = $repository;
         $this->validator  = $validator;
@@ -44,7 +44,7 @@ class CollectorsController extends Controller
         }
         else
         {
-            $collectors_list  = $this->repository->all();
+            $collectors_list  = $this->repository->whereNotNull('active')->get();
             $user_list        = $this->userRepository->where('type', 2)->pluck('name', 'id');
             $schedules        = $this->repository->schedules();
             return view('collector.index', [

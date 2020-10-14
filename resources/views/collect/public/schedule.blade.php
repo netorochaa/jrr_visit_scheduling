@@ -3,12 +3,12 @@
         <div class="card-body">
             <h4 class="lead">Nº {{ $collect->id }} |
             Status: <b>{{ $collect->formatted_status }}</b> |
-                            Coletador: {{ $collect->collector->name }}
+            Coletador: {{ $collect->collector->name }}
             </h4>
             <div class="row">
-                @include('templates.components.input',  ['label' => 'Data',   'col' => '2', 'input'  => 'date',         'attributes' => ['required' => 'true', 'class' => 'form-control', 'disabled' => 'true'], 'value' => $collect->formatted_date])
-                @include('templates.components.input',  ['label' => 'Hora',   'col' => '2', 'input'  => 'hour',         'attributes' => ['required' => 'true', 'class' => 'form-control', 'disabled' => 'true']])
-                @include('templates.components.input',  ['label' => 'Bairro', 'col' => '4', 'input'  => 'neighborhood', 'attributes' => ['required' => 'true', 'class' => 'form-control', 'disabled' => 'true'], 'value' => $collect->neighborhood->getNeighborhoodZone()])
+                @include('templates.components.input',  ['label' => 'Data',   'col' => '2', 'input'  => 'date',              'attributes' => ['required' => 'true', 'class' => 'form-control', 'disabled' => 'true'], 'value' => $collect->formatted_date])
+                @include('templates.components.input',  ['label' => 'Hora',   'col' => '2', 'input'  => 'hour',              'attributes' => ['required' => 'true', 'class' => 'form-control', 'disabled' => 'true'], 'value' => $range])
+                @include('templates.components.input',  ['label' => 'Bairro', 'col' => '4', 'input'  => 'neighborhood',      'attributes' => ['required' => 'true', 'class' => 'form-control', 'disabled' => 'true'], 'value' => $collect->neighborhood->getNeighborhoodZone()])
                 @include('templates.components.label',  ['label' => 'Taxa para este bairro',   'col' => '4', 'input'  => '', 'attributes' => ['required' => 'true', 'class' => 'form-control', 'disabled' => 'true'], 'text' => "R$ " . $collect->neighborhood->displacementRate])
             </div>
             <p class="text-muted">Data e horário reservados por 10 minutos, preencha os dados abaixo e salve para confirmar sua solicitação.</p>

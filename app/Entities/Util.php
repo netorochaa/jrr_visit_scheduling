@@ -61,4 +61,9 @@ class Util
                 break;
         }
     }
+
+    public static function getDayOfWeek($date)
+    {
+        return date('l', strtotime($date));
+    }
 }

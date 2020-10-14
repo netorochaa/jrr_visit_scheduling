@@ -130,6 +130,7 @@ class PublicCollectController extends Controller
                             ], $collect->id);
                             // Reset values for new releasing collect
                             $collect = $this->repository->collectReset($collect);
+                            Log::channel('mysql')->info('Coleta resetada: ' . $collect);
                             $arrayCollect = $collect->toArray();
                             $idCancelled = $arrayCollect['id'];
                             // remove id of array
@@ -178,10 +179,11 @@ class PublicCollectController extends Controller
 
     public function schedule(Request $request, $id)
     {
-        dd($request->all());
         try
         {
             $collect = $this->repository->find($id);
+
+            // VERIFICA SE EXISTE UMA SOLICITAÇAO PENDENTE
             if($request->session()->has('collect'))
             {
                 $sessionActive = $request->session()->get('collect');
@@ -199,6 +201,7 @@ class PublicCollectController extends Controller
             }
             else return redirect()->route('public.index');
 
+            $collector              = $this->collectorRepository->find($collect->collector->id);
             $cancellationType_list  = $this->cancellationTypeRepository->where('active', 'on')->pluck('name', 'id');
             $patientType_list       = $this->patientTypeRepository->patientTypeWithResponsible_list();
             $collectType_list       = $this->repository->collectType_list();
@@ -206,9 +209,12 @@ class PublicCollectController extends Controller
             $typeResponsible_list   = $this->peopleRepository->typeResponsible_list();
             $covenant_list          = $this->peopleRepository->covenant_list();
             $quant                  = (int)count($collect->people);
-            $price                  = $quant == 0   ? 0 : $collect->neighborhood->displacementRate;
+            $price                  = $quant == 0 ? 0 : $collect->neighborhood->displacementRate;
             if($quant > 2) $price   = ($quant-1) * $collect->neighborhood->displacementRate;
             $priceString            = "R$ " . (string) $price;
+
+            $rangeArray = Util::getDayOfWeek($collect->date) == "Saturday" ? explode(",", $collector->saturday) : (Util::getDayOfWeek($collect->date) == "Sunday" ? explode(",", $collector->sunday) : explode(",", $collector->mondayToFriday));
+            $range = "Entre " . $rangeArray[0] . " e " . end($rangeArray);
 
             return view('collect.public.edit', [
                 'titlespage' => null,
@@ -224,6 +230,7 @@ class PublicCollectController extends Controller
                 'covenant_list'         => $covenant_list,
                 'quant'                 => $quant,
                 'price'                 => $priceString,
+                'range'                 => $range,
                 //Info of entitie
                 'table' => $this->repository->getTable(),
                 'collect' => $collect
@@ -248,7 +255,7 @@ class PublicCollectController extends Controller
         try
         {
             $id_collect      = $request->get('infoCollect');
-            if($id_collect == "Selecione") return redirect()->route('public.index')->withErrors(['Selecione um horário']);
+            if($id_collect  == "Selecione") return redirect()->route('public.index')->withErrors(['Selecione um horário']);
             $id_neighborhood = $request->get('neighborhood_id');
             $id_origin       = 2;
             $id_status       = 2;
@@ -386,7 +393,7 @@ class PublicCollectController extends Controller
                     // remove id of array
                     unset($arrayCollect['id']);
                     // insert new releasing, available for schedule
-                    $this->repository->insert($arrayCollect);
+                    $this->repository->create($arrayCollect);
 
                     $response = [
                         'message' => 'Solicitação de agendamento cancelada',
