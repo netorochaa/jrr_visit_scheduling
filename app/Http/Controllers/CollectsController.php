@@ -461,12 +461,13 @@ class CollectsController extends Controller
                     return redirect()->route('collect.index') ;
                 }
             }
-            catch (ValidatorException $e)
+            catch (Exception $e)
             {
                 $response = [
-                    'message' => $e->getMessageBag(),
+                    'message' => Util::getException($e),
                     'type'    => 'error'
                 ];
+				Log::channel('mysql')->info('Erro em alguma parte do update collect: ' . Util::getException($e));
             }
             session()->flash('return', $response);
             return redirect()->route('collect.schedule', $collect->id);
