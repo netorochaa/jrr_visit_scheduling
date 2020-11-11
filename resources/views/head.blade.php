@@ -28,4 +28,3 @@
                 <input type="hidden" id="error" value="{{ $erro }}" class="btn btn-info swalDefaultInfo"/>
             @endforeach
         @endif
-

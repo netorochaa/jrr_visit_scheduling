@@ -79,7 +79,7 @@ class Collector extends Model implements Transformable
             return $day . "/" . $month . "/" . $year . " " . $hour;
         }
     }
-
+    
     public function getFormattedDateStartLastModifyAttribute(){
         if($this->attributes['date_start_last_modify'] != null)
         {

@@ -12,5 +12,4 @@ class CollectorFreedays extends Model
     public $timestamps = true;
     protected $table = 'collector_has_freedays';
     protected $fillable = ['collector_id', 'freedays_id'];
-
 }

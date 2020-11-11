@@ -10,7 +10,6 @@ use App\Http\Requests\FreeDayCreateRequest;
 use App\Http\Requests\FreeDayUpdateRequest;
 use App\Repositories\FreeDayRepository;
 use App\Repositories\CollectorRepository;
-use App\Repositories\CityRepository;
 use App\Validators\FreeDayValidator;
 use App\Entities\Util;
 use Auth;
@@ -20,15 +19,14 @@ date_default_timezone_set('America/Recife');
 class FreeDaysController extends Controller
 {
 
-    protected $repository, $collectorRepository, $cityRepository;
+    protected $repository, $collectorRepository;
     protected $validator;
 
-    public function __construct(FreeDayRepository $repository, FreeDayValidator $validator, CollectorRepository $collectorRepository, CityRepository $cityRepository)
+    public function __construct(FreeDayRepository $repository, FreeDayValidator $validator, CollectorRepository $collectorRepository)
     {
         $this->repository = $repository;
         $this->validator  = $validator;
         $this->collectorRepository = $collectorRepository;
-        $this->cityRepository = $cityRepository;
     }
 
     public function index()
@@ -45,7 +43,7 @@ class FreeDaysController extends Controller
                 $freedays           = $this->repository->all();
                 $collectors_list    = $this->collectorRepository->pluck('name', 'id');
                 $type_list          = $this->repository->type_list();
-
+                
                 return view('freedays.index', [
                     'namepage'      => 'Dias sem coletas',
                     'threeview'     => 'Cadastros',
@@ -82,17 +80,16 @@ class FreeDaysController extends Controller
                 {
                     if($request->has('dateRange'))
                     {
-                        $fulldate = explode("-", $request->all()['dateRange']);
-                        $fullDateStart = trim($fulldate[0]);
-                        $fullDateEnd = trim($fulldate[1]);
+                        $fulldate       = explode("-", $request->all()['dateRange']);
+                        $fullDateStart  = trim($fulldate[0]);
+                        $fullDateEnd    = trim($fulldate[1]);
                         $request->merge(['dateStart' => Util::setDateLocalBRToDb($fullDateStart, true)]);
                         $request->merge(['dateEnd' =>  Util::setDateLocalBRToDb($fullDateEnd . ' 23:59:59', true)]);
                     }
 
                     $this->validator->with($request->all())->passesOrFail(ValidatorInterface::RULE_CREATE);
-
                     $collectors = $request->has('collector_id') ? $request->all()['collector_id'] : null;
-                    $freeDay = $this->repository->create($request->except(['dateRange']));
+                    $freeDay    = $this->repository->create($request->except(['dateRange']));
 
                     if($freeDay == null)
                         return redirect()->route('freedays.index')->withErrors(['Coletadores não iformadas.']);
@@ -110,7 +107,7 @@ class FreeDaysController extends Controller
                         ];
                     }
                 }
-                else    return redirect()->route('auth.home')->withErrors(['Você não tem permissão para esta ação, entre em contato com seu superior.']);
+                else return redirect()->route('auth.home')->withErrors(['Você não tem permissão para esta ação, entre em contato com seu superior.']);
             }
             catch (\Exception $e)
             {
@@ -146,7 +143,7 @@ class FreeDaysController extends Controller
                 else
                     return redirect()->route('auth.home')->withErrors(['Você não tem permissão para esta ação, entre em contato com seu superior.']);
             }
-            catch (\Exception $e)
+            catch (Exception $e)
             {
                 $response = [
                     'message' => Util::getException($e),

@@ -10,7 +10,7 @@
         <div class="row">
             @include('templates.components.input',  ['label' => 'Nome',         'col' => '4', 'input'  => 'name',   'attributes' => ['required' => 'true', 'class' => 'form-control', 'maxlength' => 55]])
             @include('templates.components.input',  ['label' => 'Nascimento',   'col' => '4', 'input'  => 'birth',  'attributes' => ['onBlur' => 'checkAge(this)','required' => 'true', 'class' => 'form-control', 'data-inputmask' => "'mask': '99/99/9999'", 'data-date', 'im-insert' => 'true']])
-            @include('templates.components.input',  ['label' => 'E-mail',       'col' => '4', 'input'  => 'email',  'attributes' => ['onBlur' => 'checkEmail(this)', 'class'    => 'form-control', 'maxlength' => 254]])
+            @include('templates.components.input',  ['label' => 'E-mail',       'col' => '4', 'input'  => 'email',  'attributes' => ['onBlur' => 'checkEmail(this)', 'class' => 'form-control', 'maxlength' => 254]])
         @if($collect->status != 2)
             @include('templates.components.input',  ['label' => 'RA',       'col' => '4', 'input'  => 'ra',     'attributes' => ['class' => 'form-control', 'data-inputmask' => "'mask': '9999999999'", 'data-ra', 'im-insert' => 'true']])
         @endif

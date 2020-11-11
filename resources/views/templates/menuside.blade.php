@@ -151,6 +151,22 @@
                             </a>
                         </li>
                     </ul>
+                    {{-- <ul class="nav nav-treeview">
+                        <li class="nav-item">
+                            <a href="{{ route('report.others') }}" class="nav-link @if($namepage == 'Outros') active @endif">
+                                <i class="far fa-circle nav-icon"></i>
+                                <p>Caixa</p>
+                            </a>
+                        </li>
+                    </ul>
+                    <ul class="nav nav-treeview">
+                        <li class="nav-item">
+                            <a href="{{ route('report.statistic') }}" class="nav-link @if($namepage == 'Estatísticas') active @endif">
+                                <i class="far fa-circle nav-icon"></i>
+                                <p>Caixa</p>
+                            </a>
+                        </li>
+                    </ul> --}}
                 </li>
             </ul>
         </nav>

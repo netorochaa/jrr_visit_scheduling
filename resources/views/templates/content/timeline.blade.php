@@ -21,13 +21,13 @@
                     <div class="timeline">
                         <div class="time-label">
                             <span class="bg-primary">{{ $titlecard ?? null }}</span>
-                            @if($activity->status == '1') <button type="button"  data-toggle="modal" data-target="#modal-xl" class="btn btn-secondary float-right"> Encerrar rota</button> @endif<br>
+                            @if($activity->status == '1') <button type="button"  data-toggle="modal" data-target="#modal-xl" class="btn btn-danger float-right"> Encerrar com pendências</button> @endif<br>
                             @if($activity->status != '2') <span class="badge badge-warning">{{ $activity->formatted_status }} @endif</span>
                         </div>
                         @include( $contentbody )
                     </div>
                 @else
-                    <h3 style="text-align: center">COLETADOR SEM ROTA OU NÃO INCIADA NA DATA!</h3>
+                    <h3 style="text-align: center">COLETADOR SEM ROTA OU Nﾃグ INCIADA NA DATA!</h3>
                 @endif
             </div>
         </div>

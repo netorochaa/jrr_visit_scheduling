@@ -23,7 +23,7 @@ class Person extends Model implements Transformable
     {
         return $this->belongsTo(PatientType::class, 'patientTypes_id');
     }
-
+    
     public function getCovenantAttribute($covenant){
         switch ($covenant) {
             case "1":

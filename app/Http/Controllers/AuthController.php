@@ -31,7 +31,6 @@ class AuthController extends Controller
         {
             $collects   = $this->collectRepository->whereMonth('date', '=', date('m'))->get();
             $users      = $this->repository->all();
-
             return view('home', [
                 'namepage'      => 'Home',
                 'threeview'     => null,
@@ -55,7 +54,7 @@ class AuthController extends Controller
         {
             // IF COLLECTOR
             if(Auth::user()->type == 2)
-               $this->updateCollects(Auth::user()->id);
+                $this->updateCollects(Auth::user()->id);
 
             return $this->dashboard();
         }
@@ -102,7 +101,7 @@ class AuthController extends Controller
                 $arraySaturday = explode(',', $collector->saturday);
             if($collector->sunday)
                 $arraySunday = explode(',', $collector->sunday);
-
+                
             // Verify date start for set
             if($collector->date_start_last_modify)
                 $date = $collector->date_start_last_modify > Util::dateNowForDB() ? Util::setDate($collector->date_start_last_modify, false) : date('d/m/Y');

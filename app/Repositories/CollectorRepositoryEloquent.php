@@ -15,19 +15,38 @@ use DB;
 
 date_default_timezone_set('America/Recife');
 
+/**
+ * Class CollectorRepositoryEloquent.
+ *
+ * @package namespace App\Repositories;
+ */
 class CollectorRepositoryEloquent extends BaseRepository implements CollectorRepository
 {
+    /**
+     * Specify Model class name
+     *
+     * @return string
+     */
     public function model()
     {
         return Collector::class;
     }
 
+    /**
+    * Specify Validator class name
+    *
+    * @return mixed
+    */
     public function validator()
     {
 
         return CollectorValidator::class;
     }
 
+
+    /**
+     * Boot up the repository, pushing criteria
+     */
     public function boot()
     {
         $this->pushCriteria(app(RequestCriteria::class));
@@ -43,10 +62,11 @@ class CollectorRepositoryEloquent extends BaseRepository implements CollectorRep
         $interval = new DateInterval('P1D');
         $periodo = new DatePeriod($inicio, $interval ,$fim);
 
+        //CRIAR MÉTODO E MOVER PARA ENTIDADE OU REPOSITORIO
         foreach($periodo as $data)
         {
-            $day  = $data->format("l");
-            $date = $data->format("Y-m-d");
+            $day    = $data->format("l");
+            $date   = $data->format("Y-m-d");
 
             if ($day == "Saturday")
             {
@@ -88,9 +108,10 @@ class CollectorRepositoryEloquent extends BaseRepository implements CollectorRep
             {
                 if($arrayMondayToFriday)
                 {
-
+                    
                     for($i = 0; $i < count($arrayMondayToFriday); $i++)
                     {
+                        //dd($arrayMondayToFriday[$i] . ':00');
                         if(DB::table('collects')
                                 ->where('collector_id', $collector_id)
                                 ->whereDate('date', $date)

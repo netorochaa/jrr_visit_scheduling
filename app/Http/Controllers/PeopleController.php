@@ -33,7 +33,7 @@ class PeopleController extends Controller
         $this->patientTypeRepository = $patientTypeRepository;
         $this->collectRepository     = $collectRepository;
     }
-
+    
     // API FIND PEOPLE
     public function find(Request $request)
     {
@@ -58,7 +58,6 @@ class PeopleController extends Controller
     public function store(PersonCreateRequest $request, $collect_id)
     {
         //Ver a possibilidade de atrelar endereço da coleta com endereço do paciente, para assim os endereço entrar automaticamente na coleta
-        // dd($request->all());
         $site = $request->session()->has('collect');
         if(!Auth::check() && !$site)
         {
@@ -101,30 +100,39 @@ class PeopleController extends Controller
         }
         else
         {
-            $person                 = $this->repository->find($person_id);
-            $patientType_list       = $this->patientTypeRepository->patientTypeWithResponsible_list();
-            $covenant_list          = $this->repository->covenant_list();
-            $typeResponsible_list   = $this->repository->typeResponsible_list();
-            $collect                = $this->collectRepository->find($collect_id);
-            $personHasCollect       = $this->repository->person_collect($collect_id, $person_id)->first();
-
-            return view('person.edit', [
-                'namepage'              => 'Coletas',
-                'threeview'             => null,
-                'titlespage'            => ['Cadastro de pessoas'],
-                'titlecard'             => 'Editar paciente',
-                'goback'                => true,
-                'add'                   => false,
-                // list
-                'patientType_list'      => $patientType_list,
-                'covenant_list'         => $covenant_list,
-                'typeResponsible_list'  => $typeResponsible_list,
-                // model
-                'table'                 => $this->repository->getTable(),
-                'personHasCollect'      => $personHasCollect,
-                'collect'               => $collect,
-                'person'                => $person
-            ]);
+            try 
+            {
+                $person                 = $this->repository->find($person_id);
+                $patientType_list       = $this->patientTypeRepository->patientTypeWithResponsible_list();
+                $covenant_list          = $this->repository->covenant_list();
+                $typeResponsible_list   = $this->repository->typeResponsible_list();
+                $collect                = $this->collectRepository->find($collect_id);
+                //$peopleCollects         = $person->with('collects')->get();
+                //$personHasCollect       = $peopleCollects->find($person->id)->collects->find($collect->id)->pivot;
+                $personHasCollect       = $this->repository->person_collect($collect_id, $person_id)->first();
+                
+                return view('person.edit', [
+                    'namepage'              => 'Coletas',
+                    'threeview'             => null,
+                    'titlespage'            => ['Cadastro de pessoas'],
+                    'titlecard'             => 'Editar paciente',
+                    'goback'                => true,
+                    'add'                   => false,
+                    // list
+                    'patientType_list'      => $patientType_list,
+                    'covenant_list'         => $covenant_list,
+                    'typeResponsible_list'  => $typeResponsible_list,
+                    // model
+                    'table'                 => $this->repository->getTable(),
+                    'personHasCollect'      => $personHasCollect,
+                    'collect'               => $collect,
+                    'person'                => $person
+                ]);
+            }
+            catch (Exception $e)
+            {
+                Log::channel('mysql')->info('Erro edit person: ' . Util::getException($e));
+            }
         }
     }
 
@@ -174,9 +182,20 @@ class PeopleController extends Controller
             try
             {
                 $person = $this->repository->find($request->all()['registeredPatient']);
-
                 if(count($collect->people->where('CPF', $person->CPF)) == 0)
                 {
+                    if(count($collect->people) == 0)
+                    {
+                        $last_collect = $person->collects->where('status', '<>', 7)->sortByDesc('date')->first();
+                        if($last_collect)
+                            $collect = $this->collectRepository->update([
+                                'cep'               => $last_collect->cep,
+                                'address'           => $last_collect->address,
+                                'numberAddress'     => $last_collect->numberAddress,
+                                'complementAddress' => $last_collect->complementAddress,
+                                'referenceAddress'  => $last_collect->referenceAddress,
+                            ], $collect->id);
+                    }
                     $person->collects()->attach($collect);
                     $text = 'Paciente adicionado';
                 }
@@ -229,6 +248,7 @@ class PeopleController extends Controller
             return $site ? redirect()->route('collect.public.schedule', $collect_id) : redirect()->route('collect.schedule', $collect_id);
         }
     }
+
 
     //Methods not used
     //public function show($id){}

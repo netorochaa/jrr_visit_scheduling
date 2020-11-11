@@ -34,34 +34,10 @@
           "responsive": true,
         });
         $('input[name="dateRange"]').daterangepicker({
-//          "timePicker": true,
-  //        "timePicker24Hour": true,
           locale: {
             format: 'DD/MM/YYYY'
           }
         });
       });
-
-      function activeSelect()
-      {
-        var tipo = document.getElementById('type');
-        var collector = document.getElementById('selectCollector');
-        var city = document.getElementById('selectCity');
-
-        // console.log()
-
-        if (tipo.value == 1) {
-          city.style.display = 'none';
-          city.disabled = true;
-          collector.style.display = 'block';
-          collector.disabled = false;
-        } else {
-          collector.style.display = 'none';
-          collector.disabled = true;
-          city.style.display = 'block';
-          city.disabled = false;
-        }
-      }
-      
   </script>
 @endsection

@@ -75,7 +75,7 @@ class PersonRepositoryEloquent extends BaseRepository implements PersonRepositor
 
           return $list;
     }
-
+    
     public function search_list()
     {
         $list = [
@@ -85,11 +85,11 @@ class PersonRepositoryEloquent extends BaseRepository implements PersonRepositor
             'birth' => 'DATA DE NASCIMENTO',
             'fone'  => 'TELEFONE',
             'email' => 'E-MAIL',
-        ];
+          ];
 
-        return $list;
+          return $list;
     }
-
+    
     public function person_collect($collect, $person)
     {
         return DB::table('people_has_collect')

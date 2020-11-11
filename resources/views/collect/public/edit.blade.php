@@ -8,10 +8,10 @@
 
 @section('content')
   @include('templates.content.header')
-  <div class="container">
-    @include('templates.content.content1col', ['contentbody' => 'collect.public.schedule'])
-    @include('templates.content.modallarge',  ['titlemodal' => $titlemodal , 'contentmodal' => 'person.register',])
-  </div>
+    <div class="container">
+      @include('templates.content.content1col', ['contentbody' => 'collect.public.schedule'])
+      @include('templates.content.modallarge',  ['titlemodal' => $titlemodal , 'contentmodal' => 'person.register',])
+    </div>
 @endsection
 
 @section('footer-distinct')
@@ -43,17 +43,18 @@
       event.preventDefault();
     }
     form.addEventListener('submit', sendFormCheked);
-
+    
     $(function () {
       //Initialize Select2 Elements
       $('.select2bs4').select2({
         theme: 'bootstrap4'
       });
-
-      $("input[type='file']").change(function(e){
+      
+     $("input[type='file']").change(function(e)
+     {
         var $fileUpload = $("input[type='file']");
         var msg = "Não foi possível enviar o(s) arquivo(s). Selecione apenas dois (2) e que possuam tamanho máximo de dois (2) mb.";
-        console.log($fileUpload.get(0).files[0].size);
+
         if (parseInt($fileUpload.get(0).files.length) > 2)
         {
          alert(msg);
@@ -72,7 +73,7 @@
         }
         e.preventDefault();
       });
-
+      
       $('#table-people').DataTable({
         "paging": false,
         "lengthChange": false,
@@ -183,10 +184,9 @@
     {
         var usuario = input.value.substring(0, input.value.indexOf("@"));
         var dominio = input.value.substring(input.value.indexOf("@")+ 1, input.value.length);
-
         if(input.value == "")
             return;
-        else if((usuario.length >=1) &&
+        else if ((usuario.length >=1) &&
             (dominio.length >=3) &&
             (usuario.search("@")==-1) &&
             (dominio.search("@")==-1) &&
@@ -224,7 +224,7 @@
         }
     }
 
-    $(document).ready(function()
+    $(document).ready(function() 
     {
       activeButton();
       function limpa_formulário_cep()
@@ -253,7 +253,6 @@
                   $("#rua").val("...");
                   //Consulta o webservice viacep.com.br/
                   $.getJSON("https://viacep.com.br/ws/"+ cep +"/json/?callback=?", function(dados) {
-                    console.log(dados.logradouro);
                       if (!("erro" in dados)) {
                           //Atualiza os campos com os valores da consulta.
                           $("#rua").val(dados.logradouro);

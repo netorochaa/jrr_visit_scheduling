@@ -53,5 +53,5 @@ class FreeDayRepositoryEloquent extends BaseRepository implements FreeDayReposit
 
       return $list;
     }
-
+    
 }

@@ -1,6 +1,5 @@
 @extends('templates.master')
 
-
 @section('content')
   @include('templates.content.header')
   @if($filter ?? null)
@@ -22,7 +21,7 @@
         "searching": true,
         "ordering": true,
         "order": [[ 0, 'desc' ]],
-        "info": false,
+        "info": true,
         "autoWidth": false,
         "responsive": true,
         "language": {
@@ -40,7 +39,7 @@
           }
         }
       });
-
+      
       //Procura paciente já cadastrado
       $("#searchCollect").on("input", function()
       {
@@ -57,10 +56,9 @@
             $('#submitFindCollect').prop('disabled', true);
         }
       });
-    });
-
-    $('#selTypeSearchCollect').on("input", function()
-    {
+      
+      $('#selTypeSearchCollect').on("input", function()
+      {
         var inputSearchCollect = document.getElementById('searchCollect');
         if($(this).val() == 'collects.date')
         {
@@ -68,6 +66,9 @@
             $('#searchCollect').inputmask({'mask': '99/99/9999'});
         }else
             $('#searchCollect').prop('placeholder', 'Digite o valor da busca');
+      });
     });
+
+    
   </script>
 @endsection

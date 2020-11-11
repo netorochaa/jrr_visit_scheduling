@@ -467,7 +467,7 @@ class CollectsController extends Controller
                     'message' => Util::getException($e),
                     'type'    => 'error'
                 ];
-				Log::channel('mysql')->info('Erro em alguma parte do update collect: ' . Util::getException($e));
+                Log::channel('mysql')->info('Erro em alguma parte do update collect: ' . Util::getException($e));
             }
             session()->flash('return', $response);
             return redirect()->route('collect.schedule', $collect->id);
