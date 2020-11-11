@@ -36,7 +36,7 @@ class PatientTypesController extends Controller
         }
         else
         {
-            if(Auth::user()->type > 2)
+            if(Auth::user()->type > 3)
             {
                 $patientTypes  = $this->repository->where('active', 'on')->get();
                 return view('patienttype.index', [
@@ -68,7 +68,7 @@ class PatientTypesController extends Controller
         {
             try
             {
-                if(Auth::user()->type > 2)
+                if(Auth::user()->type > 3)
                 {
                     $this->validator->with($request->all())->passesOrFail(ValidatorInterface::RULE_CREATE);
                     $this->repository->create($request->all());

@@ -40,7 +40,7 @@ class FreeDaysController extends Controller
         }
         else
         {
-            if(Auth::user()->type > 2)
+            if(Auth::user()->type > 3)
             {
                 $freedays           = $this->repository->all();
                 $collectors_list    = $this->collectorRepository->pluck('name', 'id');
@@ -78,7 +78,7 @@ class FreeDaysController extends Controller
         {
             try
             {
-                if(Auth::user()->type > 2)
+                if(Auth::user()->type > 3)
                 {
                     if($request->has('dateRange'))
                     {

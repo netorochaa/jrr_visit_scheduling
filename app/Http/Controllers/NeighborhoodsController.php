@@ -37,7 +37,7 @@ class NeighborhoodsController extends Controller
         }
         else
         {
-            if(Auth::user()->type > 2)
+            if(Auth::user()->type > 3)
             {
                 $neighborhoods  = $this->repository->where('active', 'on')->get();
                 $cities_list  = $this->cityRepository->where('active', 'on')->get(); // for card city

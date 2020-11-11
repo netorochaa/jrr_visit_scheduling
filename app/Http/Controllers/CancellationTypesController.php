@@ -34,7 +34,7 @@ class CancellationTypesController extends Controller
         }
         else
         {
-            if(Auth::user()->type > 2)
+            if(Auth::user()->type > 3)
             {
                 $cancellationTypes  = $this->repository->where('active', 'on')->get();
                 return view('cancellationtype.index', [
@@ -65,10 +65,10 @@ class CancellationTypesController extends Controller
         {
             try
             {
-                if(Auth::user()->type > 2)
+                if(Auth::user()->type > 3)
                 {
                     $this->validator->with($request->all())->passesOrFail(ValidatorInterface::RULE_CREATE);
-                    $cancellationType = $this->repository->create($request->all());
+                    $this->repository->create($request->all());
                     $response = [
                         'message' => 'Cancelamento cadastrado',
                         'type'   => 'info',
