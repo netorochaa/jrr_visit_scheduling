@@ -31,10 +31,10 @@
         theme: 'bootstrap4'
       })
 
-      var dateNow = moment().day();
+      var dateNow = moment();
       //Initialize daterangepicker Elements
       $('input[id="schedulingDate"]').daterangepicker({
-        "minDate": dateNow == 6 ? moment().add('3', 'days') : moment().add('2', 'days'),
+        "minDate": dateNow.day() == 6 ? moment().add('3', 'days') : (dateNow.hour() >= 14 ? moment().add('2', 'days') : moment().add('1', 'days')),
         "singleDatePicker": true,
         locale: {
           "format": "DD/MM/YYYY",

@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 
 use Prettus\Validator\Contracts\ValidatorInterface;
 use Prettus\Validator\Exceptions\ValidatorException;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Mail;
 use App\Repositories\CollectRepository;
 use App\Repositories\NeighborhoodRepository;
@@ -22,7 +23,6 @@ use DateTime;
 use Exception;
 use Auth;
 use Log;
-
 
 date_default_timezone_set('America/Recife');
 
@@ -398,7 +398,7 @@ class CollectsController extends Controller
                             if($archives->getSize() < 3000000)
                             {
                                 $i++;
-                                $name_archive = $collect->id . "_" . date('d-M-YHi') . "-" . $i . "." . $archives->extension();
+                                $name_archive = $collect->id . "_" . date('d-M-YHis') . "-" . $i . "." . $archives->extension();
                                 $archives->storeAs('anexos/' . $collect->id, $name_archive);
                                 $attachment = $attachment . "*" .$name_archive;
                             }
@@ -653,7 +653,7 @@ class CollectsController extends Controller
                 //PREPARED COLLECTS TO TRANSFER
                 $array_collect_old  = $collect_old->toArray();
                 unset($array_collect_old['id'], $array_collect_old['date'], $array_collect_old['hour'], $array_collect_old['collector_id'], $array_collect_old['created_at']);
-
+ 
                 //collects used?
                 if($collect_new->status > 1 || isset($collect_new->cancellationType_id) || isset($collect_new->neighborhood) || isset($collect_new->reserved_at))
                 {
@@ -684,11 +684,32 @@ class CollectsController extends Controller
                     $collect_new = $this->repository->update($array_collect_old, $collect_new->id);
                     Log::channel('mysql')->info(Auth::user()->name . ' TRANSFERIU a coleta: ' . $collect_old->id . ' - PARA: ' . $collect_new->id);
 
+                    // ATTACH PATIENTS
                     foreach ($collect_old->people as $person) 
                     {
                         $collect_new->people()->attach($person->id);
                         $collect_new->people()->updateExistingPivot($person->id, ['covenant' => $person->pivot->covenant, 'exams' => $person->pivot->exams]);
                         $collect_old->people()->detach($person->id);
+                    }
+
+                    // TRANSFER ATTACHMENTS
+                    if($collect_old['attachment'])
+                    {
+                        $attachment = "";
+                        $files      = Storage::allFiles('anexos/' . $collect_old->id);
+                        
+                        foreach ($files as $file) 
+                        {
+                            $array_archive_old = explode("_", basename($file));
+
+                            $archive_old    = $file; //
+                            $archive_name   = $collect_new->id . "_" . $array_archive_old[1];
+                            $archive_new    = 'anexos/' . $collect_new->id . "/" . $archive_name;
+                            Storage::move($archive_old, $archive_new);
+                            
+                            $attachment = $attachment . "*" . $archive_name;
+                        }
+                        $this->repository->update(['attachment' => $attachment],  $collect_new->id);
                     }
 
                     //IF NOT EXTRA COLLECT

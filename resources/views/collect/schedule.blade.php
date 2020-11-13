@@ -28,7 +28,7 @@
                     @include('templates.components.input',  ['label' => 'Data',   'col' => '2', 'input'  => 'date', 'attributes' => ['required' => 'true', 'class' => 'form-control', 'disabled' => 'true'], 'value' => $collect->formatted_date])
                     @include('templates.components.input',  ['label' => 'Hora',   'col' => '2', 'input'  => 'hour', 'attributes' => ['required' => 'true', 'class' => 'form-control', 'disabled' => 'true'], 'value' => $range ?? $collect->hour])
                     @include('templates.components.input',  ['label' => 'Bairro', 'col' => '4', 'input'  => 'neighborhood', 'attributes' => ['required' => 'true', 'class' => 'form-control', 'disabled' => 'true'], 'value' => $collect->neighborhood->getNeighborhoodZone()])
-                    @include('templates.components.label',  ['label' => 'Taxa',   'col' => '2', 'input'  => '', 'attributes' => ['required' => 'true', 'class' => 'form-control', 'disabled' => 'true'], 'text' => "R$ " . $collect->neighborhood->displacementRate])
+                    @include('templates.components.label',  ['label' => 'Taxa',   'col' => '2', 'input'  => '', 'attributes' => ['required' => 'true', 'class' => 'form-control', 'disabled' => 'true'], 'text' => ($collect->payment == 4 ? $collect->getFormattedPaymentAttribute() : "R$ " . $collect->neighborhood->displacementRate)])
                 {{-- EXTRA --}}
                 @else
                     @include('templates.components.input',  ['label' => 'Data',      'col' => '2', 'input'  => 'date', 'attributes' => ['required' => 'true', 'class' => 'form-control', 'data-inputmask' => "'mask': '99/99/9999'", 'data-date', 'im-insert' => 'true']])
@@ -64,7 +64,7 @@
             <hr>
             @if ($collect ?? null)
                 <div class="row">
-                    @include('templates.components.label',  ['label' => 'Valor (' . $quant . ' pacientes)', 'col' => '2', 'input'  => '',                                                               'attributes' => ['class' => 'form-control'], 'text' => $price, 'id' => 'labelValue'])
+                    @include('templates.components.label',  ['label' => 'Valor (' . $quant . ' pacientes)', 'col' => '2', 'input'  => '',                                                               'attributes' => ['class' => 'form-control'], 'text' => ($collect->payment == 4 ? $collect->getFormattedPaymentAttribute() : $price), 'id' => 'labelValue'])
                     @include('templates.components.select', ['label' => 'Pagamento',                        'col' => '4', 'select' => 'payment',        'selected' => $collect->payment,                'attributes' => ['id' => 'selPayament', 'class' => 'form-control', 'onchange' => 'changeAuthUser()'], 'data' => $payment_list])
                     @include('templates.components.input',  ['label' => 'Troco',                            'col' => '2', 'input'  => 'changePayment',  'value' => $collect->changePayment ?? null,     'attributes' => ['id' => 'changePay', 'class' => 'form-control', 'data-inputmask' => "'mask': '99.99'", 'data-mask', 'im-insert' => 'true']])
                     @include('templates.components.select', ['label' => 'Autorização da cortesia',          'col' => '4', 'select' => 'AuthCourtesy',   'selected' => $collect->AuthCourtesy ?? null,   'attributes' => ['required' => 'true','id' => 'selAuthUser', 'class' => 'form-control', 'disabled' => 'true'], 'data' =>  ['' => '', 'Selecione' => $userAuth_list]])
