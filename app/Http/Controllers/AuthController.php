@@ -3,14 +3,13 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Hash;
 use App\Repositories\UserRepository;
 use App\Repositories\CollectRepository;
 use App\Repositories\CollectorRepository;
 use Illuminate\Support\Facades\Auth;
-use Log;
 use Exception;
 use App\Entities\Util;
+use Carbon\CarbonImmutable;
 
 date_default_timezone_set('America/Recife');
 
@@ -18,26 +17,63 @@ class AuthController extends Controller
 {
     private $repository, $collectRepository;
 
-    public function __construct(UserRepository $repository,CollectRepository $collectRepository, CollectorRepository $collectorRepository)
+    public function __construct(UserRepository $repository, CollectRepository $collectRepository, CollectorRepository $collectorRepository)
     {
         $this->repository = $repository;
         $this->collectRepository = $collectRepository;
         $this->collectorRepository = $collectorRepository;
     }
 
-    public function dashboard()
+    public function dashboard(Request $request)
     {
         if(Auth::check())
         {
-            $collects   = $this->collectRepository->whereMonth('date', '=', date('m'))->get();
-            $users      = $this->repository->all();
+            $date_now   = CarbonImmutable::now();
+            $subDay     = !$request->has('rangedate') ? 7 : (is_numeric($request->get('rangedate')) ? $request->get('rangedate') : 7);
+            $startDate  = $date_now->subDays($subDay);
+            $collects   = $this->collectRepository->whereBetween('date', [$startDate->toDateString() . " 00:00:00", $date_now->toDateString() . " 23:59:59"])->where('status', '>', 2)->orderBy('date')->get();
+            $users      = $this->repository->all(); 
+            $barChatQtd = null;
+            $labels     = [];
+            $array_done = [];
+
+            foreach ($collects as $collect) 
+            {
+                $date = Util::setDate($collect->date, false);
+                if(in_array($date, $labels)) continue; 
+                else{ 
+                    array_push($labels, $date);
+                    array_push($array_done, $collects->where('status', '<', 7)->whereBetween("date", [Util::setDateLocalBRToDb($date, false) . "00:00:00", Util::setDateLocalBRToDb($date, false) . "23:59:59"])->count());
+                }
+            }
+
+            // dd($array_reserverd);
+            if(Auth::user()->type > 3)
+            {
+                $barChatQtd = app()->chartjs
+                                ->name('barChartTest')
+                                ->type('bar')
+                                // ->size(['width' => 400, 'height' => 200])
+                                // ->labels(['Label x', 'Label y'])
+                                ->labels($labels)
+                                ->datasets([
+                                    [
+                                        "label" => "Reservadas/Concluídas",
+                                        'backgroundColor' => '#007bff',
+                                        'data' => $array_done
+                                    ],
+                                ])
+                                ->options([]);
+            }
+
             return view('home', [
                 'namepage'      => 'Home',
                 'threeview'     => null,
                 'titlespage'    => ['Dashboard'],
                 'titlecard'     => 'Bem vindo(a) ' . Auth::user()->name,
                 'collects'      => $collects,
-                'users'         => $users
+                'users'         => $users,
+                'barChatQtd'    => $barChatQtd
             ]);
         }
         else return view('auth.login');
@@ -56,7 +92,7 @@ class AuthController extends Controller
             if(Auth::user()->type == 2)
                 $this->updateCollects(Auth::user()->id);
 
-            return $this->dashboard();
+            return $this->dashboard($request);
         }
         else
             return redirect()->back()->withInput()->withErrors(['E-mail ou senha inválido!']);
