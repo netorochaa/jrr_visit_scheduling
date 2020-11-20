@@ -53,17 +53,27 @@ class AuthController extends Controller
                 $barChatQtd = app()->chartjs
                                 ->name('barChartTest')
                                 ->type('bar')
+                                
                                 // ->size(['width' => 400, 'height' => 200])
                                 // ->labels(['Label x', 'Label y'])
                                 ->labels($labels)
                                 ->datasets([
                                     [
-                                        "label" => "Reservadas/Concluídas",
+                                        'min' => '0',
+                                        'label' => 'Reservadas/Concluídas',
                                         'backgroundColor' => '#007bff',
                                         'data' => $array_done
                                     ],
                                 ])
-                                ->options([]);
+                                ->optionsRaw("{
+                                    scales: {
+                                        yAxes: [{
+                                            ticks: {
+                                                beginAtZero: true
+                                            }
+                                        }]
+                                    }
+                                }");
             }
 
             return view('home', [
