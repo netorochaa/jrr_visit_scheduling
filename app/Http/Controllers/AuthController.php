@@ -53,7 +53,6 @@ class AuthController extends Controller
                 $barChatQtd = app()->chartjs
                                 ->name('barChartTest')
                                 ->type('bar')
-                                
                                 // ->size(['width' => 400, 'height' => 200])
                                 // ->labels(['Label x', 'Label y'])
                                 ->labels($labels)
