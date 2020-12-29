@@ -310,10 +310,10 @@ class CollectsController extends Controller
                 $price                  = $quant  > 2 ? ($quant-1) * $collect->neighborhood->displacementRate : $collect->neighborhood->displacementRate;
                 $priceString            = "R$ " . (string) $price;
                 $attachments            = $collect->attachment != null ? explode('*', $collect->attachment) : null;
-                
+
                 if(Auth::user()->type > 2) $neighborhood_model = $this->neighborhoodRepository->find($collect->neighborhood_id);
 
-                if(Auth::user()->type < 3) 
+                if(Auth::user()->type < 3)
                 {
                     $rangeArray = Util::getDayOfWeek($collect->date) == "Saturday" ? explode(",", $collector->saturday) : (Util::getDayOfWeek($collect->date) == "Sunday" ? explode(",", $collector->sunday) : explode(",", $collector->mondayToFriday));
                     $range = "Entre " . $rangeArray[0] . " e " . end($rangeArray);
@@ -378,87 +378,90 @@ class CollectsController extends Controller
                 $collect = $this->repository->find($id);
                 $id_user = Auth::user()->id;
 
-                Log::channel('mysql')->info(Auth::user()->name . ' ATUALIZOU a coleta: ' . $collect);
-
-                // UPDATE DATA
-                $this->validator->with($request->all())->passesOrFail(ValidatorInterface::RULE_UPDATE);
-                $collect = $this->repository->update($request->except('cancellationType_id', 'site', 'attachment'), $id);
-
-                if($request->has('attachment'))
+                if($collect->status != 1 && $collect->status < 6 ) // Se a coleta não estiver disponível ou cancelada ou confirmada
                 {
-                    $i = 0;
-                    $attachment =  $collect->attachment;
-                    foreach ($request->allFiles()['attachment'] as $archives)
-                    {
-                        if( $archives->getMimeType() == "application/pdf" ||
-                            $archives->getMimeType() == "image/png" ||
-                            $archives->getMimeType() == "image/jpg" ||
-                            $archives->getMimeType() == "image/jpeg")
-                        {
-                            if($archives->getSize() < 3000000)
-                            {
-                                $i++;
-                                $name_archive = $collect->id . "_" . date('d-M-YHis') . "-" . $i . "." . $archives->extension();
-                                $archives->storeAs('anexos/' . $collect->id, $name_archive);
-                                $attachment = $attachment . "*" .$name_archive;
+                    Log::channel('mysql')->info(Auth::user()->name . ' ATUALIZOU a coleta: ' . $collect);
+
+                    // UPDATE DATA
+                    $this->validator->with($request->all())->passesOrFail(ValidatorInterface::RULE_UPDATE);
+                    $collect = $this->repository->update($request->except('cancellationType_id', 'site', 'attachment'), $id);
+
+                    if ($request->has('attachment')) {
+                        $i = 0;
+                        $attachment = $collect->attachment;
+                        foreach ($request->allFiles()['attachment'] as $archives) {
+                            if ($archives->getMimeType() == "application/pdf" ||
+                                $archives->getMimeType() == "image/png" ||
+                                $archives->getMimeType() == "image/jpg" ||
+                                $archives->getMimeType() == "image/jpeg") {
+                                if ($archives->getSize() < 3000000) {
+                                    $i++;
+                                    $name_archive = $collect->id . "_" . date('d-M-YHis') . "-" . $i . "." . $archives->extension();
+                                    $archives->storeAs('anexos/' . $collect->id, $name_archive);
+                                    $attachment = $attachment . "*" . $name_archive;
+                                }
                             }
                         }
+                        $this->repository->update(['attachment' => $attachment], $collect->id);
                     }
-                    $this->repository->update(['attachment' => $attachment], $collect->id);
-                }
 
-                Log::channel('mysql')->info('Para: ' . $collect);
-
-                $response = [
-                    'message' => 'Coleta reservada e atualizada',
-                    'type'    => 'info'
-                ];
-
-                // CANCELLATION COLLECT
-                if($request->has('cancellationType_id'))
-                {
-                    $collect['closed_at']           = Util::dateNowForDB();;
-                    $collect['cancellationType_id'] = $request->get('cancellationType_id');
-                    $collect['user_id_cancelled']   = $id_user;
-                    $collect['status']              = 7;
-
-                    // UPDATE DATA WITH TYPE CANCELLATION COLLECT
-                    $collect = $this->repository->update($collect->toArray(), $collect->id);
-                    Log::channel('mysql')->info(Auth::user()->name . ' CANCELOU a coleta: ' . $collect->id);
-                    //IF NOT EXTRA COLLECT
-                    if($collect->extra != '1')
-                    {
-                        if($collect->collect_old)
-                        {
-                            $collect_initial = $this->repository->find($collect->collect_old);
-                            $collect->date = $collect_initial->date;
-                            $collect->hour = $collect_initial->hour;
-                            $reset = $collect_initial->status == "1" ? false : true;
-                        }
-                        else $reset = true;
-
-                        if($reset)
-                        {
-                            // Reset values for new releasing collect
-                            $collect = $this->repository->collectReset($collect);
-                            Log::channel('mysql')->info('Coleta resetada: ' . $collect);
-                            $arrayCollect = $collect->toArray();
-                            // remove id of array
-                            unset($arrayCollect['id']);
-                            // insert new releasing, available for schedule
-                            $new_collect_reset = $this->repository->create($arrayCollect);
-                            Log::channel('mysql')->info('Nova coleta resetada: ' . $new_collect_reset);
-                        }
-                        else Log::channel('mysql')->info('Reset: false');
-                    }
+                    Log::channel('mysql')->info('Para: ' . $collect);
 
                     $response = [
-                        'message' => 'Coleta cancelada',
-                        'type'    => 'info'
+                        'message' => 'Coleta reservada e atualizada',
+                        'type' => 'info'
+                    ];
+
+                    // CANCELLATION COLLECT
+                    if ($request->has('cancellationType_id')) {
+                        $collect['closed_at'] = Util::dateNowForDB();;
+                        $collect['cancellationType_id'] = $request->get('cancellationType_id');
+                        $collect['user_id_cancelled'] = $id_user;
+                        $collect['status'] = 7;
+
+                        // UPDATE DATA WITH TYPE CANCELLATION COLLECT
+                        $collect = $this->repository->update($collect->toArray(), $collect->id);
+                        Log::channel('mysql')->info(Auth::user()->name . ' CANCELOU a coleta: ' . $collect->id);
+                        //IF NOT EXTRA COLLECT
+                        if ($collect->extra != '1') {
+                            if ($collect->collect_old) {
+                                $collect_initial = $this->repository->find($collect->collect_old);
+                                $collect->date = $collect_initial->date;
+                                $collect->hour = $collect_initial->hour;
+                                $reset = $collect_initial->status == "1" ? false : true;
+                            } else $reset = true;
+
+                            if ($reset) {
+                                // Reset values for new releasing collect
+                                $collect = $this->repository->collectReset($collect);
+                                Log::channel('mysql')->info('Coleta resetada: ' . $collect);
+                                $arrayCollect = $collect->toArray();
+                                // remove id of array
+                                unset($arrayCollect['id']);
+                                // insert new releasing, available for schedule
+                                $new_collect_reset = $this->repository->create($arrayCollect);
+                                Log::channel('mysql')->info('Nova coleta resetada: ' . $new_collect_reset);
+                            } else Log::channel('mysql')->info('Reset: false');
+                        }
+
+                        $response = [
+                            'message' => 'Coleta cancelada',
+                            'type' => 'info'
+                        ];
+
+                        session()->flash('return', $response);
+                        return redirect()->route('collect.index');
+                    }
+                }
+                else
+                {
+                    $response = [
+                        'message' => 'Coleta foi atualizada recentemente para confirmada ou cancelada ou disponível para nova marcação',
+                        'type' => 'error'
                     ];
 
                     session()->flash('return', $response);
-                    return redirect()->route('collect.index') ;
+                    return redirect()->route('collect.index');
                 }
             }
             catch (Exception $e)
@@ -653,7 +656,7 @@ class CollectsController extends Controller
                 //PREPARED COLLECTS TO TRANSFER
                 $array_collect_old  = $collect_old->toArray();
                 unset($array_collect_old['id'], $array_collect_old['date'], $array_collect_old['hour'], $array_collect_old['collector_id'], $array_collect_old['created_at']);
- 
+
                 //collects used?
                 if($collect_new->status > 1 || isset($collect_new->cancellationType_id) || isset($collect_new->neighborhood) || isset($collect_new->reserved_at))
                 {
@@ -685,7 +688,7 @@ class CollectsController extends Controller
                     Log::channel('mysql')->info(Auth::user()->name . ' TRANSFERIU a coleta: ' . $collect_old->id . ' - PARA: ' . $collect_new->id);
 
                     // ATTACH PATIENTS
-                    foreach ($collect_old->people as $person) 
+                    foreach ($collect_old->people as $person)
                     {
                         $collect_new->people()->attach($person->id);
                         $collect_new->people()->updateExistingPivot($person->id, ['covenant' => $person->pivot->covenant, 'exams' => $person->pivot->exams]);
@@ -697,8 +700,8 @@ class CollectsController extends Controller
                     {
                         $attachment = "";
                         $files      = Storage::allFiles('anexos/' . $collect_old->id);
-                        
-                        foreach ($files as $file) 
+
+                        foreach ($files as $file)
                         {
                             $array_archive_old = explode("_", basename($file));
 
@@ -706,7 +709,7 @@ class CollectsController extends Controller
                             $archive_name   = $collect_new->id . "_" . $array_archive_old[1];
                             $archive_new    = 'anexos/' . $collect_new->id . "/" . $archive_name;
                             Storage::move($archive_old, $archive_new);
-                            
+
                             $attachment = $attachment . "*" . $archive_name;
                         }
                         $this->repository->update(['attachment' => $attachment],  $collect_new->id);
@@ -783,7 +786,7 @@ class CollectsController extends Controller
         $date       = $datetime[0];
         $hour       = $request->get('hour');
         unset($collect['id']);
-        
+
         try
         {
             // VERIFICA SE EXISTE HORÁRIO IGUAL NESTA DATA PARA ESTE COLETADOR
@@ -797,13 +800,13 @@ class CollectsController extends Controller
                 $collect_modified->people()->attach($model->people);
 
                 $this->repository->update([
-                    'date' => $date . " " . $hour . ":00", 
-                    'hour' => $hour, 
+                    'date' => $date . " " . $hour . ":00",
+                    'hour' => $hour,
                     'collect_old' => $collect_old['collect_old'] ? $collect_old['collect_old'] : $collect_modified->id
                 ], $id);
 
                 Log::channel('mysql')->info(Auth::user()->name . ' MODIFICOU O HORÁRIO da coleta: ' . $id. ' - DE ' . $model->date . ' PARA: ' . $date . " " . $hour . ":00");
-                
+
                 $msg = 'Horário alterado';
             }
             else
