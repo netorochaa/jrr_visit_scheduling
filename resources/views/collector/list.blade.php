@@ -1,9 +1,9 @@
 <table id="table-{{ $table }}" class="table table-sm">
     <thead>
         <tr>
+            <th>#</th>
             @foreach ($thead_for_datatable as $ths)
                 <th>{{ $ths }}</th>
-
             @endforeach
             <th class='sorting_desc_disabled sorting_asc_disabled'></th>
         </tr>
@@ -11,6 +11,9 @@
     <tbody>
         @foreach ($collectors_list as $collector)
         <tr>
+            <td>
+                {{ $collector->id }}
+            </td>
             <td>
                 {{ $collector->name }}<br>
                 <small class="text-muted">

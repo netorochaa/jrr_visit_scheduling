@@ -213,9 +213,6 @@ class PublicCollectController extends Controller
             if($quant > 2) $price   = ($quant-1) * $collect->neighborhood->displacementRate;
             $priceString            = "R$ " . (string) $price;
 
-            $rangeArray = Util::getDayOfWeek($collect->date) == "Saturday" ? explode(",", $collector->saturday) : (Util::getDayOfWeek($collect->date) == "Sunday" ? explode(",", $collector->sunday) : explode(",", $collector->mondayToFriday));
-            $range = "Entre " . $rangeArray[0] . " e " . end($rangeArray);
-
             return view('collect.public.edit', [
                 'titlespage' => null,
                 'titlecard'  => 'Dados da solicitação',
@@ -230,7 +227,6 @@ class PublicCollectController extends Controller
                 'covenant_list'         => $covenant_list,
                 'quant'                 => $quant,
                 'price'                 => $priceString,
-                'range'                 => $range,
                 //Info of entitie
                 'table' => $this->repository->getTable(),
                 'collect' => $collect

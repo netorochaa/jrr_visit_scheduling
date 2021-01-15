@@ -26,7 +26,7 @@
                 {{-- SCHEDULE --}}
                 @if ($collect ?? null)
                     @include('templates.components.input',  ['label' => 'Data',   'col' => '2', 'input'  => 'date', 'attributes' => ['required' => 'true', 'class' => 'form-control', 'disabled' => 'true'], 'value' => $collect->formatted_date])
-                    @include('templates.components.input',  ['label' => 'Hora',   'col' => '2', 'input'  => 'hour', 'attributes' => ['required' => 'true', 'class' => 'form-control', 'disabled' => 'true'], 'value' => $range ?? $collect->hour])
+                    @include('templates.components.input',  ['label' => 'Hora',   'col' => '2', 'input'  => 'hour', 'attributes' => ['required' => 'true', 'class' => 'form-control', 'disabled' => 'true']])
                     @include('templates.components.input',  ['label' => 'Bairro', 'col' => '4', 'input'  => 'neighborhood', 'attributes' => ['required' => 'true', 'class' => 'form-control', 'disabled' => 'true'], 'value' => $collect->neighborhood->getNeighborhoodZone()])
                     @include('templates.components.label',  ['label' => 'Taxa',   'col' => '2', 'input'  => '', 'attributes' => ['required' => 'true', 'class' => 'form-control', 'disabled' => 'true'], 'text' => ($collect->payment == 4 ? $collect->getFormattedPaymentAttribute() : "R$ " . $collect->neighborhood->displacementRate)])
                 {{-- EXTRA --}}

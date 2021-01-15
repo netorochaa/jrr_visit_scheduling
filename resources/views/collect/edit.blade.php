@@ -404,22 +404,7 @@
                       var option = '<option>Selecione</option>';
                       $.each(result, function(i, obj)
                       {
-                        @if(Auth::user()->type > 2)
-                          option += '<option value="'+obj.id+'">' + obj.hour + " - " + obj.name  + ' - ' + obj.id + '</option>';
-                        @else
-                          var range = null;
-
-                          if(dayOfWeek > 0 && dayOfWeek < 6)
-                              var array = obj.mondayToFriday.split(',');
-                          else if(dayOfWeek == 6)
-                              var array = obj.saturday.split(',');
-                          else if(dayOfWeek == 0)
-                              var array = obj.sunday.split(',');
-
-                          range = "Entre " + array[0] + " e " + array[array.length - 1];
-                          option += '<option value="'+obj.id+'">' + obj.id + " - " + range + '</option>';
-                        @endif
-
+                        option += '<option value="'+obj.id+'">' + obj.hour + " - " + obj.name  + ' - ' + obj.id + '</option>';
                       })
                       $("#describe-feedback").html(result.length + " horários para agendamento nesta data");
                       $('#infoCollectSel').prop('disabled', false);
