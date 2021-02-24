@@ -55,12 +55,13 @@ class CollectorRepositoryEloquent extends BaseRepository implements CollectorRep
     public function setAvailableCollects($arrayMondayToFriday, $arraySaturday, $arraySunday, $start, $collector_id)
     {
         // PREPARE NEWS DATES
-        $inicio = new DateTime(Util::setDateLocalBRToDb($start, true));
-        $fim = new DateTime();
+        $inicio = new DateTime($start);
+        $fim = new DateTime();        
         $fim->modify('+2 month');
 
         $interval = new DateInterval('P1D');
         $periodo = new DatePeriod($inicio, $interval ,$fim);
+        
 
         //CRIAR MÉTODO E MOVER PARA ENTIDADE OU REPOSITORIO
         foreach($periodo as $data)
