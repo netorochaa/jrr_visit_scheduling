@@ -102,7 +102,7 @@ class PublicCollectController extends Controller
         }
     }
 
-    // API RELEASE IN 10 MIN. COLLECTS WITH STATUS = NEW
+    // API RELEASE IN 15 MIN. COLLECTS WITH STATUS = NEW
     public function release(Request $request)
     {
         $auth = $request->has('list_all_new_collects_more_10_min') ? true : false;
@@ -118,7 +118,7 @@ class PublicCollectController extends Controller
                         $reserved_at = new DateTime($collect->reserved_at);
                         $diff_date = $reserved_at->diff(new DateTime());
                         // dd($diff_date->i);
-                        if($diff_date->i > 10)
+                        if($diff_date->i > 15)
                         {
                             $id_user = 2;
                             // UPDATE DATA WITH TYPE CANCELLATION COLLECT

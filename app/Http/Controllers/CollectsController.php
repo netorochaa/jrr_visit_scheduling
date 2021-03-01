@@ -257,6 +257,29 @@ class CollectsController extends Controller
                 ]);
             }
         }
+        public function listCancelled()
+        {
+            if(!Auth::check())
+            {
+                session()->flash('return');
+                return view('auth.login');
+            }
+            else
+            {
+                $collect_list = $this->repository->where('status', '>', 6)->orderBy('closed_at', 'desc')->paginate(500);
+
+                return view('collect.template_table', [
+                    'namepage'   => 'Coletas canceladas',
+                    'threeview'  => 'Coletas',
+                    'titlespage' => ['Coletas canceladas'],
+                    'titlecard'  => 'Lista das últimas 500 coletas canceladas',
+                    //Info of entitie
+                    'table'               => $this->repository->getTable(),
+                    'thead_for_datatable' => ['Data/Hora', 'Código','Paciente', 'Pagamento Taxa', 'Bairro', 'Endereço', 'Coletador', 'Status'],
+                    'collect_list'        => $collect_list
+                ]);
+            }
+        }
         public function listProgress()
         {
             if(!Auth::check())

@@ -79,6 +79,12 @@
                             </a>
                         </li>
                         <li class="nav-item">
+                            <a href="{{ route('collect.list.cancelled') }}" class="nav-link @if($namepage == 'Coletas canceladas') active @endif">
+                                <i class="far fa-circle nav-icon text-danger"></i>
+                                <p>Canceladas</p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
                             <a href="{{ route('collect.list.inprogress') }}" class="nav-link @if($namepage == 'Coletas em andamento') active @endif">
                                 <i class="far fa-circle nav-icon"></i>
                                 <p>Em andamento</p>
