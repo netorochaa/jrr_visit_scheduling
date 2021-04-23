@@ -72,3 +72,4 @@ Route::get('activity/{id}/close', ['as' => 'activity.close', 'uses' => 'Activiti
 
 // Report
 Route::get('/report/cash', ['as' => 'report.cash', 'uses' => 'ReportController@cash']);
+Route::get('/report/graphic', ['as' => 'report.graphic', 'uses' => 'ReportController@graphic']);

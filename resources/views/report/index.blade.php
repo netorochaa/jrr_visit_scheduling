@@ -9,13 +9,19 @@
     @include('templates.content.header')
     @if($report == 'cash')
         @include('templates.content.content1col', ['contentbody' => 'report.cash'])
-        @include('templates.content.modallarge', ['titlemodal' => $titlemodal , 'contentmodal' => 'report.filter.cash'])
+        @include('templates.content.modallarge', ['titlemodal' => $titlemodal , 'contentmodal' => 'report.filter'])
+    @else
+        @include('templates.content.content1col', ['contentbody' => 'report.graphic'])
+        @include('templates.content.modallarge', ['titlemodal' => $titlemodal , 'contentmodal' => 'report.filter'])
     @endif
 @endsection
 
 @section('footer-distinct')
+    @push('scripts-bar-chat-qtd')
+    <script src="{{ asset('js/ChartJS/Chart.min.js') }}"></script>
     <script src=" {{ asset('moment/moment.min.js') }}"></script>
     <script src=" {{ asset('daterangepicker/daterangepicker.js') }} "></script>
+    <script src="{{ asset('tempusdominus-bootstrap-4/js/tempusdominus-bootstrap-4.min.js') }}"></script>
     <script>
         $(function () {
             $('input[name="dateRange_filter"]').daterangepicker({
