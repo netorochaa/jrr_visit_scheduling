@@ -7,13 +7,8 @@
 
 @section('content')
     @include('templates.content.header')
-    @if($report == 'cash')
-        @include('templates.content.content1col', ['contentbody' => 'report.cash'])
-        @include('templates.content.modallarge', ['titlemodal' => $titlemodal , 'contentmodal' => 'report.filter'])
-    @else
-        @include('templates.content.content1col', ['contentbody' => 'report.graphic'])
-        @include('templates.content.modallarge', ['titlemodal' => $titlemodal , 'contentmodal' => 'report.filter'])
-    @endif
+    @include('templates.content.content1col', ['contentbody' => $report == 'cash' ? 'report.cash' : 'report.graphic'])
+    @include('templates.content.modallarge',  ['titlemodal' => $titlemodal , 'contentmodal' => 'report.filter'])
 @endsection
 
 @section('footer-distinct')
