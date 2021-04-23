@@ -38,6 +38,7 @@ Route::get('/reserved', ['as' => 'collect.list.reserved', 'uses' => 'CollectsCon
 Route::get('/cancelled', ['as' => 'collect.list.cancelled', 'uses' => 'CollectsController@listCancelled']);
 Route::get('/inprogress', ['as' => 'collect.list.inprogress', 'uses' => 'CollectsController@listProgress']);
 Route::get('/confirmedlist', ['as' => 'collect.list.confirmedlist', 'uses' => 'CollectsController@listConfirmed']);
+Route::get('/done', ['as' => 'collect.list.done', 'uses' => 'CollectsController@listDone']);
 Route::get('/allcollects', ['as' => 'collect.list.allcollects', 'uses' => 'CollectsController@listAll']);
 Route::get('/extra', ['as' => 'collect.extra', 'uses' => 'CollectsController@extra']);
 Route::get('/transfer/{id}', ['as' => 'collect.transfer', 'uses' => 'CollectsController@transfer']);
