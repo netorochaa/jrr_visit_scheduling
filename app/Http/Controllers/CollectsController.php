@@ -631,10 +631,19 @@ class CollectsController extends Controller
                     'type'      => 'confirmed'
                 ];
                 // send email
-                foreach ($collect->people as $person) {
-                    if($person->email != null){
-                        session()->flash('return', $response);
-                        Mail::to($person->email)->queue(new SendMailSchedule());
+                foreach ($collect->people as $person) 
+                {
+                    if($person->email != null)
+                    {
+                        try
+                        {
+                            session()->flash('return', $response);
+                            Mail::to($person->email)->queue(new SendMailSchedule());
+                        }
+                        catch(Exception $e)
+                        {
+                            Log::channel('mysql')->error('Enviar e-mail ao confirmar agendamento [method: confirmed]: ' . Util::getException($e));
+                        }
                     }
                 }
 
@@ -818,8 +827,7 @@ class CollectsController extends Controller
         }
         catch(Exception $e)
         {
-            // dd(Util::getException($e));
-            Log::channel('mysql')->info('Erro ao enviar e-mail para confirmação: ' . Util::getException($e));
+            Log::channel('mysql')->error('Enviar e-mail para solicitação de confirmação [method: sendconfirmation]: ' . Util::getException($e));
         }
         return redirect()->route('collect.schedule', $id);
     }

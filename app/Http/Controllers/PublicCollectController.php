@@ -426,13 +426,18 @@ class PublicCollectController extends Controller
         }
         catch (Exception $e)
         {
-             $response = [
-                'message' =>  'Ocorreu um erro. Nossos técnicos foram avisados. Pedimos desculpas pelo transtorno.',
-                'type'    => 'error'
-            ];
-            Log::channel('mysql')->info('Salvar Agendamento público: ' . Util::getException($e));
-            session()->flash('return', $response);
-            return redirect()->route('public.index');
+            Log::channel('mysql')->error('Salvar Agendamento público: ' . Util::getException($e));
+
+            if(get_class($e) != "Swift_TransportException")
+            {
+                $response = [
+                    'message' => 'Ocorreu um erro. Nossos técnicos foram avisados. Pedimos desculpas pelo transtorno.',
+                    'type'    => 'error'
+                ];
+
+                session()->flash('return', $response);
+                return redirect()->route('public.index');
+            }
         }
 
         session()->flash('return', $response);
