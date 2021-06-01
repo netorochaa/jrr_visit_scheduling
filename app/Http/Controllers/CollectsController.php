@@ -102,7 +102,7 @@ class CollectsController extends Controller
                 $userAuth_list          = $this->userRepository->where([['id', '>', 1], ['active', 'on']])->whereBetween('type', [3, 98])->pluck('name', 'name');
                 $collector_list         = $this->collectorRepository->where('active', 'on')->pluck('name', 'id');
                 $hour_list              = $this->collectorRepository->schedules();
-                $neighborhood_list      = $this->neighborhoodRepository->where('active', 'on')->pluck('name', 'id');
+                $neighborhood_list      = $this->neighborhoodRepository->neighborhoodsCities_list();
 
                 return view('collect.extra', [
                     'namepage'      => 'Coleta extra',

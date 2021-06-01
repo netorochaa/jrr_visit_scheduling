@@ -33,7 +33,7 @@
                 @else
                     @include('templates.components.input',  ['label' => 'Data',      'col' => '2', 'input'  => 'date', 'attributes' => ['required' => 'true', 'class' => 'form-control', 'data-inputmask' => "'mask': '99/99/9999'", 'data-date', 'im-insert' => 'true']])
                     @include('templates.components.select', ['label' => 'Hora',      'col' => '2', 'select' => 'hour', 'attributes' => ['required' => 'true', 'class' => 'form-control'], 'data' => $hour_list])
-                    @include('templates.components.select', ['label' => 'Bairro',    'col' => '4', 'select' => 'neighborhood_id', 'attributes' => ['required' => 'true', 'class' => 'form-control select2bs4'], 'data' => $neighborhood_list])
+                    @include('templates.components.select', ['label' => 'Bairro',    'col' => '4', 'select' => 'neighborhood_id', 'attributes' => ['required' => 'true', 'class' => 'form-control select2bs4'], 'data' => $neighborhood_list->pluck('name', 'id')])
                     @include('templates.components.select', ['label' => 'Coletador', 'col' => '4', 'select' => 'collector_id', 'attributes' => ['required' => 'true', 'class' => 'form-control select2bs4'], 'data' => $collector_list])
                 @endif
             </div>
