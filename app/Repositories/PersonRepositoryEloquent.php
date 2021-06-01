@@ -45,13 +45,14 @@ class PersonRepositoryEloquent extends BaseRepository implements PersonRepositor
             '8' => 'CAMED SAÚDE',
             '9' => 'CAPESAUDE',
             '10' => 'CAPESEP',
-            '11' => 'CONSEDER',
-            '12' => 'CORREIOS',
+            '11' => 'COMSEDER',
+            '12' => 'POSTAL SAÚDE',
             '13' => 'FUNASA',
             '14' => 'FUNCEF',
             '15' => 'GEAP',
             '16' => 'SAÚDE CAIXA',
             '17' => 'SAÚDE EXCELSIOR',
+            '20' => 'SULAMERICA',
             '18' => 'OUTROS'
           ];
 
