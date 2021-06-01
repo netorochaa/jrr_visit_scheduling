@@ -316,11 +316,12 @@
     {
       var selectCovenant  = document.getElementById('selectCovenant');
       var inputEnroll = document.getElementById('inputEnroll');
-      console.log("To entrando");
-      if(!selectCovenant.options[selectCovenant.selectedIndex].text.includes('PARTICULAR'))
-        inputEnroll.disabled = false;
-      else
+
+      if(selectCovenant.options[selectCovenant.selectedIndex].text.includes('PARTICULAR') 
+        || selectCovenant.options[selectCovenant.selectedIndex].text.includes('OUTROS'))
         inputEnroll.disabled = true;
+      else
+        inputEnroll.disabled = false;
     }
 
     $(document).ready(function()
