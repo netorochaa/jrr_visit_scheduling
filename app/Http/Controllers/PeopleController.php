@@ -57,7 +57,6 @@ class PeopleController extends Controller
 
     public function store(PersonCreateRequest $request, $collect_id)
     {
-        //Ver a possibilidade de atrelar endereço da coleta com endereço do paciente, para assim os endereço entrar automaticamente na coleta
         $site = $request->session()->has('collect');
         if(!Auth::check() && !$site)
         {
@@ -71,7 +70,7 @@ class PeopleController extends Controller
                 $this->validator->with($request->all())->passesOrFail(ValidatorInterface::RULE_CREATE);
                 $person = $this->repository->create($request->all());
 
-                if($person != null) $person->collects()->attach($collect_id, $request->only('covenant', 'exams'));
+                if($person != null) $person->collects()->attach($collect_id, $request->only('covenant', 'enrollment', 'exams'));
 
                 $response = [
                     'message' => 'Paciente cadastrado',
@@ -150,7 +149,7 @@ class PeopleController extends Controller
                 $person = $this->repository->update($request->all(), $people_id);
                 $collect = $this->collectRepository->find($collect_id);
 
-                $person->collects()->updateExistingPivot($collect, $request->only('covenant', 'exams'));
+                $person->collects()->updateExistingPivot($collect, $request->only('covenant', 'enrollment', 'exams'));
 
                 $response = [
                     'message' => 'Paciente atualizado',

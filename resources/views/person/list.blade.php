@@ -13,7 +13,14 @@
         @foreach ($collect->people as $person)
         <tr>
             <td>
-                <a href="{{ route('collect.person.edit', [$collect->id, $person->id]) }}" style="color: black"><b><u>{{ $person->name }}</b></u> <i class='fas fa-pen'></i></a><br>
+                @if(!strpos(Request::url(), 'public'))
+                    <a href="{{ route('collect.person.edit', [$collect->id, $person->id]) }}" style="color: black">
+                        <b><u>{{ $person->name }}</b></u> <i class='fas fa-pen'></i>
+                    </a>
+                @else
+                    <b><u>{{ $person->name }}</b></u>
+                @endif
+                <br>
                 <small class="text-muted">{{ $person->patientType->name }} @if($person->typeResponsible) | {{ $person->formatted_TypeResponsible }} {{ $person->nameResponsible }} @endif</small>
             </td>
             <td>

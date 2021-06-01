@@ -130,7 +130,7 @@
 
     function changeAuthUser()
     {
-      var selectPayment = document.getElementById('selPayament');
+      var selectPayment  = document.getElementById('selPayament');
       var selectAuthUser = document.getElementById('selAuthUser');
       var inputChangePay = document.getElementById('changePay');
 
@@ -235,10 +235,10 @@
 
         if(buttonConfirmed != null)
         {
-            if(labelValue.innerHTML != "R$ 0")
-                buttonConfirmed.disabled = false;
-            else
-                buttonConfirmed.disabled = true;
+          if(labelValue.innerHTML != "R$ 0")
+              buttonConfirmed.disabled = false;
+          else
+              buttonConfirmed.disabled = true;
         }
     }
 
@@ -312,12 +312,22 @@
         }
     }
 
+    function activeEnrollment()
+    {
+      var selectCovenant  = document.getElementById('selectCovenant');
+      var inputEnroll = document.getElementById('inputEnroll');
+      console.log("To entrando");
+      if(!selectCovenant.options[selectCovenant.selectedIndex].text.includes('PARTICULAR'))
+        inputEnroll.disabled = false;
+      else
+        inputEnroll.disabled = true;
+    }
 
     $(document).ready(function()
     {
       changeAuthUser();
       activeButton();
-
+      activeEnrollment();
       function limpa_formulário_cep()
       {
           // Limpa valores do formulário de cep.
