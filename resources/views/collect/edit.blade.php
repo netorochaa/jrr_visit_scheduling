@@ -19,7 +19,7 @@
     'titlemodal2' => $titlemodal,
     'contentmodal2' => 'person.find'
     ])
-  @if(Auth::user()->type > 2 && $collect->status < 5)
+  @if(Auth::user()->type > 2 && $collect->status < 6)
     @include('templates.content.uniquemodal',  [
         'titlemodal' => 'Transferir coleta' ,
         'contentmodal' => 'collect.register'
