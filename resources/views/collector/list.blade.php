@@ -1,9 +1,9 @@
 <table id="table-{{ $table }}" class="table table-sm">
     <thead>
         <tr>
+            <th>#</th>
             @foreach ($thead_for_datatable as $ths)
                 <th>{{ $ths }}</th>
-
             @endforeach
             <th class='sorting_desc_disabled sorting_asc_disabled'></th>
         </tr>
@@ -11,6 +11,9 @@
     <tbody>
         @foreach ($collectors_list as $collector)
         <tr>
+            <td>
+                {{ $collector->id }}
+            </td>
             <td>
                 {{ $collector->name }}<br>
                 <small class="text-muted">
@@ -55,8 +58,10 @@
                                 <button type="button" onclick="location.href='{{ route('collector.edit', $collector->id) }}'" class="btn btn-info btn-sm"><i class='fas fa-pen'></i></button>
                                 @include('templates.components.submit', ['input' => 'Inativar', 'attributes' => ['class' => 'btn btn-danger btn-sm']])
                             </div>
-                            {!! Form::close() !!}
-                        </div>
+                        {!! Form::close() !!}
+                    </div>
+                @else
+                    <button type="button" onclick="location.href='{{ route('collector.collector.reactivate', $collector->id) }}'" class="btn btn-warning btn-sm">Ativar</button>
                 @endif
             </td>
         </tr>

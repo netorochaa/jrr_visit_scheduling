@@ -149,9 +149,9 @@ class AuthController extends Controller
                 
             // Verify date start for set
             if($collector->date_start_last_modify)
-                $date = $collector->date_start_last_modify > Util::dateNowForDB() ? Util::setDate($collector->date_start_last_modify, false) : date('d/m/Y');
+                $date = $collector->date_start_last_modify > Util::dateNowForDB() ? $collector->date_start_last_modify : date('Y-m-d');
             else
-                $date = $collector->date_start > Util::dateNowForDB() ? Util::setDate($collector->date_start, false) : date('d/m/Y');
+                $date = $collector->date_start > Util::dateNowForDB() ? $collector->date_start : date('Y-m-d');
 
             $this->collectorRepository->setAvailableCollects($arrayMondayToFriday, $arraySaturday, $arraySunday, $date, $collector->id);
         }

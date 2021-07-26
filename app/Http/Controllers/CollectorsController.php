@@ -294,6 +294,8 @@ class CollectorsController extends Controller
                             $arraySunday = $collector_old->sunday ? explode(',', $collector_old->sunday) : null;
                     }
 
+                    
+
                     // CHECK IF SITE
                     $request->merge(['showInSite' => $request->has('showInSite') ? 'on' : null]);
                     if($request->has('date_start_last_modify')) $request->merge(['date_start_last_modify' => Util::setDateLocalBRToDb($request->get('date_start_last_modify'), true)]);
@@ -301,7 +303,7 @@ class CollectorsController extends Controller
                     //UPDATE COLLECTOR
                     $this->validator->with($request->all())->passesOrFail(ValidatorInterface::RULE_UPDATE);
                     $collector = $this->repository->update($request->all(), $id);
-
+                    
                     // UPDATE HOURS
                     if(!$request->has('not_update_hours'))
                     {
@@ -334,6 +336,28 @@ class CollectorsController extends Controller
             session()->flash('return', $response);
             return redirect()->route('collector.index');
         }
+    }
+
+    public function reactivate($id)
+    {
+        try 
+        {
+            $this->repository->update(['active' => 'on'], $id);
+
+            $response = [
+                'message' => 'Coletador Atualizado',
+                'type'   => 'info',
+            ];
+        } 
+        catch (Exception $e) 
+        {
+            $response = [
+                    'message' =>  Util::getException($e),
+                    'type'    => 'error'
+                ];
+        }
+        session()->flash('return', $response);
+        return redirect()->route('collector.index');
     }
 
     public function detachCollectorNeighborhoods($collector_id, $neighborhood_id)

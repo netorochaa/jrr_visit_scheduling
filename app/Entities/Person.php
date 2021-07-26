@@ -16,7 +16,7 @@ class Person extends Model implements Transformable
 
     public function collects()
     {
-        return $this->belongsToMany(Collect::class, 'people_has_collect', 'people_id', 'collect_id')->withPivot('starRating', 'obsRating', 'covenant', 'exams')->withTimestamps();
+        return $this->belongsToMany(Collect::class, 'people_has_collect', 'people_id', 'collect_id')->withPivot('starRating', 'obsRating', 'covenant', 'enrollment', 'exams')->withTimestamps();
     }
 
     public function patientType()

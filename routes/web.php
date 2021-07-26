@@ -14,6 +14,7 @@ Route::resource('user', 'UsersController');
 
 // Collector
 Route::resource('collector', 'CollectorsController');
+Route::get('collector/{collector_id}/reactivating', ['as' => 'collector.collector.reactivate', 'uses' => 'CollectorsController@reactivate']);
 Route::post('collector/{collector_id}/neighborhoods', ['as' => 'collector.neighborhoods.attach', 'uses' => 'CollectorsController@attachCollectorNeighborhoods']);
 Route::post('collector/{collector_id}/neighborhoods/{neighborhood_id}', ['as' => 'collector.neighborhoods.detach', 'uses' => 'CollectorsController@detachCollectorNeighborhoods']);
 
@@ -35,8 +36,10 @@ Route::resource('cancellationtype', 'CancellationTypesController');
 // Collect
 Route::resource('collect', 'CollectsController');
 Route::get('/reserved', ['as' => 'collect.list.reserved', 'uses' => 'CollectsController@listReserved']);
+Route::get('/cancelled', ['as' => 'collect.list.cancelled', 'uses' => 'CollectsController@listCancelled']);
 Route::get('/inprogress', ['as' => 'collect.list.inprogress', 'uses' => 'CollectsController@listProgress']);
 Route::get('/confirmedlist', ['as' => 'collect.list.confirmedlist', 'uses' => 'CollectsController@listConfirmed']);
+Route::get('/done', ['as' => 'collect.list.done', 'uses' => 'CollectsController@listDone']);
 Route::get('/allcollects', ['as' => 'collect.list.allcollects', 'uses' => 'CollectsController@listAll']);
 Route::get('/extra', ['as' => 'collect.extra', 'uses' => 'CollectsController@extra']);
 Route::get('/transfer/{id}', ['as' => 'collect.transfer', 'uses' => 'CollectsController@transfer']);
@@ -70,3 +73,4 @@ Route::get('activity/{id}/close', ['as' => 'activity.close', 'uses' => 'Activiti
 
 // Report
 Route::get('/report/cash', ['as' => 'report.cash', 'uses' => 'ReportController@cash']);
+Route::get('/report/graphic', ['as' => 'report.graphic', 'uses' => 'ReportController@graphic']);

@@ -26,14 +26,14 @@
                 {{-- SCHEDULE --}}
                 @if ($collect ?? null)
                     @include('templates.components.input',  ['label' => 'Data',   'col' => '2', 'input'  => 'date', 'attributes' => ['required' => 'true', 'class' => 'form-control', 'disabled' => 'true'], 'value' => $collect->formatted_date])
-                    @include('templates.components.input',  ['label' => 'Hora',   'col' => '2', 'input'  => 'hour', 'attributes' => ['required' => 'true', 'class' => 'form-control', 'disabled' => 'true'], 'value' => $range ?? $collect->hour])
+                    @include('templates.components.input',  ['label' => 'Hora',   'col' => '2', 'input'  => 'hour', 'attributes' => ['required' => 'true', 'class' => 'form-control', 'disabled' => 'true']])
                     @include('templates.components.input',  ['label' => 'Bairro', 'col' => '4', 'input'  => 'neighborhood', 'attributes' => ['required' => 'true', 'class' => 'form-control', 'disabled' => 'true'], 'value' => $collect->neighborhood->getNeighborhoodZone()])
                     @include('templates.components.label',  ['label' => 'Taxa',   'col' => '2', 'input'  => '', 'attributes' => ['required' => 'true', 'class' => 'form-control', 'disabled' => 'true'], 'text' => ($collect->payment == 4 ? $collect->getFormattedPaymentAttribute() : "R$ " . $collect->neighborhood->displacementRate)])
                 {{-- EXTRA --}}
                 @else
                     @include('templates.components.input',  ['label' => 'Data',      'col' => '2', 'input'  => 'date', 'attributes' => ['required' => 'true', 'class' => 'form-control', 'data-inputmask' => "'mask': '99/99/9999'", 'data-date', 'im-insert' => 'true']])
                     @include('templates.components.select', ['label' => 'Hora',      'col' => '2', 'select' => 'hour', 'attributes' => ['required' => 'true', 'class' => 'form-control'], 'data' => $hour_list])
-                    @include('templates.components.select', ['label' => 'Bairro',    'col' => '4', 'select' => 'neighborhood_id', 'attributes' => ['required' => 'true', 'class' => 'form-control select2bs4'], 'data' => $neighborhood_list])
+                    @include('templates.components.select', ['label' => 'Bairro',    'col' => '4', 'select' => 'neighborhood_id', 'attributes' => ['required' => 'true', 'class' => 'form-control select2bs4'], 'data' => $neighborhood_list->pluck('name', 'id')])
                     @include('templates.components.select', ['label' => 'Coletador', 'col' => '4', 'select' => 'collector_id', 'attributes' => ['required' => 'true', 'class' => 'form-control select2bs4'], 'data' => $collector_list])
                 @endif
             </div>

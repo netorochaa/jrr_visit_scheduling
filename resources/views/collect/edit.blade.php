@@ -19,7 +19,7 @@
     'titlemodal2' => $titlemodal,
     'contentmodal2' => 'person.find'
     ])
-  @if(Auth::user()->type > 2 && $collect->status < 5)
+  @if(Auth::user()->type > 2 && $collect->status < 6)
     @include('templates.content.uniquemodal',  [
         'titlemodal' => 'Transferir coleta' ,
         'contentmodal' => 'collect.register'
@@ -130,7 +130,7 @@
 
     function changeAuthUser()
     {
-      var selectPayment = document.getElementById('selPayament');
+      var selectPayment  = document.getElementById('selPayament');
       var selectAuthUser = document.getElementById('selAuthUser');
       var inputChangePay = document.getElementById('changePay');
 
@@ -235,10 +235,10 @@
 
         if(buttonConfirmed != null)
         {
-            if(labelValue.innerHTML != "R$ 0")
-                buttonConfirmed.disabled = false;
-            else
-                buttonConfirmed.disabled = true;
+          if(labelValue.innerHTML != "R$ 0")
+              buttonConfirmed.disabled = false;
+          else
+              buttonConfirmed.disabled = true;
         }
     }
 
@@ -312,12 +312,23 @@
         }
     }
 
+    function activeEnrollment()
+    {
+      var selectCovenant  = document.getElementById('selectCovenant');
+      var inputEnroll = document.getElementById('inputEnroll');
+
+      if(selectCovenant.options[selectCovenant.selectedIndex].text.includes('PARTICULAR') 
+        || selectCovenant.options[selectCovenant.selectedIndex].text.includes('OUTROS'))
+        inputEnroll.disabled = true;
+      else
+        inputEnroll.disabled = false;
+    }
 
     $(document).ready(function()
     {
       changeAuthUser();
       activeButton();
-
+      activeEnrollment();
       function limpa_formulário_cep()
       {
           // Limpa valores do formulário de cep.
@@ -404,22 +415,7 @@
                       var option = '<option>Selecione</option>';
                       $.each(result, function(i, obj)
                       {
-                        @if(Auth::user()->type > 2)
-                          option += '<option value="'+obj.id+'">' + obj.hour + " - " + obj.name  + ' - ' + obj.id + '</option>';
-                        @else
-                          var range = null;
-
-                          if(dayOfWeek > 0 && dayOfWeek < 6)
-                              var array = obj.mondayToFriday.split(',');
-                          else if(dayOfWeek == 6)
-                              var array = obj.saturday.split(',');
-                          else if(dayOfWeek == 0)
-                              var array = obj.sunday.split(',');
-
-                          range = "Entre " + array[0] + " e " + array[array.length - 1];
-                          option += '<option value="'+obj.id+'">' + obj.id + " - " + range + '</option>';
-                        @endif
-
+                        option += '<option value="'+obj.id+'">' + obj.hour + " - " + obj.name  + ' - ' + obj.id + '</option>';
                       })
                       $("#describe-feedback").html(result.length + " horários para agendamento nesta data");
                       $('#infoCollectSel').prop('disabled', false);

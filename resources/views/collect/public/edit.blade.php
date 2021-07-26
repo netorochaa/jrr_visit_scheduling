@@ -224,9 +224,22 @@
         }
     }
 
+    function activeEnrollment()
+    {
+      var selectCovenant  = document.getElementById('selectCovenant');
+      var inputEnroll = document.getElementById('inputEnroll');
+
+      if(selectCovenant.options[selectCovenant.selectedIndex].text.includes('PARTICULAR') 
+        || selectCovenant.options[selectCovenant.selectedIndex].text.includes('OUTROS'))
+        inputEnroll.disabled = true;
+      else
+        inputEnroll.disabled = false;
+    }
+
     $(document).ready(function() 
     {
       activeButton();
+      activeEnrollment();
       function limpa_formulário_cep()
       {
           // Limpa valores do formulário de cep.

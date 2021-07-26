@@ -102,7 +102,7 @@ class PublicCollectController extends Controller
         }
     }
 
-    // API RELEASE IN 10 MIN. COLLECTS WITH STATUS = NEW
+    // API RELEASE IN 15 MIN. COLLECTS WITH STATUS = NEW
     public function release(Request $request)
     {
         $auth = $request->has('list_all_new_collects_more_10_min') ? true : false;
@@ -118,7 +118,7 @@ class PublicCollectController extends Controller
                         $reserved_at = new DateTime($collect->reserved_at);
                         $diff_date = $reserved_at->diff(new DateTime());
                         // dd($diff_date->i);
-                        if($diff_date->i > 10)
+                        if($diff_date->i > 15)
                         {
                             $id_user = 2;
                             // UPDATE DATA WITH TYPE CANCELLATION COLLECT
@@ -213,9 +213,6 @@ class PublicCollectController extends Controller
             if($quant > 2) $price   = ($quant-1) * $collect->neighborhood->displacementRate;
             $priceString            = "R$ " . (string) $price;
 
-            $rangeArray = Util::getDayOfWeek($collect->date) == "Saturday" ? explode(",", $collector->saturday) : (Util::getDayOfWeek($collect->date) == "Sunday" ? explode(",", $collector->sunday) : explode(",", $collector->mondayToFriday));
-            $range = "Entre " . $rangeArray[0] . " e " . end($rangeArray);
-
             return view('collect.public.edit', [
                 'titlespage' => null,
                 'titlecard'  => 'Dados da solicitação',
@@ -230,7 +227,6 @@ class PublicCollectController extends Controller
                 'covenant_list'         => $covenant_list,
                 'quant'                 => $quant,
                 'price'                 => $priceString,
-                'range'                 => $range,
                 //Info of entitie
                 'table' => $this->repository->getTable(),
                 'collect' => $collect
@@ -430,13 +426,18 @@ class PublicCollectController extends Controller
         }
         catch (Exception $e)
         {
-             $response = [
-                'message' =>  'Ocorreu um erro. Nossos técnicos foram avisados. Pedimos desculpas pelo transtorno.',
-                'type'    => 'error'
-            ];
-            Log::channel('mysql')->info('Salvar Agendamento público: ' . Util::getException($e));
-            session()->flash('return', $response);
-            return redirect()->route('public.index');
+            Log::channel('mysql')->error('Salvar Agendamento público: ' . Util::getException($e));
+
+            if(get_class($e) != "Swift_TransportException")
+            {
+                $response = [
+                    'message' => 'Ocorreu um erro. Nossos técnicos foram avisados. Pedimos desculpas pelo transtorno.',
+                    'type'    => 'error'
+                ];
+
+                session()->flash('return', $response);
+                return redirect()->route('public.index');
+            }
         }
 
         session()->flash('return', $response);

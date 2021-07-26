@@ -79,6 +79,18 @@
                             </a>
                         </li>
                         <li class="nav-item">
+                            <a href="{{ route('collect.list.done') }}" class="nav-link @if($namepage == 'Coletas concluídas') active @endif">
+                                <b><i class="fas fa-circle nav-icon"></i></b>
+                                <p>Concluídas</p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="{{ route('collect.list.cancelled') }}" class="nav-link @if($namepage == 'Coletas canceladas') active @endif">
+                                <i class="far fa-circle nav-icon text-danger"></i>
+                                <p>Canceladas</p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
                             <a href="{{ route('collect.list.inprogress') }}" class="nav-link @if($namepage == 'Coletas em andamento') active @endif">
                                 <i class="far fa-circle nav-icon"></i>
                                 <p>Em andamento</p>
@@ -150,6 +162,14 @@
                                 <p>Caixa</p>
                             </a>
                         </li>
+                        @if(Auth::user()->type > 3)
+                            <li class="nav-item">
+                                <a href="{{ route('report.graphic') }}" class="nav-link @if($namepage == 'Gráficos') active @endif">
+                                    <i class="far fa-circle nav-icon"></i>
+                                    <p>Gráficos</p>
+                                </a>
+                            </li>
+                        @endif
                     </ul>
                     {{-- <ul class="nav nav-treeview">
                         <li class="nav-item">
