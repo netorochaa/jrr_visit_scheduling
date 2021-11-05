@@ -2,12 +2,11 @@
 
 namespace App\Repositories;
 
-use DB;
-use Prettus\Repository\Eloquent\BaseRepository;
-use Prettus\Repository\Criteria\RequestCriteria;
-use App\Repositories\PatientTypeRepository;
 use App\Entities\PatientType;
 use App\Validators\PatientTypeValidator;
+use DB;
+use Prettus\Repository\Criteria\RequestCriteria;
+use Prettus\Repository\Eloquent\BaseRepository;
 
 /**
  * Class PatientTypeRepositoryEloquent.
@@ -33,10 +32,8 @@ class PatientTypeRepositoryEloquent extends BaseRepository implements PatientTyp
     */
     public function validator()
     {
-
         return PatientTypeValidator::class;
     }
-
 
     /**
      * Boot up the repository, pushing criteria
@@ -49,9 +46,9 @@ class PatientTypeRepositoryEloquent extends BaseRepository implements PatientTyp
     public function patientTypeWithResponsible_list()
     {
         return DB::table('patientTypes')
-                    ->select(DB::raw('concat(name, " ", case
-                                        when needResponsible = "on" then "[COM RESPONSÁVEL]"
-                                        when needResponsible = "off" then "" END, "") as nameFull'), 'id')
-                    ->where('active', '=', 'on');
+            ->select(DB::raw('concat(name, " ", case
+                                when needResponsible = "on" then "[COM RESPONSÁVEL]"
+                                when needResponsible = "off" then "" END, "") as nameFull'), 'id')
+            ->where('active', '=', 'on');
     }
 }

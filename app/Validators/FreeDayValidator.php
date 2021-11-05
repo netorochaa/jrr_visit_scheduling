@@ -19,9 +19,9 @@ class FreeDayValidator extends LaravelValidator
      */
     protected $rules = [
         ValidatorInterface::RULE_CREATE => [
-            'name' => 'required', 
+            'name'      => 'required',
             'dateStart' => 'required',
-            'dateEnd' => 'required'            
+            'dateEnd'   => 'required',
         ],
         ValidatorInterface::RULE_UPDATE => [],
     ];

@@ -1,13 +1,13 @@
 <?php
 
 namespace App\Repositories;
-use DB;
 
-use Prettus\Repository\Eloquent\BaseRepository;
-use Prettus\Repository\Criteria\RequestCriteria;
-use App\Repositories\NeighborhoodRepository;
 use App\Entities\Neighborhood;
+
 use App\Validators\NeighborhoodValidator;
+use DB;
+use Prettus\Repository\Criteria\RequestCriteria;
+use Prettus\Repository\Eloquent\BaseRepository;
 
 /**
  * Class NeighborhoodRepositoryEloquent.
@@ -33,10 +33,8 @@ class NeighborhoodRepositoryEloquent extends BaseRepository implements Neighborh
     */
     public function validator()
     {
-
         return NeighborhoodValidator::class;
     }
-
 
     /**
      * Boot up the repository, pushing criteria
@@ -48,22 +46,22 @@ class NeighborhoodRepositoryEloquent extends BaseRepository implements Neighborh
 
     public function regions_list()
     {
-      $list = [
-        '1' => 'Zona Norte',
-        '2' => 'Zona Sul'
-      ];
+        $list = [
+            '1' => 'Zona Norte',
+            '2' => 'Zona Sul',
+        ];
 
-      return $list;
+        return $list;
     }
 
     public function neighborhoodsCities_list()
     {
         return DB::table('neighborhoods')
-                    ->join('cities', 'neighborhoods.city_id', '=', 'cities.id')
-                    ->select(DB::raw('concat(neighborhoods.name ,
-                                        " - ", cities.name ,"-", cities.UF, " [", case
-                                        when neighborhoods.region = 1 then "ZONA NORTE"
-                                        when neighborhoods.region = 2 then "ZONA SUL" END, "]") as name'), 'neighborhoods.id as id')
-                    ->where('neighborhoods.active', 'on');
+            ->join('cities', 'neighborhoods.city_id', '=', 'cities.id')
+            ->select(DB::raw('concat(neighborhoods.name ,
+                                " - ", cities.name ,"-", cities.UF, " [", case
+                                when neighborhoods.region = 1 then "ZONA NORTE"
+                                when neighborhoods.region = 2 then "ZONA SUL" END, "]") as name'), 'neighborhoods.id as id')
+            ->where('neighborhoods.active', 'on');
     }
 }

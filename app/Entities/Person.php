@@ -11,8 +11,25 @@ class Person extends Model implements Transformable
     use TransformableTrait;
 
     public $timestamps = true;
+
     protected $table = 'people';
-    protected $fillable = ['ra', 'name', 'fone', 'email', 'otherFone', 'typeResponsible', 'nameResponsible', 'foneResponsible', 'CPF', 'RG', 'birth', 'medication', 'observationPat', 'patientTypes_id'];
+
+    protected $fillable = [
+        'ra',
+        'name',
+        'fone',
+        'email',
+        'otherFone',
+        'typeResponsible',
+        'nameResponsible',
+        'foneResponsible',
+        'CPF',
+        'RG',
+        'birth',
+        'medication',
+        'observationPat',
+        'patientTypes_id',
+    ];
 
     public function collects()
     {
@@ -24,65 +41,84 @@ class Person extends Model implements Transformable
         return $this->belongsTo(PatientType::class, 'patientTypes_id');
     }
     
-    public function getCovenantAttribute($covenant){
+    public function getCovenantAttribute($covenant)
+    {
         switch ($covenant) {
-            case "1":
-                return "PARTICULAR";
+            case '1':
+                return 'PARTICULAR';
+
                 break;
-            case "2":
-                return "UNIMED";
+            case '2':
+                return 'UNIMED';
+
                 break;
-            case "3":
-                return "BRADESCO SAÚDE";
+            case '3':
+                return 'BRADESCO SAÚDE';
+
                 break;
-            case "4":
-                return "AFRAFEP";
+            case '4':
+                return 'AFRAFEP';
+
                 break;
-            case "5":
-                return "AMIL SAÚDE";
+            case '5':
+                return 'AMIL SAÚDE';
+
                 break;
-            case "6":
-                return "ASSEFAZ";
+            case '6':
+                return 'ASSEFAZ';
+
                 break;
-            case "7":
-                return "CASSI";
+            case '7':
+                return 'CASSI';
+
                 break;
-            case "8":
-                return "CAMED SAÚDE";
+            case '8':
+                return 'CAMED SAÚDE';
+
                 break;
-            case "9":
-                return "CAPESAUDE";
+            case '9':
+                return 'CAPESAUDE';
+
                 break;
-            case "10":
-                return "CAPESEP";
+            case '10':
+                return 'CAPESEP';
+
                 break;
-            case "11":
-                return "CONSEDER";
+            case '11':
+                return 'CONSEDER';
+
                 break;
-            case "12":
-                return "CORREIOS";
+            case '12':
+                return 'CORREIOS';
+
                 break;
-            case "13":
-                return "FUNASA";
+            case '13':
+                return 'FUNASA';
+
                 break;
-            case "14":
-                return "FUNCEF";
+            case '14':
+                return 'FUNCEF';
+
                 break;
-            case "15":
-                return "GEAP";
+            case '15':
+                return 'GEAP';
+
                 break;
-            case "16":
-                return "SAÚDE CAIXA";
+            case '16':
+                return 'SAÚDE CAIXA';
+
                 break;
-            case "17":
-                return "SAÚDE EXCELSIOR";
+            case '17':
+                return 'SAÚDE EXCELSIOR';
+
                 break;
-            case "18":
-                return "OUTROS";
-            case "19":
-                return "UNIMED INTERCÂMBIO";
+            case '18':
+                return 'OUTROS';
+            case '19':
+                return 'UNIMED INTERCÂMBIO';
             default:
                 return $covenant;
+
                 break;
         }
     }
@@ -90,38 +126,49 @@ class Person extends Model implements Transformable
     public function getFormattedTypeResponsibleAttribute()
     {
         switch ($this->attributes['typeResponsible']) {
-            case "1":
-                return "NÃO INFORMADO";
+            case '1':
+                return 'NÃO INFORMADO';
+
                 break;
-            case "2":
-                return "PAI/MÃE";
+            case '2':
+                return 'PAI/MÃE';
+
                 break;
-            case "3":
-                return "FILHO";
+            case '3':
+                return 'FILHO';
+
                 break;
-            case "4":
-                return "IRMÃO";
+            case '4':
+                return 'IRMÃO';
+
                 break;
-            case "5":
-                return "PADRASTO/MADRASTA";
+            case '5':
+                return 'PADRASTO/MADRASTA';
+
                 break;
-            case "6":
-                return "AVÔ/AVÓ";
+            case '6':
+                return 'AVÔ/AVÓ';
+
                 break;
-            case "7":
-                return "TIO";
+            case '7':
+                return 'TIO';
+
                 break;
-            case "8":
-                return "PRIMO";
+            case '8':
+                return 'PRIMO';
+
                 break;
-            case "9":
-                return "CÔNJUGUE";
+            case '9':
+                return 'CÔNJUGUE';
+
                 break;
-            case "10":
-                return "OUTROS";
+            case '10':
+                return 'OUTROS';
+
                 break;
             default:
                 return $this->attributes['typeResponsible'];
+
                 break;
         }
     }

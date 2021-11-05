@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Entites;
+namespace App\Entities;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Notifications\Notifiable;
@@ -12,7 +12,8 @@ class CollectorNeighborhood extends Model
     use TransformableTrait;
 
     public $timestamps = true;
-    protected $table = 'collector_has_neighborhood';
-    protected $fillable = ['collector_id', 'neighborhood_id'];
 
+    protected $table = 'collector_has_neighborhood';
+
+    protected $fillable = ['collector_id', 'neighborhood_id'];
 }

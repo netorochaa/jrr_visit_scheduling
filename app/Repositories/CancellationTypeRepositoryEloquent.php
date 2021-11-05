@@ -2,11 +2,10 @@
 
 namespace App\Repositories;
 
-use Prettus\Repository\Eloquent\BaseRepository;
-use Prettus\Repository\Criteria\RequestCriteria;
-use App\Repositories\CancellationTypeRepository;
 use App\Entities\CancellationType;
 use App\Validators\CancellationTypeValidator;
+use Prettus\Repository\Criteria\RequestCriteria;
+use Prettus\Repository\Eloquent\BaseRepository;
 
 /**
  * Class CancellationTypeRepositoryEloquent.
@@ -32,10 +31,8 @@ class CancellationTypeRepositoryEloquent extends BaseRepository implements Cance
     */
     public function validator()
     {
-
         return CancellationTypeValidator::class;
     }
-
 
     /**
      * Boot up the repository, pushing criteria
@@ -44,5 +41,4 @@ class CancellationTypeRepositoryEloquent extends BaseRepository implements Cance
     {
         $this->pushCriteria(app(RequestCriteria::class));
     }
-    
 }

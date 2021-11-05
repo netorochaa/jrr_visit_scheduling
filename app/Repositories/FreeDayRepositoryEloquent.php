@@ -2,11 +2,10 @@
 
 namespace App\Repositories;
 
-use Prettus\Repository\Eloquent\BaseRepository;
-use Prettus\Repository\Criteria\RequestCriteria;
-use App\Repositories\FreeDayRepository;
 use App\Entities\FreeDay;
 use App\Validators\FreeDayValidator;
+use Prettus\Repository\Criteria\RequestCriteria;
+use Prettus\Repository\Eloquent\BaseRepository;
 
 /**
  * Class FreeDayRepositoryEloquent.
@@ -32,10 +31,8 @@ class FreeDayRepositoryEloquent extends BaseRepository implements FreeDayReposit
     */
     public function validator()
     {
-
         return FreeDayValidator::class;
     }
-
 
     /**
      * Boot up the repository, pushing criteria
@@ -47,11 +44,10 @@ class FreeDayRepositoryEloquent extends BaseRepository implements FreeDayReposit
 
     public function type_list()
     {
-      $list = [
-        '1' => 'POR COLETADOR'
-      ];
+        $list = [
+            '1' => 'POR COLETADOR',
+        ];
 
-      return $list;
+        return $list;
     }
-    
 }

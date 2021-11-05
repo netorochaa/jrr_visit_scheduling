@@ -13,7 +13,9 @@ class Collector extends Model implements Transformable
     use TransformableTrait;
 
     public $timestamps = true;
+
     protected $table = 'collectors';
+
     protected $fillable = ['name', 'date_start', 'date_start_last_modify', 'mondayToFriday', 'saturday', 'sunday', 'startingAddress', 'active', 'showInSite', 'user_id'];
 
     public function neighborhoods()
@@ -36,75 +38,83 @@ class Collector extends Model implements Transformable
         return $this->hasMany(Collect::class);
     }
 
-    public function getFormattedActiveAttribute(){
+    public function getFormattedActiveAttribute()
+    {
         switch ($this->attributes['active']) {
-            case "on":
-                return "ATIVO";
+            case 'on':
+                return 'ATIVO';
+
                 break;
-            case "off":
-                return "INATIVO";
+            case 'off':
+                return 'INATIVO';
+
                 break;
             default:
                 return $this->attributes['active'];
+
                 break;
         }
     }
 
-    public function getFormattedCreatedAtAttribute(){
-        if($this->attributes['created_at'] != null)
-        {
-            $date = explode(' ', $this->attributes['created_at']);
+    public function getFormattedCreatedAtAttribute()
+    {
+        if ($this->attributes['created_at'] != null) {
+            $date      = explode(' ', $this->attributes['created_at']);
             $dateSplit = explode('-', $date[0]);
 
-            $day = $dateSplit[2];
+            $day   = $dateSplit[2];
             $month = $dateSplit[1];
-            $year = $dateSplit[0];
-            $hour = $date[1];
+            $year  = $dateSplit[0];
+            $hour  = $date[1];
 
-            return $day . "/" . $month . "/" . $year . " " . $hour;
+            return $day . '/' . $month . '/' . $year . ' ' . $hour;
         }
     }
 
-    public function getFormattedUpdatedAtAttribute(){
-        if($this->attributes['updated_at'] != null)
-        {
-            $date = explode(' ', $this->attributes['updated_at']);
+    public function getFormattedUpdatedAtAttribute()
+    {
+        if ($this->attributes['updated_at'] != null) {
+            $date      = explode(' ', $this->attributes['updated_at']);
             $dateSplit = explode('-', $date[0]);
 
-            $day = $dateSplit[2];
+            $day   = $dateSplit[2];
             $month = $dateSplit[1];
-            $year = $dateSplit[0];
-            $hour = $date[1];
+            $year  = $dateSplit[0];
+            $hour  = $date[1];
 
-            return $day . "/" . $month . "/" . $year . " " . $hour;
+            return $day . '/' . $month . '/' . $year . ' ' . $hour;
         }
     }
     
-    public function getFormattedDateStartLastModifyAttribute(){
-        if($this->attributes['date_start_last_modify'] != null)
-        {
-            $date = explode(' ', $this->attributes['date_start_last_modify']);
+    public function getFormattedDateStartLastModifyAttribute()
+    {
+        if ($this->attributes['date_start_last_modify'] != null) {
+            $date      = explode(' ', $this->attributes['date_start_last_modify']);
             $dateSplit = explode('-', $date[0]);
 
-            $day = $dateSplit[2];
+            $day   = $dateSplit[2];
             $month = $dateSplit[1];
-            $year = $dateSplit[0];
-            $hour = $date[1];
+            $year  = $dateSplit[0];
+            $hour  = $date[1];
 
-            return $day . "/" . $month . "/" . $year;
+            return $day . '/' . $month . '/' . $year;
         }
     }
 
-    public function getFormattedshowInSiteAttribute(){
+    public function getFormattedshowInSiteAttribute()
+    {
         switch ($this->attributes['showInSite']) {
-            case "on":
-                return "SIM";
+            case 'on':
+                return 'SIM';
+
                 break;
             case null:
-                return "NÃO";
+                return 'NÃO';
+
                 break;
             default:
                 return $this->attributes['showInSite'];
+
                 break;
         }
     }

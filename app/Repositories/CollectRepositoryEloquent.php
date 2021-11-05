@@ -1,13 +1,13 @@
 <?php
 
 namespace App\Repositories;
-use DB;
 
-use Prettus\Repository\Eloquent\BaseRepository;
-use Prettus\Repository\Criteria\RequestCriteria;
-use App\Repositories\CollectRepository;
 use App\Entities\Collect;
+
 use App\Validators\CollectValidator;
+use DB;
+use Prettus\Repository\Criteria\RequestCriteria;
+use Prettus\Repository\Eloquent\BaseRepository;
 
 date_default_timezone_set('America/Recife');
 
@@ -35,10 +35,8 @@ class CollectRepositoryEloquent extends BaseRepository implements CollectReposit
     */
     public function validator()
     {
-
         return CollectValidator::class;
     }
-
 
     /**
      * Boot up the repository, pushing criteria
@@ -57,7 +55,7 @@ class CollectRepositoryEloquent extends BaseRepository implements CollectReposit
             'people.email'      => 'E-MAIL',
             'collects.date'     => 'DATA',
             'collects.id'       => 'CÓDIGO',
-            'collects.address'  => 'RUA'
+            'collects.address'  => 'RUA',
         ];
 
         return $list;
@@ -75,19 +73,19 @@ class CollectRepositoryEloquent extends BaseRepository implements CollectReposit
             '7' => 'CANCELADA',
             '8' => 'CANCELADA EM ROTA',
             '9' => 'HORÁRIO MODIFICADO',
-          ];
+        ];
 
-          return $list;
+        return $list;
     }
 
     public function collectType_list()
     {
         $list = [
             '1' => 'NORMAL',
-            '2' => 'EMPRESA'
-          ];
+            '2' => 'EMPRESA',
+        ];
 
-          return $list;
+        return $list;
     }
 
     public function payment_list($site)
@@ -96,12 +94,14 @@ class CollectRepositoryEloquent extends BaseRepository implements CollectReposit
             '1' => 'EM ESPÉCIE',
             '2' => 'DÉBITO',
             '3' => 'CRÉDITO',
-            '4' => 'CORTESIA'
-          ];
+            '4' => 'CORTESIA',
+        ];
 
-          if($site) unset($list['4']);
+        if ($site) {
+            unset($list['4']);
+        }
 
-          return $list;
+        return $list;
     }
 
     public function collect_filter($column, $value)
@@ -116,35 +116,35 @@ class CollectRepositoryEloquent extends BaseRepository implements CollectReposit
 
     public function collectReset($collect)
     {
-        $collect['collectType'] = '1';
-        $collect['status'] = '1';
-        $collect['payment'] = '1';
-        $collect['changePayment'] = '0.00';
-        $collect['cep'] = null;
-        $collect['address'] = null;
-        $collect['numberAddress'] = null;
-        $collect['complementAddress'] = null;
-        $collect['referenceAddress'] = null;
-        $collect['linkMaps'] = null;
-        $collect['AuthCourtesy'] = null;
-        $collect['unityCreated'] = null;
-        $collect['observationCollect'] = null;
-        $collect['attachment'] = null;
-        $collect['extra'] = null;
-        $collect['sendconfirmation'] = '0';
+        $collect['collectType']         = '1';
+        $collect['status']              = '1';
+        $collect['payment']             = '1';
+        $collect['changePayment']       = '0.00';
+        $collect['cep']                 = null;
+        $collect['address']             = null;
+        $collect['numberAddress']       = null;
+        $collect['complementAddress']   = null;
+        $collect['referenceAddress']    = null;
+        $collect['linkMaps']            = null;
+        $collect['AuthCourtesy']        = null;
+        $collect['unityCreated']        = null;
+        $collect['observationCollect']  = null;
+        $collect['attachment']          = null;
+        $collect['extra']               = null;
+        $collect['sendconfirmation']    = '0';
         $collect['cancellationType_id'] = null;
-        $collect['neighborhood_id'] = null;
-        $collect['user_id'] = null;
-        $collect['user_id_cancelled'] = null;
-        $collect['user_id_confirmed'] = null;
-        $collect['collect_old'] = null;
-        $collect['hour_new'] = null;
-        $collect['user_id_modified'] = null;
-        $collect['reserved_at'] = null;
-        $collect['confirmed_at'] = null;
-        $collect['closed_at'] = null;
-        $collect['created_at'] = null;
-        $collect['updated_at'] = null;
+        $collect['neighborhood_id']     = null;
+        $collect['user_id']             = null;
+        $collect['user_id_cancelled']   = null;
+        $collect['user_id_confirmed']   = null;
+        $collect['collect_old']         = null;
+        $collect['hour_new']            = null;
+        $collect['user_id_modified']    = null;
+        $collect['reserved_at']         = null;
+        $collect['confirmed_at']        = null;
+        $collect['closed_at']           = null;
+        $collect['created_at']          = null;
+        $collect['updated_at']          = null;
 
         return $collect;
     }
