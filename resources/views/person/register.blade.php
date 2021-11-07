@@ -12,7 +12,7 @@
             @include('templates.components.input',  ['label' => 'Nascimento',    'col' => '4', 'input'  => 'birth',  'attributes' => ['onBlur' => 'checkAge(this)','required' => 'true', 'class' => 'form-control', 'data-inputmask' => "'mask': '99/99/9999'", 'data-date', 'im-insert' => 'true']])
             @include('templates.components.input',  ['label' => 'E-mail',        'col' => '4', 'input'  => 'email',  'attributes' => ['onBlur' => 'checkEmail(this)', 'class' => 'form-control', 'maxlength' => 254]])
         @if($collect->status != 2)
-            @include('templates.components.input',  ['label' => 'RA',            'col' => '4', 'input'  => 'ra',     'attributes' => ['class' => 'form-control', 'data-inputmask' => "'mask': '9999999999'", 'data-ra', 'im-insert' => 'true']])
+            @include('templates.components.input',  ['label' => 'OS',            'col' => '4', 'input'  => 'os',     'attributes' => ['class' => 'form-control', 'id' => 'data-os', 'placeholder' => 'xxx-xxxxx-xxx', 'im-insert' => 'true']])
         @endif
             @include('templates.components.input',  ['label' => 'CPF',           'col' => '4', 'input'  => 'CPF',    'attributes' => ['required' => 'true', 'class' => 'form-control', 'data-inputmask' => "'mask': '99999999999'", 'data-cpf', 'im-insert' => 'true']])
             @include('templates.components.input',  ['label' => 'Contato',       'col' => '4', 'input'  => 'fone',   'attributes' => ['required' => 'true', 'class' => 'form-control', 'data-inputmask' => "'mask': '(99) 99999-9999'", 'data-fone', 'im-insert' => 'true']])

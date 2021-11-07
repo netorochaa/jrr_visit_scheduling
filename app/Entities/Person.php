@@ -15,7 +15,7 @@ class Person extends Model implements Transformable
     protected $table = 'people';
 
     protected $fillable = [
-        'ra',
+        'os',
         'name',
         'fone',
         'email',

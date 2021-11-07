@@ -3,8 +3,8 @@
         <tr>
             <th>Nome</th>
             <th>Contato</th>
-            @if($collect->status != 2) <th>RA</th> @endif
-            <th>Convﾃｪnio</th>
+            @if($collect->status != 2) <th>OS</th> @endif
+            <th>Convênio</th>
             <th>Exames</th>
             <th class='sorting_desc_disabled sorting_asc_disabled'></th>
         </tr>
@@ -27,7 +27,7 @@
                 <small>Telefone: {{ $person->fone }}<br>
                 E-mail: {!! $person->email ?? "<span style='color: red'>Não informado</span>" !!}</small>
             </td>
-            @if($collect->status != 2) <td>{{ $person->ra }}</td> @endif
+            @if($collect->status != 2) <td>{{ $person->os }}</td> @endif
             <td>{!! $person->getCovenantAttribute($person->pivot->covenant) ?? "<span style='color: red'>Não informado</span>" !!}</td>
             <td>{!! $person->pivot->exams ?? "<span style='color: red'>Não informado</span>" !!}</td>
             <td>

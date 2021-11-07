@@ -19,7 +19,7 @@
                 <td>
                     @foreach ($collect->people as $person)
                         - <small>{{ $person->name }} ({{ $person->patientType->name }})<br>
-                        {{ $person->ra }}</small>
+                        {{ $person->os }}</small>
                     @endforeach
                 </td>
                 <td>{{ $collect->neighborhood->name ?? null }}</td>

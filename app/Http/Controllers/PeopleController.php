@@ -44,9 +44,9 @@ class PeopleController extends Controller
             $value = '%' . $request->get('value') . '%';
 
             $people_list = DB::table('people')
-                                ->select('id', 'name', 'cpf', 'rg', 'birth', 'fone', 'email')
-                                ->where($param, 'like', $value)
-                                ->orderBy('created_at', 'DESC');
+                ->select('id', 'name', 'cpf', 'rg', 'birth', 'fone', 'email')
+                ->where($param, 'like', $value)
+                ->orderBy('created_at', 'DESC');
 
             return $people_list->get()->toJson();
         } catch (Exception $e) {
@@ -57,6 +57,7 @@ class PeopleController extends Controller
     public function store(PersonCreateRequest $request, $collect_id)
     {
         $site = $request->session()->has('collect');
+        
         if (!Auth::check() && !$site) {
             session()->flash('return');
 
