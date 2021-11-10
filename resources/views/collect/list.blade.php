@@ -25,7 +25,7 @@
             <td>
                 @foreach ($collectMarked->people as $person)
                     - <small>{{ $person->name }} ({{ $person->patientType->name }})<br>
-                        <span class="text-muted">RA: {{ $person->ra }}</span></small><br>
+                        <span class="text-muted">OS: {{ $person->os }}</span></small><br>
                 @endforeach
             </td>
             {{-- PAG. TAXA --}}

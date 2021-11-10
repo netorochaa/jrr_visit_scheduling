@@ -2,11 +2,9 @@
 
 namespace App\Repositories;
 
-use Prettus\Repository\Eloquent\BaseRepository;
-use Prettus\Repository\Criteria\RequestCriteria;
-use App\Repositories\ActivityRepository;
 use App\Entities\Activity;
-use App\Validators\ActivityValidator;
+use Prettus\Repository\Criteria\RequestCriteria;
+use Prettus\Repository\Eloquent\BaseRepository;
 
 /**
  * Class ActivityRepositoryEloquent.
@@ -25,8 +23,6 @@ class ActivityRepositoryEloquent extends BaseRepository implements ActivityRepos
         return Activity::class;
     }
 
-    
-
     /**
      * Boot up the repository, pushing criteria
      */
@@ -41,9 +37,8 @@ class ActivityRepositoryEloquent extends BaseRepository implements ActivityRepos
             '1' => 'EM ANDAMENTO',
             '2' => 'FINALIZADA',
             '3' => 'CANCELADA',
-          ];
+        ];
 
-          return $list;
+        return $list;
     }
-    
 }

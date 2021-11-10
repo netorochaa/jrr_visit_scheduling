@@ -49,7 +49,7 @@
             $('[data-mask]').inputmask('', {'placeholder': '00,00'})
             $('[data-cep]').inputmask('', {'placeholder': '00000-000'})
             $('[data-date]').inputmask('', {'placeholder': '00/00/0000'})
-            $('[data-ra]').inputmask('', {'placeholder': '0000000000'})
+            $('#data-os').inputmask('99[9]-99999-99[9]')
             $('[data-cpf]').inputmask('', {'placeholder': '00000000000'})
             $('[data-fone]').inputmask('', {'placeholder': '(00) 00000-0000)'})
         });

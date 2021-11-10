@@ -2,8 +2,7 @@
 
 namespace App\Entities;
 
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Database\Eloquent\{Model, SoftDeletes};
 use Prettus\Repository\Contracts\Transformable;
 use Prettus\Repository\Traits\TransformableTrait;
 
@@ -13,7 +12,9 @@ class FreeDay extends Model implements Transformable
     use SoftDeletes;
 
     public $timestamps = true;
+
     protected $table = 'freeDays';
+
     protected $fillable = ['name', 'type', 'dateStart', 'dateEnd'];
 
     public function collectors()
@@ -25,21 +26,22 @@ class FreeDay extends Model implements Transformable
     {
         switch ($this->attributes['type']) {
             case 1:
-                return "POR COLETADOR";
+                return 'POR COLETADOR';
+
                 break;
             case 2:
-                return "POR CIDADE";
+                return 'POR CIDADE';
+
                 break;
             default:
                 return $this->attributes['type'];
+
                 break;
         }
     }
 
     public function getDateRange()
     {
-        return date("d/m/Y", strtotime($this->attributes['dateStart'])) . " - " . date("d/m/Y", strtotime($this->attributes['dateEnd']));
+        return date('d/m/Y', strtotime($this->attributes['dateStart'])) . ' - ' . date('d/m/Y', strtotime($this->attributes['dateEnd']));
     }
-
-
 }

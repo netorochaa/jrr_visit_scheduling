@@ -2,11 +2,10 @@
 
 namespace App\Repositories;
 
-use Prettus\Repository\Eloquent\BaseRepository;
-use Prettus\Repository\Criteria\RequestCriteria;
-use App\Repositories\UserRepository;
 use App\Entities\User;
 use App\Validators\UserValidator;
+use Prettus\Repository\Criteria\RequestCriteria;
+use Prettus\Repository\Eloquent\BaseRepository;
 
 /**
  * Class UserRepositoryEloquent.
@@ -22,7 +21,6 @@ class UserRepositoryEloquent extends BaseRepository implements UserRepository
 
     public function validator()
     {
-
         return UserValidator::class;
     }
 
@@ -36,16 +34,15 @@ class UserRepositoryEloquent extends BaseRepository implements UserRepository
 
     public function typeUser_list()
     {
-      $list = [
-        '1' => 'RECEPÇÃO',
-        '2' => 'COLETADOR',
-        '3' => 'AGENDADOR',
-        '4' => 'GERÊNCIA',
-        '5' => 'DIRETORIA',
-        '99' => 'ADMIN',
-      ];
+        $list = [
+            '1'  => 'RECEPÇÃO',
+            '2'  => 'COLETADOR',
+            '3'  => 'AGENDADOR',
+            '4'  => 'GERÊNCIA',
+            '5'  => 'DIRETORIA',
+            '99' => 'ADMIN',
+        ];
 
-      return $list;
+        return $list;
     }
-
 }
