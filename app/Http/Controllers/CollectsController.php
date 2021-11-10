@@ -315,14 +315,16 @@ class CollectsController extends Controller
             return view('auth.login');
         }
             
-        $collect_list = $this->repository->where('neighborhood_id', '!=', null)
-                                                    ->where('status', 5)->get();
+        $collect_list = $this->repository
+            ->where('neighborhood_id', '!=', null)
+            ->where('status', 5)
+            ->paginate(500);
 
         return view('collect.template_table', [
             'namepage'   => 'Coletas em andamento',
             'threeview'  => 'Coletas',
             'titlespage' => ['Coletas em andamento'],
-            'titlecard'  => 'Lista de coletas em andamento',
+            'titlecard'  => 'Lista das últimas 500 coletas em andamento',
             //Info of entitie
             'table'               => $this->repository->getTable(),
             'thead_for_datatable' => ['Data/Hora', 'Código', 'Paciente', 'Pagamento Taxa', 'Bairro', 'Endereço', 'Coletador', 'Status'],
